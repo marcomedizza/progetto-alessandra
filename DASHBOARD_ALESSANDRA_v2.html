@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Dashboard Progetto Alessandra v2 - Con Google Drive</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { color: #667eea; font-size: 26px; }
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .sync-status {
+            padding: 8px 16px;
+            background: #f0f9ff;
+            border-left: 3px solid #3b82f6;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #333;
+        }
+        .sync-status.synced {
+            background: #d1fae5;
+            border-left-color: #10b981;
+            color: #065f46;
+        }
+        .sync-status.error {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+            color: #7f1d1d;
+        }
+        button {
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        button:hover { background: #764ba2; }
+        .btn-secondary { background: #6b7280; }
+        .btn-secondary:hover { background: #4b5563; }
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f3f4f6;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .task-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .task-item.urgent {
+            border-left-color: #ef4444;
+            background: #fee2e2;
+        }
+        .task-item.completed {
+            border-left-color: #10b981;
+            background: #d1fae5;
+        }
+        .task-agent {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .task-title {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .task-deadline {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .task-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-inprogress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-blocked {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 1024px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Dashboard Progetto Alessandra v2</h1>
+            <div class="header-controls">
+                <div class="sync-status" id="sync-status">
+                    ☁️ Offline (localStorage)
+                </div>
+                <button class="btn-secondary" onclick="syncWithGoogleDrive()">☁️ Sincronizza GDrive</button>
+                <button class="btn-secondary" onclick="saveLocal()">💾 Salva Locale</button>
+            </div>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('tasks')">📋 Attività Assegnate</button>
+            <button class="tab-btn" onclick="switchTab('agents')">👩‍💼 Agenti</button>
+            <button class="tab-btn" onclick="switchTab('progress')">📈 Avanzamento</button>
+            <button class="tab-btn" onclick="switchTab('notes')">📝 Note & Comunicazioni</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h3>📊 Status Progetto Alessandra</h3>
+                <div class="grid-2">
+                    <div>
+                        <div style="font-size: 12px; color: #999; margin-bottom: 5px;">Agenti Attivi</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #667eea;">16</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #999; margin-bottom: 5px;">Week 1 Progress</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #10b981;">15%</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #999; margin-bottom: 5px;">Milestone Prossima</div>
+                        <div style="font-size: 14px; font-weight: bold; color: #333;">Schema Dati (19/08)</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #999; margin-bottom: 5px;">Critico: Benedetta</div>
+                        <div style="font-size: 14px; font-weight: bold; color: #ef4444;">⚠️ Blocco Team</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔴 Blocchi Critici Week 1</h3>
+                <div class="task-item urgent">
+                    <div class="task-agent">🏛️ Benedetta (Schema Dati Architettura)</div>
+                    <div class="task-title">DEVE finire Schema Dati JSON</div>
+                    <div class="task-deadline">⏰ Giovedì 19 agosto</div>
+                    <span class="task-status status-blocked">CRITICO: Se non finisce → tutti bloccati</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📚 Ricerche Online - Status Today</h3>
+                <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                    <div style="font-size: 14px; color: #333; margin-bottom: 10px;">
+                        ⏰ Scadenza: 18:00 oggi (15 agosto 2026)
+                    </div>
+                    <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                        ✅ Tutti gli agenti devono documentarsi online<br>
+                        📝 1-2 fonti autorevoli ciascuno<br>
+                        📊 Max 300 battute riassunto<br>
+                        🔗 Tracciamento: Tab "Ricerche Online"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTIVITÀ ASSEGNATE -->
+        <div id="tasks" class="tab-content">
+            <div class="card">
+                <h3>📋 Week 1 - Compiti Assegnati (entro Venerdì 20 agosto)</h3>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; font-size: 14px;">🏛️ TEAM ARCHITETTURA</h4>
+
+                    <div class="task-item urgent">
+                        <div class="task-agent">👑 Alessandra (Project Lead)</div>
+                        <div class="task-title">Coordinamento e decisioni architetturali critiche</div>
+                        <div class="task-deadline">⏰ Continuo</div>
+                        <span class="task-status status-inprogress">IN PROGRESS</span>
+                    </div>
+
+                    <div class="task-item urgent">
+                        <div class="task-agent">🏛️ Benedetta (Schema Dati)</div>
+                        <div class="task-title">Finalizzare Schema Dati JSON (CRITICO)</div>
+                        <div class="task-deadline">⏰ Lunedì-Giovedì: Draft → Review → Finale</div>
+                        <span class="task-status status-blocked">🔴 BLOCCA ALTRI</span>
+                        <div style="margin-top: 8px; font-size: 12px; color: #333;">
+                            ➡️ Dopo: Natalia, Irene, Elisa possono iniziare
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; font-size: 14px;">🎨 TEAM FRONTEND</h4>
+
+                    <div class="task-item">
+                        <div class="task-agent">🎨 Irene (Frontend 3D)</div>
+                        <div class="task-title">UI 3D mockup (Three.js)</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati Benedetta</span>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-agent">📝 Lucia (UI Editor)</div>
+                        <div class="task-title">Property panel design (React)</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; font-size: 14px;">⚙️ TEAM BACKEND</h4>
+
+                    <div class="task-item">
+                        <div class="task-agent">⚙️ Natalia (Backend)</div>
+                        <div class="task-title">FastAPI setup base + endpoints</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-agent">🔄 Paola (Data Converter)</div>
+                        <div class="task-title">JSON schema validator</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; font-size: 14px;">🔢 TEAM FORTRAN</h4>
+
+                    <div class="task-item">
+                        <div class="task-agent">🔢 Elisa (Fortran)</div>
+                        <div class="task-title">P-Delta planning + setup gfortran</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-agent">🏗️ Ottavia (Build/Wrapper)</div>
+                        <div class="task-title">CMake setup + ctypes binding</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px; font-size: 14px;">🔬 TEAM RICERCA & QA</h4>
+
+                    <div class="task-item">
+                        <div class="task-agent">🔬 Francesca (Ricerca)</div>
+                        <div class="task-title">OpenFOAM integration planning</div>
+                        <div class="task-deadline">⏰ Mercoledì 18 agosto</div>
+                        <span class="task-status status-pending">⏳ RESEARCH ONLINE oggi</span>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-agent">✅ Valentina (QA)</div>
+                        <div class="task-title">Test framework setup (pytest)</div>
+                        <div class="task-deadline">⏰ Venerdì 20 agosto</div>
+                        <span class="task-status status-pending">⏳ ASPETTA: Schema dati</span>
+                    </div>
+                </div>
+
+                <div style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+                    <div style="font-weight: bold; color: #92400e; margin-bottom: 8px;">⚠️ ATTENZIONE</div>
+                    <div style="font-size: 13px; color: #92400e; line-height: 1.6;">
+                        <strong>Schema Dati è FONDAMENTALE per Week 2</strong><br>
+                        Se Benedetta non finisce giovedì → tutti bloccati lunedì<br>
+                        <strong>Action:</strong> Se dubbi, escalate IMMEDIATAMENTE a Alessandra
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGENTI -->
+        <div id="agents" class="tab-content">
+            <div class="card">
+                <h3>👩‍💼 Team Alessandra - 16 Agenti</h3>
+                <div id="agents-list"></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div id="progress" class="tab-content">
+            <div class="card">
+                <h3>📈 Milestone Timeline</h3>
+                <div style="padding: 20px; background: #f9fafb; border-radius: 8px;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Week 1: Schema Dati & Planning</div>
+                        <div style="height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #667eea; width: 15%;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">15% completato</div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Week 2-4: Sviluppo Parallelo</div>
+                        <div style="height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #667eea; width: 0%;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">0% (aspetta Week 1)</div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Week 5: Alpha Release</div>
+                        <div style="height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #667eea; width: 0%;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">0% (target: 02/09)</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Week 8: Beta Release</div>
+                        <div style="height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #667eea; width: 0%;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">0% (target: 16/09)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTE -->
+        <div id="notes" class="tab-content">
+            <div class="card">
+                <h3>📝 Comunicazioni & Update</h3>
+                <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; border-left: 3px solid #3b82f6; margin-bottom: 15px;">
+                    <div style="font-weight: bold; color: #1e40af; margin-bottom: 8px;">📢 Memo Alessandra</div>
+                    <div style="font-size: 13px; color: #1e40af;">
+                        Team, ricordatevi:<br>
+                        ✅ Ricerche online entro 18:00 oggi<br>
+                        ✅ Benedetta schema dati giovedì<br>
+                        ✅ Daily sync 15:00 su Slack<br>
+                        ✅ Comunicazione è tutto!
+                    </div>
+                </div>
+                <textarea id="notes-textarea" placeholder="Aggiungi note/comunicazioni..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit;"></textarea>
+                <button onclick="saveNotes()" style="margin-top: 10px;">💾 Salva Note</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DASHBOARD_DATA = {
+            version: 2,
+            lastUpdate: new Date().toISOString(),
+            agents: [
+                { name: 'Alessandra', role: 'Project Lead', team: 'Alessandra', status: 'active' },
+                { name: 'Benedetta', role: 'Schema Dati Architettura', team: 'Alessandra', status: 'critical' },
+                { name: 'Irene', role: 'Frontend 3D', team: 'Alessandra', status: 'active' },
+                { name: 'Natalia', role: 'Backend', team: 'Alessandra', status: 'active' },
+                { name: 'Elisa', role: 'Fortran Solver', team: 'Alessandra', status: 'active' },
+                { name: 'Francesca', role: 'Ricerca CFD', team: 'Alessandra', status: 'active' },
+                { name: 'Valentina', role: 'QA Testing', team: 'Alessandra', status: 'active' },
+                { name: 'Carla', role: 'ModeSt Bridge', team: 'Alessandra', status: 'active' },
+                { name: 'Daniela', role: 'ModeSt Research', team: 'Alessandra', status: 'active' },
+                { name: 'Lucia', role: 'UI Editor', team: 'Alessandra', status: 'active' },
+                { name: 'Mariana', role: 'Results Viz', team: 'Alessandra', status: 'active' },
+                { name: 'Ottavia', role: 'Build Wrapper', team: 'Alessandra', status: 'active' },
+                { name: 'Paola', role: 'Data Converter', team: 'Alessandra', status: 'active' },
+                { name: 'Renata', role: 'Workflow Validator', team: 'Alessandra', status: 'active' },
+                { name: 'Silvia', role: 'Regression Lab', team: 'Alessandra', status: 'active' },
+                { name: 'Gabriella', role: 'FEM Standards', team: 'Alessandra', status: 'active' }
+            ]
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function saveLocal() {
+            localStorage.setItem('dashboard_alessandra_v2', JSON.stringify(DASHBOARD_DATA));
+            updateSyncStatus('Salvato localmente', 'synced');
+        }
+
+        function syncWithGoogleDrive() {
+            saveLocal();
+            alert('Per sincronizzare con Google Drive:\n1. Salva il file HTML in D:\\progetto-alessandra\\\n2. Carica manualmente su Google Drive\n3. Condividi con team\n\nLa sincronizzazione automatica sarà implementata prossimamente.');
+            updateSyncStatus('Google Drive (manual)', 'pending');
+        }
+
+        function updateSyncStatus(msg, status) {
+            const el = document.getElementById('sync-status');
+            el.textContent = msg;
+            el.className = 'sync-status ' + status;
+        }
+
+        function saveNotes() {
+            const notes = document.getElementById('notes-textarea').value;
+            localStorage.setItem('dashboard_notes', notes);
+            alert('✅ Note salvate!');
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('dashboard_alessandra_v2');
+            if (saved) {
+                const data = JSON.parse(saved);
+                console.log('Dati caricati:', data);
+            }
+            const notes = localStorage.getItem('dashboard_notes');
+            if (notes) {
+                document.getElementById('notes-textarea').value = notes;
+            }
+        }
+
+        function renderAgents() {
+            const html = DASHBOARD_DATA.agents.map(agent => `
+                <div style="background: #f9fafb; padding: 12px; margin-bottom: 8px; border-radius: 6px; border-left: 4px solid ${agent.status === 'critical' ? '#ef4444' : '#667eea'};">
+                    <div style="font-weight: bold; color: #333;">${agent.name}</div>
+                    <div style="font-size: 12px; color: #666;">${agent.role}</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 4px;">Team: ${agent.team}</div>
+                </div>
+            `).join('');
+            document.getElementById('agents-list').innerHTML = html;
+        }
+
+        window.addEventListener('load', () => {
+            loadData();
+            renderAgents();
+            saveLocal();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Dashboard Progetto Alessandra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f3f4f6;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .nav-tabs { flex-direction: column; }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .agent-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .agent-role {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .agent-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .notification {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .notification.high {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+        }
+
+        .notification.medium {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .milestone {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .milestone.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .milestone-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .milestone-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        textarea, input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .board-post {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .board-post.private {
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+
+        .board-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .board-time {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .badge.private {
+            background: #f59e0b;
+        }
+
+        .request-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .request-item.urgent {
+            border-left-color: #ef4444;
+        }
+
+        .request-priority {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 11px;
+            background: #fecaca;
+            color: #7f1d1d;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .meeting-report {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .meeting-date {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .meeting-notes {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .role-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .role-card.business {
+            border-left-color: #f59e0b;
+        }
+
+        .role-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-title {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .role-description {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .role-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .skill-tag {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            border: 1px solid #bae6fd;
+        }
+
+        .skill-tag.business {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+
+        .role-section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .research-item {
+            background: #f9fafb;
+            border-left: 5px solid #667eea;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .research-item.external {
+            border-left-color: #06b6d4;
+        }
+
+        .research-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .research-agent {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .research-topic {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .research-topic.external {
+            background: #06b6d4;
+        }
+
+        .research-source {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #10b981;
+            font-size: 12px;
+        }
+
+        .research-source a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .research-source a:hover {
+            text-decoration: underline;
+        }
+
+        .research-summary {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .research-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .source-indicator {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #06b6d4;
+            color: white;
+        }
+
+        .stats-box {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stats-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stats-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🚀 Progetto Alessandra</h1>
+                <p style="color: #666; margin-top: 5px;">Dashboard Interattivo</p>
+            </div>
+            <div class="header-info">
+                <div style="text-align: right;">
+                    <div style="font-size: 12px; color: #666;">Oggi</div>
+                    <div style="font-size: 18px; font-weight: bold;" id="today-date"></div>
+                </div>
+                <div class="status-badge">🟢 ACTIVE</div>
+            </div>
+        </header>
+
+        <!-- NAVIGATION TABS -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('agents')">👩‍💼 Agenti</button>
+            <button class="tab-btn" onclick="switchTab('agent-roles')">👩‍💻 Chi Fa Cosa</button>
+            <button class="tab-btn" onclick="switchTab('research')">📚 Ricerche Online</button>
+            <button class="tab-btn" onclick="switchTab('notifications')">🔔 Notifiche</button>
+            <button class="tab-btn" onclick="switchTab('board')">📌 Bacheche</button>
+            <button class="tab-btn" onclick="switchTab('progress')">📈 Avanzamento</button>
+            <button class="tab-btn" onclick="switchTab('requests')">📝 Richieste</button>
+            <button class="tab-btn" onclick="switchTab('meetings')">🤝 Meeting</button>
+            <button class="tab-btn" onclick="switchTab('reference-books')">📚 Libri Riferimento</button>
+        </div>
+
+        <!-- DASHBOARD TAB -->
+        <div id="dashboard" class="tab-content active">
+            <div class="grid-3">
+                <div class="stats-box">
+                    <div class="stats-number" id="total-agents">21</div>
+                    <div class="stats-label">Agenti Totali</div>
+                </div>
+                <div class="stats-box">
+                    <div class="stats-number" id="active-tasks">0</div>
+                    <div class="stats-label">Task Attivi</div>
+                </div>
+                <div class="stats-box">
+                    <div class="stats-number" id="completion-rate">0%</div>
+                    <div class="stats-label">Completamento</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📅 Prossime Milestone</h3>
+                    <div id="milestones-preview"></div>
+                </div>
+                <div class="card">
+                    <h3>🔔 Notifiche Recenti</h3>
+                    <div id="notifications-preview"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGENTS TAB -->
+        <div id="agents" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>👩 Team Alessandra (Dev)</h3>
+                    <div id="team-ale"></div>
+                </div>
+                <div class="card">
+                    <h3>👩 Team Giorgia (Business)</h3>
+                    <div id="team-giorgia"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHI FA COSA TAB -->
+        <div id="agent-roles" class="tab-content">
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="search-agent" placeholder="🔍 Cerca agente..." style="max-width: 400px;">
+            </div>
+
+            <div class="role-section-title">🏗️ Team Alessandra — Sviluppo Tecnico (16 agenti)</div>
+            <div id="ale-roles"></div>
+
+            <div class="role-section-title">🎯 Team Giorgia — Business & Operations (5 agenti)</div>
+            <div id="giorgia-roles"></div>
+        </div>
+
+        <!-- RICERCHE ONLINE TAB -->
+        <div id="research" class="tab-content">
+            <div class="card">
+                <h3>📚 Aggiungi Ricerca Online</h3>
+                <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <select id="research-agent">
+                        <option value="">🔸 Seleziona Agente...</option>
+                        <option value="--- TEAM ALESSANDRA ---" disabled>--- TEAM ALESSANDRA ---</option>
+                        <option value="Alessandra">Alessandra</option>
+                        <option value="Benedetta">Benedetta</option>
+                        <option value="Irene">Irene</option>
+                        <option value="Natalia">Natalia</option>
+                        <option value="Elisa">Elisa</option>
+                        <option value="Francesca">Francesca</option>
+                        <option value="Valentina">Valentina</option>
+                        <option value="Carla">Carla</option>
+                        <option value="Daniela">Daniela</option>
+                        <option value="Lucia">Lucia</option>
+                        <option value="Mariana">Mariana</option>
+                        <option value="Ottavia">Ottavia</option>
+                        <option value="Paola">Paola</option>
+                        <option value="Renata">Renata</option>
+                        <option value="Silvia">Silvia</option>
+                        <option value="Gabriella">Gabriella</option>
+                        <option value="--- TEAM GIORGIA ---" disabled>--- TEAM GIORGIA ---</option>
+                        <option value="Giorgia">Giorgia</option>
+                        <option value="Aurora">Aurora</option>
+                        <option value="Livia">Livia</option>
+                        <option value="Veronica">Veronica</option>
+                        <option value="Camilla">Camilla</option>
+                        <option value="Laura">Laura</option>
+                    </select>
+
+                    <input type="text" id="research-topic" placeholder="Argomento di ricerca (es. Pricing Models, CFD Trends)..." style="margin-top: 10px;">
+
+                    <input type="url" id="research-source" placeholder="URL fonte (es. https://www.example.com/article)..." style="margin-top: 10px;">
+
+                    <textarea id="research-summary" placeholder="📝 Riassunto (max 300 battute): descrivi cosa hai trovato, i punti chiave, perché è rilevante..." style="min-height: 100px; margin-top: 10px;"></textarea>
+
+                    <div class="char-counter" id="research-char-count">0/300</div>
+
+                    <button onclick="submitResearch()">💾 Salva Ricerca</button>
+                </div>
+
+                <h3 style="margin-top: 25px;">🔍 Ricerche Salvate</h3>
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="research-search" placeholder="🔎 Cerca ricerche..." style="max-width: 400px;">
+                </div>
+                <div id="research-list"></div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS TAB -->
+        <div id="notifications" class="tab-content">
+            <div class="card">
+                <h3>🔔 Tutte le Notifiche</h3>
+                <button onclick="addNotification()" class="btn-small">+ Aggiungi Notifica</button>
+                <div id="all-notifications" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- BOARD TAB -->
+        <div id="board" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📌 Bacheca Pubblica</h3>
+                    <textarea placeholder="Nuovo post pubblico..." id="public-post" style="min-height: 80px;"></textarea>
+                    <button onclick="postPublic()">Pubblica</button>
+                    <div id="public-board" style="margin-top: 15px;"></div>
+                </div>
+                <div class="card">
+                    <h3>🔐 Bacheca Privata</h3>
+                    <textarea placeholder="Nuovo post privato..." id="private-post" style="min-height: 80px;"></textarea>
+                    <button onclick="postPrivate()">Pubblica (Privato)</button>
+                    <div id="private-board" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRESS TAB -->
+        <div id="progress" class="tab-content">
+            <div class="card">
+                <h3>📈 Stato Avanzamento Progetto</h3>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 1: Planning & Spec (Week 1)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <div style="font-size: 12px; color: #666;">30% - In Progress</div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 2: Core Dev (Week 2-4)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div style="font-size: 12px; color: #666;">0% - Non Iniziato</div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 3: Integration (Week 4-6)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div style="font-size: 12px; color: #666;">0% - Non Iniziato</div>
+                </div>
+
+                <h3 style="margin-top: 25px;">📋 Milestone</h3>
+                <div id="milestones-full"></div>
+
+                <button onclick="addMilestone()" class="btn-small">+ Aggiungi Milestone</button>
+            </div>
+        </div>
+
+        <!-- REQUESTS TAB -->
+        <div id="requests" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📝 Richieste Agenti</h3>
+                    <select id="agent-select">
+                        <option value="">Seleziona agente...</option>
+                        <option value="Alessandra">Alessandra (ALE)</option>
+                        <option value="Benedetta">Benedetta (BeneD)</option>
+                        <option value="Giorgia">Giorgia (GIO)</option>
+                        <option value="Aurora">Aurora</option>
+                        <option value="Livia">Livia</option>
+                        <option value="Veronica">Veronica (Vero)</option>
+                        <option value="Camilla">Camilla</option>
+                        <option value="Laura">Laura</option>
+                    </select>
+                    <textarea placeholder="Descrivi la richiesta..." id="agent-request" style="min-height: 80px;"></textarea>
+                    <button onclick="submitAgentRequest()">Invia Richiesta</button>
+                    <div id="agent-requests-list" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>💬 Le Tue Richieste</h3>
+                    <select id="priority-select">
+                        <option value="normal">Priorità: Normale</option>
+                        <option value="high">Priorità: Alta</option>
+                        <option value="urgent">Priorità: Urgente</option>
+                    </select>
+                    <textarea placeholder="La tua richiesta..." id="my-request" style="min-height: 80px;"></textarea>
+                    <button onclick="submitMyRequest()">Invia la Mia Richiesta</button>
+                    <div id="my-requests-list" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEETINGS TAB -->
+        <div id="meetings" class="tab-content">
+            <div class="card">
+                <h3>🤝 Resoconti Meeting</h3>
+
+                <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <input type="date" id="meeting-date" value="">
+                    <select id="meeting-attendees">
+                        <option value="">Seleziona partecipanti...</option>
+                        <option value="team-ale">Team Alessandra</option>
+                        <option value="team-giorgia">Team Giorgia</option>
+                        <option value="all">Tutti</option>
+                        <option value="ale-gio">Alessandra & Giorgia</option>
+                    </select>
+                    <textarea placeholder="Resoconto meeting (max 300 battute)..." id="meeting-notes" style="min-height: 100px;"></textarea>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="char-count">0/300</div>
+                    <button onclick="submitMeetingReport()">Salva Resoconto</button>
+                </div>
+
+                <div id="meeting-reports"></div>
+            </div>
+        </div>
+
+        <div id="reference-books" class="tab-content">
+            <div class="card">
+                <h3>📚 Libri di Riferimento — Progetto Alessandra</h3>
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-size: 16px; font-weight: bold; color: #667eea; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">
+                        🏛️ GEOTECNICA & FONDAZIONI — Elisa (Calcoli Strutturali)
+                    </div>
+
+                    <div style="background: #f9fafb; padding: 18px; border-radius: 8px; border-left: 5px solid #667eea; margin-bottom: 15px;">
+                        <div style="font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px;">
+                            📖 Fondazioni, Progetto e Analisi
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>Autore:</strong> Joseph E. Bowles
+                        </div>
+                        <div style="font-size: 13px; color: #555; line-height: 1.6;">
+                            <strong>Argomenti:</strong> Progetto e analisi di fondazioni, cedimenti, portanza, interazione terreno-struttura<br>
+                            <strong>Rilevanza:</strong> Calcoli di cedimenti differenziali, analisi della portanza (bearing capacity), fondamentale per solver strutturali con fondazioni
+                        </div>
+                    </div>
+
+                    <div style="font-size: 16px; font-weight: bold; color: #667eea; margin-bottom: 15px; margin-top: 25px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">
+                        💧 IDRAULICA & CFD — Francesca (Ricerca)
+                    </div>
+
+                    <div style="background: #f9fafb; padding: 18px; border-radius: 8px; border-left: 5px solid #06b6d4; margin-bottom: 15px;">
+                        <div style="font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px;">
+                            📖 Finite Element Techniques for Fluid Flow
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>Autori:</strong> J.J. Connor, C.A. Brebbia
+                        </div>
+                        <div style="font-size: 13px; color: #555; line-height: 1.6;">
+                            <strong>Argomenti:</strong> FEM per fluidodinamica, tecniche numeriche CFD<br>
+                            <strong>Rilevanza:</strong> Fondamenti FEM applicati a fluidi, integrazione con OpenFOAM/Salome, validazione modelli idraulici
+                        </div>
+                    </div>
+
+                    <div style="background: #f9fafb; padding: 18px; border-radius: 8px; border-left: 5px solid #06b6d4; margin-bottom: 15px;">
+                        <div style="font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px;">
+                            📖 Computational Hydraulics
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>Autori:</strong> C.A. Brebbia, A. Ferrante
+                        </div>
+                        <div style="font-size: 13px; color: #555; line-height: 1.6;">
+                            <strong>Argomenti:</strong> Metodi computazionali per analisi idraulica<br>
+                            <strong>Rilevanza:</strong> Calcoli di flussi pressurizzati, dinamica fluidodinamica applicata, bridge tra teoria e implementazione numerica
+                        </div>
+                    </div>
+
+                    <div style="font-size: 16px; font-weight: bold; color: #667eea; margin-bottom: 15px; margin-top: 25px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">
+                        🔢 CALCOLO NUMERICO — Elisa (Fortran)
+                    </div>
+
+                    <div style="background: #f9fafb; padding: 18px; border-radius: 8px; border-left: 5px solid #667eea; margin-bottom: 15px;">
+                        <div style="font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px;">
+                            📖 Metodi e Algoritmi per il Calcolo Numerico
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>Autore:</strong> Giovanni Monegato
+                        </div>
+                        <div style="font-size: 13px; color: #555; line-height: 1.6;">
+                            <strong>Argomenti:</strong> Metodi numerici, algoritmi, stabilità numerica<br>
+                            <strong>Rilevanza:</strong> Fondamenti di calcolo numerico per Fortran, analisi convergenza e stabilità, scelta algoritmi ottimali per solver
+                        </div>
+                    </div>
+
+                    <div style="background: #f9fafb; padding: 18px; border-radius: 8px; border-left: 5px solid #667eea; margin-bottom: 15px;">
+                        <div style="font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px;">
+                            📖 100 Pagine di... Elementi di Calcolo Numerico
+                        </div>
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>Autore:</strong> G. Monegato
+                        </div>
+                        <div style="font-size: 13px; color: #555; line-height: 1.6;">
+                            <strong>Argomenti:</strong> Sintesi essenziale di calcolo numerico<br>
+                            <strong>Rilevanza:</strong> Quick reference per metodi numerici, richiami rapidi durante implementazione Fortran, best practices algoritmi numerici
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Data
+        const agentDescriptions = {
+            'Alessandra': {
+                title: 'Project Lead',
+                team: 'Dev',
+                emoji: '👑',
+                description: 'Coordinamento generale del progetto. Gestisce timeline, milestone, comunicazione tra team. Approva decisioni architetturali critiche. Punto di contatto per executive decisions.',
+                skills: ['Leadership', 'Coordinamento', 'Architettura', 'Project Planning', 'Risk Management']
+            },
+            'Benedetta': {
+                title: 'Tech Lead Architettura',
+                team: 'Dev',
+                emoji: '🏛️',
+                description: 'Disegna architettura complessiva del sistema. Definisce schema dati JSON/binario, API contracts, dipendenze tra componenti. Critica per Week 1 (schema dati).',
+                skills: ['Architettura', 'Database Design', 'API Design', 'Schema Validation', 'System Design']
+            },
+            'Irene': {
+                title: 'Tech Lead Frontend 3D',
+                team: 'Dev',
+                emoji: '🎨',
+                description: 'Core visualizzazione CAD 3D con Three.js/WebGL. Gestisce viewport, viste multiple (Top/Front/Right/ISO), pan/zoom/rotate, gizmo transform, layers. Interfaccia AutoCAD-like.',
+                skills: ['Three.js', 'WebGL', 'GLSL', 'React', 'UI/UX', '3D Graphics', 'Electron']
+            },
+            'Natalia': {
+                title: 'Tech Lead Backend',
+                team: 'Dev',
+                emoji: '⚙️',
+                description: 'Backend FastAPI orchestration. Gestisce routing API, file I/O, launcher processi Fortran, data conversion pipeline. Ponte tra frontend e solver.',
+                skills: ['FastAPI', 'Python', 'REST API', 'Database', 'File Management', 'Process Management']
+            },
+            'Elisa': {
+                title: 'Tech Lead Fortran Solver',
+                team: 'Dev',
+                emoji: '🧮',
+                description: 'Estensioni solver Fortran: P-Delta, nonlinearità, dinamica modale. Implementa algoritmi strutturali, analisi frequenziale, calcoli complessi. Core tecnico.',
+                skills: ['Fortran 2008', 'LAPACK', 'Numerical Methods', 'Structural Analysis', 'Algorithm Design', 'Linear Algebra']
+            },
+            'Francesca': {
+                title: 'Tech Lead Ricerca',
+                team: 'Dev',
+                emoji: '🔬',
+                description: 'Ricerca integrazioni: OpenFOAM (CFD), formati FEM (SAF/IFC), standard tecnici. Documenta API, workflow, best practices. ponte verso ecosistema esterno.',
+                skills: ['CFD', 'OpenFOAM', 'FEM Standards', 'IFC/SAF', 'Technical Research', 'Documentation']
+            },
+            'Valentina': {
+                title: 'Tech Lead QA',
+                team: 'Dev',
+                emoji: '🧪',
+                description: 'Quality assurance completo. Test integrazione, regressione calcoli Fortran, performance benchmark. Quality gates prima di release. Validazione end-to-end.',
+                skills: ['pytest', 'Test Automation', 'Performance Testing', 'Regression Testing', 'CI/CD', 'Metrics']
+            },
+            'Carla': {
+                title: 'Bridge ModeSt',
+                team: 'Dev',
+                emoji: '🌉',
+                description: 'Integrazione bidirezionale con ModeSt. Mapping formati, export/import, interfaccia dati. Consente scambio dati tra CAD visualizzatore e ModeSt.',
+                skills: ['Format Conversion', 'Data Mapping', 'ModeSt Integration', 'File Parsing', 'Interface Design']
+            },
+            'Daniela': {
+                title: 'Ricerca ModeSt',
+                team: 'Dev',
+                emoji: '🔍',
+                description: 'Reverse engineering ModeSt (se docs non disponibili). Analizza formato proprietario, mapping dati, API exposure. Supporta Carla su integration.',
+                skills: ['Reverse Engineering', 'Format Analysis', 'Documentation', 'Technical Investigation', 'Data Analysis']
+            },
+            'Lucia': {
+                title: 'UI Geometry Editor',
+                team: 'Dev',
+                emoji: '✏️',
+                description: 'Editor grafico geometria e proprietà elementi. Property panel per sezioni, materiali, vincoli, carichi. Template libreria (trave, solaio, travetto). UX geometry input.',
+                skills: ['React', 'UI/UX', 'Component Design', 'Form Handling', 'Template System', 'Property Management']
+            },
+            'Mariana': {
+                title: 'Results Visualizer 3D',
+                team: 'Dev',
+                emoji: '📊',
+                description: 'Post-processing visualizzazione risultati in 3D. Diagrammi momento/taglio, deformate, mappe colore, animazioni. Rende risultati calcoli visivamente.',
+                skills: ['Three.js', 'Data Visualization', 'Animation', '3D Rendering', 'Colormap Design', 'Results Post-processing']
+            },
+            'Natalia': {
+                title: 'Tech Lead Backend',
+                team: 'Dev',
+                emoji: '⚙️',
+                description: 'Backend FastAPI orchestration. Gestisce routing API, file I/O, launcher processi Fortran, data conversion pipeline. Ponte tra frontend e solver.',
+                skills: ['FastAPI', 'Python', 'REST API', 'Database', 'File Management', 'Process Management']
+            },
+            'Ottavia': {
+                title: 'Fortran Wrapper & Build',
+                team: 'Dev',
+                emoji: '📦',
+                description: 'Wrapping Fortran: compilazione gfortran, esecuzione, packaging. Setup toolchain build. Deployment eseguibile. Integrazione Python-Fortran.',
+                skills: ['gfortran', 'Build Systems', 'CMake/Makefile', 'ctypes/f2py', 'Packaging', 'CI/CD Setup']
+            },
+            'Paola': {
+                title: 'Data Converter',
+                team: 'Dev',
+                emoji: '🔄',
+                description: 'Converter formati universale. DXF↔JSON, JSON↔Fortran ASCII, ASCII↔Fortran binario. Validazione dati. Pipeline conversione dati.',
+                skills: ['Format Parsing', 'Data Validation', 'Pydantic', 'File I/O', 'Schema Mapping', 'Error Handling']
+            },
+            'Renata': {
+                title: 'Workflow Validator',
+                team: 'Dev',
+                emoji: '✓',
+                description: 'Validazione workflow end-to-end. Test scenari realistici, checklist release. Assicura qualità prima di deployment.',
+                skills: ['Integration Testing', 'Scenario Planning', 'Quality Assurance', 'Documentation', 'User Acceptance Testing']
+            },
+            'Silvia': {
+                title: 'Regression Lab',
+                team: 'Dev',
+                emoji: '🔬',
+                description: 'Suite test regressione calcoli Fortran. Confronto risultati, performance benchmark. Verifica stabilità solver dopo modifiche.',
+                skills: ['Test Automation', 'Performance Profiling', 'Data Comparison', 'Numerical Analysis', 'Benchmark Tools']
+            },
+            'Gabriella': {
+                title: 'FEM Standards',
+                team: 'Dev',
+                emoji: '📋',
+                description: 'Analisi formati FEM standard: SAF, IFC, XML. Parsing/writing questi formati. Conversioni tra standard. Interoperabilità.',
+                skills: ['IFC/IFCOpenShell', 'SAF Format', 'XML Parsing', 'CAD Standards', 'Format Documentation', 'Interoperability']
+            },
+            'Giorgia': {
+                title: 'Business Lead',
+                team: 'Business',
+                emoji: '💼',
+                description: 'Gestione operativa business. Coordinamento offerte, pagamenti, compliance. Comunicazione quotidiana con Alessandra (da Week 3). Reporting business.',
+                skills: ['Business Strategy', 'Operations', 'Stakeholder Management', 'Coordination', 'Reporting', 'Risk Management']
+            },
+            'Aurora': {
+                title: 'Offerte & Fatturazione',
+                team: 'Business',
+                emoji: '💰',
+                description: 'Preparazione offerte commerciali. Gestione note pagamento, fatturazione, tracciamento incassi. Pricing models. Reporting ricavi.',
+                skills: ['Pricing Strategy', 'Invoice Management', 'Sales', 'Accounting', 'Customer Communication', 'Revenue Tracking']
+            },
+            'Livia': {
+                title: 'Email & Comunicazioni',
+                team: 'Business',
+                emoji: '📧',
+                description: 'Gestione posta elettronica ufficiale. Comunicazioni clienti, newsletter, coordinamento interno. Social media presence. Customer support.',
+                skills: ['Email Management', 'Customer Communication', 'Marketing', 'Social Media', 'Content Writing', 'Brand Management']
+            },
+            'Veronica': {
+                title: 'Normativa & Compliance',
+                team: 'Business',
+                emoji: '📋',
+                description: 'Monitoraggio aggiornamenti normativi (NTC, Eurocode, GPL). Compliance licenze software. GDPR privacy. Documentazione conformità.',
+                skills: ['Regulatory Knowledge', 'Compliance', 'License Management', 'Privacy/GDPR', 'Risk Assessment', 'Documentation']
+            },
+            'Camilla': {
+                title: 'News & Intelligence',
+                team: 'Business',
+                emoji: '📰',
+                description: 'Ricerca online notizie di interesse. Market intelligence, competitor monitoring, tech trends. Weekly news digest. Trend analysis.',
+                skills: ['Research', 'Market Analysis', 'Competitive Intelligence', 'Content Curation', 'Trend Analysis', 'Communication']
+            },
+            'Laura': {
+                title: 'Progress Monitor',
+                team: 'Business',
+                emoji: '📊',
+                description: 'Monitoraggio andamento lavoro team Alessandra. Tracking milestone, risk identification, reporting progress. Dashboard metrics. Alert blocchi.',
+                skills: ['Project Management', 'Metrics & KPIs', 'Risk Management', 'Reporting', 'Dashboard Tools', 'Analysis']
+            }
+        };
+
+        const appData = {
+            agents: {
+                ale: [
+                    { name: 'Alessandra', role: 'Project Lead', status: 'active', team: 'Dev' },
+                    { name: 'Benedetta', role: 'Tech Lead Architettura', status: 'active', team: 'Dev' },
+                    { name: 'Irene', role: 'Tech Lead Frontend', status: 'active', team: 'Dev' },
+                    { name: 'Natalia', role: 'Tech Lead Backend', status: 'active', team: 'Dev' },
+                    { name: 'Elisa', role: 'Tech Lead Fortran', status: 'active', team: 'Dev' },
+                    { name: 'Francesca', role: 'Tech Lead Ricerca', status: 'active', team: 'Dev' },
+                    { name: 'Valentina', role: 'Tech Lead QA', status: 'active', team: 'Dev' },
+                    { name: 'Carla', role: 'Bridge ModeSt', status: 'pending', team: 'Dev' },
+                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'pending', team: 'Dev' },
+                    { name: 'Lucia', role: 'UI Editor', status: 'pending', team: 'Dev' },
+                    { name: 'Mariana', role: 'Results Viz', status: 'pending', team: 'Dev' },
+                    { name: 'Ottavia', role: 'Fortran Wrapper', status: 'pending', team: 'Dev' },
+                    { name: 'Paola', role: 'Data Converter', status: 'pending', team: 'Dev' },
+                    { name: 'Renata', role: 'Workflow Validator', status: 'pending', team: 'Dev' },
+                    { name: 'Silvia', role: 'Regression Lab', status: 'pending', team: 'Dev' },
+                    { name: 'Gabriella', role: 'FEM Standards', status: 'pending', team: 'Dev' }
+                ],
+                giorgia: [
+                    { name: 'Giorgia', role: 'Business Lead', status: 'active', team: 'Business' },
+                    { name: 'Aurora', role: 'Offerte & Fatturazione', status: 'active', team: 'Business' },
+                    { name: 'Livia', role: 'Email & Comunicazioni', status: 'active', team: 'Business' },
+                    { name: 'Veronica', role: 'Normativa & Compliance', status: 'active', team: 'Business' },
+                    { name: 'Camilla', role: 'News & Intelligence', status: 'active', team: 'Business' },
+                    { name: 'Laura', role: 'Progress Monitor', status: 'active', team: 'Business' }
+                ]
+            },
+            notifications: [],
+            publicBoard: [],
+            privateBoard: [],
+            milestones: [
+                { title: 'Schema Dati Finalizzato', date: '2026-08-19', status: 'pending' },
+                { title: 'Alpha Release', date: '2026-09-02', status: 'pending' },
+                { title: 'Beta Release', date: '2026-09-16', status: 'pending' }
+            ],
+            agentRequests: [],
+            myRequests: [],
+            meetingReports: [],
+            onlineResearch: []
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const stored = localStorage.getItem('appData');
+            if (stored) {
+                const loaded = JSON.parse(stored);
+                appData.notifications = loaded.notifications || [];
+                appData.publicBoard = loaded.publicBoard || [];
+                appData.privateBoard = loaded.privateBoard || [];
+                appData.milestones = loaded.milestones || appData.milestones;
+                appData.agentRequests = loaded.agentRequests || [];
+                appData.myRequests = loaded.myRequests || [];
+                appData.meetingReports = loaded.meetingReports || [];
+                appData.onlineResearch = loaded.onlineResearch || [];
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('appData', JSON.stringify(appData));
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            render();
+        }
+
+        // Render Functions
+        function renderAgents() {
+            let html = '';
+            appData.agents.ale.forEach(agent => {
+                html += `
+                    <div class="agent-item">
+                        <div class="agent-name">👩 ${agent.name}</div>
+                        <div class="agent-role">${agent.role}</div>
+                        <span class="agent-status status-${agent.status}">${agent.status === 'active' ? '🟢 Attivo' : '🟡 In Attesa'}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('team-ale').innerHTML = html;
+
+            html = '';
+            appData.agents.giorgia.forEach(agent => {
+                html += `
+                    <div class="agent-item">
+                        <div class="agent-name">👩 ${agent.name}</div>
+                        <div class="agent-role">${agent.role}</div>
+                        <span class="agent-status status-${agent.status}">${agent.status === 'active' ? '🟢 Attivo' : '🟡 In Attesa'}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('team-giorgia').innerHTML = html;
+        }
+
+        function renderNotifications() {
+            let html = '';
+            appData.notifications.slice().reverse().forEach((notif, idx) => {
+                html += `
+                    <div class="notification ${notif.priority}">
+                        <div>
+                            <div style="font-weight: bold;">${notif.title}</div>
+                            <div style="font-size: 14px; color: #555; margin-top: 5px;">${notif.message}</div>
+                            <div class="notification-time">${notif.time}</div>
+                        </div>
+                        <button class="btn-small" onclick="removeNotification(${appData.notifications.length - 1 - idx})">✕</button>
+                    </div>
+                `;
+            });
+            document.getElementById('all-notifications').innerHTML = html;
+
+            if (appData.notifications.length > 0) {
+                document.getElementById('notifications-preview').innerHTML = appData.notifications.slice(-2).map(n =>
+                    `<div class="notification ${n.priority}" style="margin-bottom: 10px;"><strong>${n.title}</strong><div style="font-size: 12px; margin-top: 5px;">${n.message}</div></div>`
+                ).join('');
+            }
+        }
+
+        function renderBoard() {
+            let publicHtml = '';
+            appData.publicBoard.slice().reverse().forEach((post, idx) => {
+                publicHtml += `
+                    <div class="board-post">
+                        <div class="board-header">
+                            <span><strong>${post.author}</strong> <span class="badge">Pubblica</span></span>
+                            <span class="board-time">${post.time}</span>
+                        </div>
+                        <div style="margin: 10px 0;">${post.text}</div>
+                        <button class="btn-small" onclick="removePublicPost(${appData.publicBoard.length - 1 - idx})">Rimuovi</button>
+                    </div>
+                `;
+            });
+            document.getElementById('public-board').innerHTML = publicHtml || '<p style="color: #999;">Nessun post ancora</p>';
+
+            let privateHtml = '';
+            appData.privateBoard.slice().reverse().forEach((post, idx) => {
+                privateHtml += `
+                    <div class="board-post private">
+                        <div class="board-header">
+                            <span><strong>${post.author}</strong> <span class="badge private">Privata</span></span>
+                            <span class="board-time">${post.time}</span>
+                        </div>
+                        <div style="margin: 10px 0;">${post.text}</div>
+                        <button class="btn-small" onclick="removePrivatePost(${appData.privateBoard.length - 1 - idx})">Rimuovi</button>
+                    </div>
+                `;
+            });
+            document.getElementById('private-board').innerHTML = privateHtml || '<p style="color: #999;">Nessun post ancora</p>';
+        }
+
+        function renderMilestones() {
+            let html = '';
+            appData.milestones.forEach((m, idx) => {
+                html += `
+                    <div class="milestone ${m.status}">
+                        <div class="milestone-title">✓ ${m.title}</div>
+                        <div class="milestone-date">📅 ${m.date}</div>
+                        <div style="margin-top: 8px;">
+                            <button class="btn-small" onclick="toggleMilestone(${idx})">${m.status === 'completed' ? 'Riporta In Progress' : 'Segna Completato'}</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('milestones-full').innerHTML = html;
+            document.getElementById('milestones-preview').innerHTML = appData.milestones.slice(0, 2).map(m =>
+                `<div class="milestone ${m.status}" style="margin-bottom: 10px;"><div class="milestone-title">${m.title}</div><div class="milestone-date">${m.date}</div></div>`
+            ).join('');
+        }
+
+        function renderRequests() {
+            let agentHtml = '';
+            appData.agentRequests.slice().reverse().forEach((req, idx) => {
+                agentHtml += `
+                    <div class="request-item ${req.priority === 'urgent' ? 'urgent' : ''}">
+                        <div><strong>${req.agent}</strong> <div class="request-priority">${req.priority.toUpperCase()}</div></div>
+                        <div style="margin: 10px 0;">${req.text}</div>
+                        <div style="font-size: 12px; color: #666;">${req.time}</div>
+                        <button class="btn-small" onclick="removeAgentRequest(${appData.agentRequests.length - 1 - idx})">Rimuovi</button>
+                    </div>
+                `;
+            });
+            document.getElementById('agent-requests-list').innerHTML = agentHtml || '<p style="color: #999;">Nessuna richiesta</p>';
+
+            let myHtml = '';
+            appData.myRequests.slice().reverse().forEach((req, idx) => {
+                myHtml += `
+                    <div class="request-item ${req.priority === 'urgent' ? 'urgent' : ''}">
+                        <div><strong>Tu</strong> <div class="request-priority">${req.priority.toUpperCase()}</div></div>
+                        <div style="margin: 10px 0;">${req.text}</div>
+                        <div style="font-size: 12px; color: #666;">${req.time}</div>
+                        <button class="btn-small" onclick="removeMyRequest(${appData.myRequests.length - 1 - idx})">Rimuovi</button>
+                    </div>
+                `;
+            });
+            document.getElementById('my-requests-list').innerHTML = myHtml || '<p style="color: #999;">Nessuna richiesta</p>';
+        }
+
+        function renderMeetings() {
+            let html = '';
+            appData.meetingReports.slice().reverse().forEach((report, idx) => {
+                html += `
+                    <div class="meeting-report">
+                        <div class="meeting-date">📅 ${report.date} - ${report.attendees}</div>
+                        <div class="meeting-notes">${report.notes}</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px;">${report.time}</div>
+                        <button class="btn-small" onclick="removeMeetingReport(${appData.meetingReports.length - 1 - idx})">Rimuovi</button>
+                    </div>
+                `;
+            });
+            document.getElementById('meeting-reports').innerHTML = html || '<p style="color: #999;">Nessun resoconto</p>';
+        }
+
+        function renderAgentRoles() {
+            const searchTerm = document.getElementById('search-agent').value.toLowerCase();
+
+            let aleHtml = '';
+            appData.agents.ale.forEach(agent => {
+                if (agent.name.toLowerCase().includes(searchTerm) || agentDescriptions[agent.name].description.toLowerCase().includes(searchTerm)) {
+                    const desc = agentDescriptions[agent.name];
+                    aleHtml += `
+                        <div class="role-card">
+                            <div class="role-name">${desc.emoji} ${agent.name}</div>
+                            <div class="role-title">${desc.title} — ${agent.role}</div>
+                            <div class="role-description">${desc.description}</div>
+                            <div class="role-skills">
+                                ${desc.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('ale-roles').innerHTML = aleHtml;
+
+            let giorgiaHtml = '';
+            appData.agents.giorgia.forEach(agent => {
+                if (agent.name.toLowerCase().includes(searchTerm) || agentDescriptions[agent.name].description.toLowerCase().includes(searchTerm)) {
+                    const desc = agentDescriptions[agent.name];
+                    giorgiaHtml += `
+                        <div class="role-card business">
+                            <div class="role-name">${desc.emoji} ${agent.name}</div>
+                            <div class="role-title">${desc.title} — ${agent.role}</div>
+                            <div class="role-description">${desc.description}</div>
+                            <div class="role-skills">
+                                ${desc.skills.map(skill => `<span class="skill-tag business">${skill}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('giorgia-roles').innerHTML = giorgiaHtml;
+        }
+
+        function renderResearch() {
+            const searchTerm = document.getElementById('research-search').value.toLowerCase();
+            let html = '';
+
+            const filtered = appData.onlineResearch.filter(r =>
+                r.agent.toLowerCase().includes(searchTerm) ||
+                r.topic.toLowerCase().includes(searchTerm) ||
+                r.summary.toLowerCase().includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                html = '<p style="color: #999;">Nessuna ricerca salvata ancora</p>';
+            } else {
+                filtered.slice().reverse().forEach((research, idx) => {
+                    const isExternal = !research.source.includes('it') && research.source.includes('http');
+                    html += `
+                        <div class="research-item ${isExternal ? 'external' : ''}">
+                            <div class="research-header">
+                                <span class="research-agent">👩 ${research.agent}</span>
+                                <span class="research-topic ${isExternal ? 'external' : ''}">${research.topic}</span>
+                            </div>
+                            <div class="research-source">
+                                🔗 Fonte: <a href="${research.source}" target="_blank">${research.source}</a>
+                                ${isExternal ? '<span class="source-indicator" style="margin-left: 10px;">🌍 INTERNAZIONALE</span>' : ''}
+                            </div>
+                            <div class="research-summary">${research.summary}</div>
+                            <div class="research-meta">
+                                <span>📅 ${research.date}</span>
+                                <button class="btn-small" onclick="removeResearch(${appData.onlineResearch.indexOf(research)})">🗑️ Rimuovi</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('research-list').innerHTML = html;
+        }
+
+        function render() {
+            renderAgents();
+            renderAgentRoles();
+            renderResearch();
+            renderNotifications();
+            renderBoard();
+            renderMilestones();
+            renderRequests();
+            renderMeetings();
+        }
+
+        // Helper Functions
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getDate() {
+            const now = new Date();
+            return now.toLocaleDateString('it-IT');
+        }
+
+        // Actions
+        function addNotification() {
+            const title = prompt('Titolo notifica:');
+            const message = prompt('Messaggio:');
+            const priority = prompt('Priorità (low/medium/high):', 'medium');
+
+            if (title && message) {
+                appData.notifications.push({
+                    title,
+                    message,
+                    priority,
+                    time: getTime()
+                });
+                saveData();
+                render();
+            }
+        }
+
+        function removeNotification(idx) {
+            appData.notifications.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function postPublic() {
+            const text = document.getElementById('public-post').value;
+            if (text.trim()) {
+                appData.publicBoard.push({
+                    author: 'Marco (User)',
+                    text,
+                    time: getTime()
+                });
+                document.getElementById('public-post').value = '';
+                saveData();
+                render();
+            }
+        }
+
+        function postPrivate() {
+            const text = document.getElementById('private-post').value;
+            if (text.trim()) {
+                appData.privateBoard.push({
+                    author: 'Marco (User)',
+                    text,
+                    time: getTime()
+                });
+                document.getElementById('private-post').value = '';
+                saveData();
+                render();
+            }
+        }
+
+        function removePublicPost(idx) {
+            appData.publicBoard.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function removePrivatePost(idx) {
+            appData.privateBoard.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function toggleMilestone(idx) {
+            appData.milestones[idx].status = appData.milestones[idx].status === 'completed' ? 'pending' : 'completed';
+            saveData();
+            render();
+        }
+
+        function addMilestone() {
+            const title = prompt('Titolo Milestone:');
+            const date = prompt('Data (YYYY-MM-DD):');
+            if (title && date) {
+                appData.milestones.push({ title, date, status: 'pending' });
+                saveData();
+                render();
+            }
+        }
+
+        function submitAgentRequest() {
+            const agent = document.getElementById('agent-select').value;
+            const text = document.getElementById('agent-request').value;
+
+            if (agent && text.trim()) {
+                appData.agentRequests.push({
+                    agent,
+                    text,
+                    priority: 'normal',
+                    time: getTime()
+                });
+                document.getElementById('agent-request').value = '';
+                document.getElementById('agent-select').value = '';
+                saveData();
+                render();
+            }
+        }
+
+        function removeAgentRequest(idx) {
+            appData.agentRequests.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function submitMyRequest() {
+            const text = document.getElementById('my-request').value;
+            const priority = document.getElementById('priority-select').value;
+
+            if (text.trim()) {
+                appData.myRequests.push({
+                    text,
+                    priority,
+                    time: getTime()
+                });
+                document.getElementById('my-request').value = '';
+                saveData();
+                render();
+            }
+        }
+
+        function removeMyRequest(idx) {
+            appData.myRequests.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function submitMeetingReport() {
+            const date = document.getElementById('meeting-date').value || getDate();
+            const attendees = document.getElementById('meeting-attendees').value || 'Team';
+            const notes = document.getElementById('meeting-notes').value;
+
+            if (notes.trim() && notes.length <= 300) {
+                appData.meetingReports.push({
+                    date,
+                    attendees,
+                    notes,
+                    time: getTime()
+                });
+                document.getElementById('meeting-notes').value = '';
+                document.getElementById('meeting-date').value = '';
+                saveData();
+                render();
+            } else if (notes.length > 300) {
+                alert('Massimo 300 caratteri!');
+            }
+        }
+
+        function removeMeetingReport(idx) {
+            appData.meetingReports.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function submitResearch() {
+            const agent = document.getElementById('research-agent').value;
+            const topic = document.getElementById('research-topic').value;
+            const source = document.getElementById('research-source').value;
+            const summary = document.getElementById('research-summary').value;
+
+            if (!agent || !topic || !source || !summary) {
+                alert('Compila tutti i campi (Agente, Argomento, Fonte, Riassunto)');
+                return;
+            }
+
+            if (summary.length > 300) {
+                alert('Il riassunto non può superare 300 battute');
+                return;
+            }
+
+            appData.onlineResearch.push({
+                agent,
+                topic,
+                source,
+                summary,
+                date: getDate(),
+                time: getTime()
+            });
+
+            // Reset form
+            document.getElementById('research-agent').value = '';
+            document.getElementById('research-topic').value = '';
+            document.getElementById('research-source').value = '';
+            document.getElementById('research-summary').value = '';
+            document.getElementById('research-char-count').textContent = '0/300';
+
+            saveData();
+            render();
+        }
+
+        function removeResearch(idx) {
+            appData.onlineResearch.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        // Char counter for meeting notes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('today-date').textContent = getDate();
+            loadData();
+
+            // Initialize Books Reference Notice
+            const hasBookNotice = appData.publicBoard.some(post =>
+                post.content && post.content.includes('Libri di Riferimento - Richieste specifiche')
+            );
+            if (!hasBookNotice && appData.publicBoard.length === 0) {
+                appData.publicBoard.push({
+                    content: '📚 Libri di Riferimento - Richieste specifiche degli agenti\n\nNel tab "📚 Libri Riferimento" trovate i libri consigliati per il progetto:\n\n🏛️ GEOTECNICA: Bowles - Fondazioni, Progetto e Analisi\n💧 IDRAULICA/CFD: Brebbia - FEM Fluid Flow, Computational Hydraulics\n🔢 CALCOLO NUMERICO: Monegato - Metodi Numerici (2 libri)\n\nSe avete RICHIESTE SPECIFICHE per altri libri, risorse online, o varianti, scrivetele qui sotto. L\'admin le inserirà nel dashboard.',
+                    timestamp: new Date().toLocaleString('it-IT')
+                });
+                saveData();
+            }
+
+            render();
+
+            const meetingNotesEl = document.getElementById('meeting-notes');
+            if (meetingNotesEl) {
+                meetingNotesEl.addEventListener('input', function() {
+                    document.getElementById('char-count').textContent = this.value.length + '/300';
+                });
+            }
+
+            const searchEl = document.getElementById('search-agent');
+            if (searchEl) {
+                searchEl.addEventListener('input', function() {
+                    renderAgentRoles();
+                });
+            }
+
+            const researchSummaryEl = document.getElementById('research-summary');
+            if (researchSummaryEl) {
+                researchSummaryEl.addEventListener('input', function() {
+                    document.getElementById('research-char-count').textContent = this.value.length + '/300';
+                });
+            }
+
+            const researchSearchEl = document.getElementById('research-search');
+            if (researchSearchEl) {
+                researchSearchEl.addEventListener('input', function() {
+                    renderResearch();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

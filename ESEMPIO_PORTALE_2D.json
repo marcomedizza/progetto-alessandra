@@ -1,0 +1,495 @@
+{
+  "metadata": {
+    "schema_version": "2.0",
+    "description": "Esempio: Portale 2D Semplice - Per test Fortran + UI",
+    "created_date": "2026-08-18",
+    "author": "Benedetta (Architettura Team)",
+    "example_type": "frame_2d_simple",
+    "notes": "Portale semplice: trave appoggiata con colonne incastrate. Usare per validate schema."
+  },
+
+  "project": {
+    "id": "prj_20260818_portale_semplice",
+    "name": "Portale 2D Semplice",
+    "description": "Portale semplice 2D per validazione schema e test Fortran",
+    "created_at": "2026-08-18T08:00:00Z",
+    "updated_at": "2026-08-18T10:30:00Z",
+    "units": {
+      "length": "m",
+      "force": "kN",
+      "stress": "MPa",
+      "temperature": "C"
+    },
+    "analysis_type": "static",
+    "nonlinearity_options": {
+      "p_delta": true,
+      "plasticity": false,
+      "large_displacements": false,
+      "contact": false
+    }
+  },
+
+  "geometry": {
+    "description": "Portale: 2 colonne (h=4m) + trave orizzontale (l=6m)",
+    "nodes": [
+      {
+        "id": 1,
+        "name": "Base sinistra",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "restraints": {
+          "dx": "fixed",
+          "dy": "fixed",
+          "dz": "fixed",
+          "rx": "free",
+          "ry": "free",
+          "rz": "fixed",
+          "notes": "Incastro completo (colonna sinistra)"
+        }
+      },
+      {
+        "id": 2,
+        "name": "Nodo trave sinistra",
+        "x": 0.0,
+        "y": 4.0,
+        "z": 0.0,
+        "restraints": {
+          "dx": "free",
+          "dy": "free",
+          "dz": "free",
+          "rx": "free",
+          "ry": "free",
+          "rz": "free"
+        }
+      },
+      {
+        "id": 3,
+        "name": "Nodo trave centro",
+        "x": 3.0,
+        "y": 4.0,
+        "z": 0.0,
+        "restraints": {
+          "dx": "free",
+          "dy": "free",
+          "dz": "free",
+          "rx": "free",
+          "ry": "free",
+          "rz": "free"
+        }
+      },
+      {
+        "id": 4,
+        "name": "Nodo trave destra",
+        "x": 6.0,
+        "y": 4.0,
+        "z": 0.0,
+        "restraints": {
+          "dx": "free",
+          "dy": "free",
+          "dz": "free",
+          "rx": "free",
+          "ry": "free",
+          "rz": "free"
+        }
+      },
+      {
+        "id": 5,
+        "name": "Base destra",
+        "x": 6.0,
+        "y": 0.0,
+        "z": 0.0,
+        "restraints": {
+          "dx": "fixed",
+          "dy": "fixed",
+          "dz": "fixed",
+          "rx": "free",
+          "ry": "free",
+          "rz": "fixed",
+          "notes": "Incastro completo (colonna destra)"
+        }
+      }
+    ],
+    "elements": [
+      {
+        "id": 1,
+        "name": "Colonna sinistra",
+        "type": "frame_2d",
+        "nodes": [1, 2],
+        "section_id": "HEA200",
+        "material_id": "steel_S235",
+        "orientation": {
+          "angle_z": 0.0,
+          "local_x": {"x": 0.0, "y": 1.0, "z": 0.0},
+          "local_y": {"x": -1.0, "y": 0.0, "z": 0.0}
+        },
+        "properties": {
+          "releases": {
+            "start": {"Mz": "fixed"},
+            "end": {"Mz": "free"}
+          },
+          "offset": {
+            "start": {"dy": 0.0, "dz": 0.0},
+            "end": {"dy": 0.0, "dz": 0.0}
+          }
+        }
+      },
+      {
+        "id": 2,
+        "name": "Trave principale",
+        "type": "frame_2d",
+        "nodes": [2, 4],
+        "section_id": "IPE300",
+        "material_id": "steel_S235",
+        "orientation": {
+          "angle_z": 0.0,
+          "local_x": {"x": 1.0, "y": 0.0, "z": 0.0},
+          "local_y": {"x": 0.0, "y": -1.0, "z": 0.0}
+        },
+        "properties": {
+          "releases": {
+            "start": {"Mz": "free"},
+            "end": {"Mz": "free"}
+          },
+          "offset": {
+            "start": {"dy": 0.0, "dz": 0.0},
+            "end": {"dy": 0.0, "dz": 0.0}
+          }
+        }
+      },
+      {
+        "id": 3,
+        "name": "Colonna destra",
+        "type": "frame_2d",
+        "nodes": [5, 4],
+        "section_id": "HEA200",
+        "material_id": "steel_S235",
+        "orientation": {
+          "angle_z": 0.0,
+          "local_x": {"x": 0.0, "y": 1.0, "z": 0.0},
+          "local_y": {"x": 1.0, "y": 0.0, "z": 0.0}
+        },
+        "properties": {
+          "releases": {
+            "start": {"Mz": "fixed"},
+            "end": {"Mz": "free"}
+          },
+          "offset": {
+            "start": {"dy": 0.0, "dz": 0.0},
+            "end": {"dy": 0.0, "dz": 0.0}
+          }
+        }
+      }
+    ]
+  },
+
+  "materials": [
+    {
+      "id": "steel_S235",
+      "name": "Acciaio S235",
+      "type": "steel",
+      "description": "Acciaio strutturale usuale",
+      "properties": {
+        "elastic_modulus": 210000000000.0,
+        "shear_modulus": 81000000000.0,
+        "density": 7850.0,
+        "poisson_ratio": 0.3,
+        "thermal_expansion": 0.000012,
+        "yield_stress": 235000000.0,
+        "ultimate_stress": 360000000.0
+      },
+      "nonlinear": {
+        "plasticity_model": "perfect_plastic",
+        "hardening": "isotropic"
+      }
+    }
+  ],
+
+  "sections": [
+    {
+      "id": "HEA200",
+      "name": "HEA 200 mm",
+      "type": "i_beam",
+      "description": "Profilo HEA 200 (colonne)",
+      "geometry": {
+        "b": 0.200,
+        "h": 0.190,
+        "t": 0.008,
+        "r": 0.012
+      },
+      "properties": {
+        "area": 0.005380,
+        "inertia_y": 1.25e-5,
+        "inertia_z": 3.69e-6,
+        "torsional_constant": 4.2e-7,
+        "shear_area_y": 0.00412,
+        "shear_area_z": 0.00202
+      },
+      "computed": false
+    },
+    {
+      "id": "IPE300",
+      "name": "IPE 300 mm",
+      "type": "i_beam",
+      "description": "Profilo IPE 300 (trave)",
+      "geometry": {
+        "b": 0.150,
+        "h": 0.300,
+        "t": 0.0071,
+        "r": 0.015
+      },
+      "properties": {
+        "area": 0.005380,
+        "inertia_y": 8.356e-6,
+        "inertia_z": 6.04e-7,
+        "torsional_constant": 2.08e-7,
+        "shear_area_y": 0.00403,
+        "shear_area_z": 0.00175
+      },
+      "computed": false
+    }
+  ],
+
+  "loads": {
+    "load_cases": [
+      {
+        "id": "dead",
+        "name": "Peso Proprio",
+        "type": "dead",
+        "description": "Peso proprio struttura",
+        "load_factor": 1.0,
+        "node_loads": [],
+        "element_loads": [],
+        "self_weight": true
+      },
+      {
+        "id": "live_distributed",
+        "name": "Carico Distribuito Trave",
+        "type": "live",
+        "description": "Carico uniforme su trave (es. solaio)",
+        "load_factor": 1.0,
+        "node_loads": [],
+        "element_loads": [
+          {
+            "element_id": 2,
+            "type": "distributed",
+            "direction": "global_y",
+            "value": -30.0,
+            "position": 0.5,
+            "notes": "30 kN/m su trave principale (verso il basso)"
+          }
+        ]
+      },
+      {
+        "id": "concentrated_mid",
+        "name": "Carico Concentrato Centro Trave",
+        "type": "live",
+        "description": "Carico puntuale al centro trave",
+        "load_factor": 1.0,
+        "node_loads": [
+          {
+            "node_id": 3,
+            "fx": 0.0,
+            "fy": -50.0,
+            "fz": 0.0,
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "notes": "50 kN verso il basso"
+          }
+        ],
+        "element_loads": []
+      }
+    ],
+    "load_combinations": [
+      {
+        "id": "comb_1_slu",
+        "name": "Combinazione SLU (Stato Limite Ultimo)",
+        "description": "1.35*Dead + 1.5*Live",
+        "cases": [
+          {
+            "case_id": "dead",
+            "factor": 1.35
+          },
+          {
+            "case_id": "live_distributed",
+            "factor": 1.5
+          }
+        ]
+      },
+      {
+        "id": "comb_2_sls",
+        "name": "Combinazione SLS (Stato Limite di Servizio)",
+        "description": "1.0*Dead + 1.0*Live",
+        "cases": [
+          {
+            "case_id": "dead",
+            "factor": 1.0
+          },
+          {
+            "case_id": "live_distributed",
+            "factor": 1.0
+          },
+          {
+            "case_id": "concentrated_mid",
+            "factor": 1.0
+          }
+        ]
+      }
+    ]
+  },
+
+  "solver_parameters": {
+    "static": {
+      "method": "nonlinear",
+      "description": "Analisi statica nonlineare con P-Delta",
+      "nonlinear_p_delta": {
+        "enabled": true,
+        "max_iterations": 20,
+        "tolerance": 1e-6,
+        "load_steps": 5,
+        "notes": "5 step di carico per P-Delta"
+      },
+      "solver_type": "direct",
+      "convergence_criterion": "displacement"
+    },
+    "modal": {
+      "enabled": false,
+      "method": "lanczos",
+      "num_modes": 10,
+      "frequency_range": {
+        "min": 0.0,
+        "max": 50.0
+      },
+      "damping": {
+        "type": "rayleigh",
+        "values": [0.02, 0.02]
+      },
+      "notes": "Modal analysis not required for this example (Week 3)"
+    }
+  },
+
+  "output_requests": {
+    "node_results": {
+      "displacements": true,
+      "velocities": false,
+      "accelerations": false,
+      "reactions": true
+    },
+    "element_results": {
+      "internal_forces": true,
+      "stresses": true,
+      "strains": false,
+      "stress_resultants": ["Nx", "Vy", "Mz"]
+    },
+    "modal_results": {
+      "frequencies": false,
+      "mode_shapes": false,
+      "effective_mass": false,
+      "participation_factors": false
+    },
+    "output_format": "json",
+    "output_frequency": "all"
+  },
+
+  "results": {
+    "status": "not_run",
+    "run_timestamp": null,
+    "solver_version": null,
+    "convergence_info": {
+      "converged": false,
+      "iterations": 0,
+      "final_error": 0.0
+    },
+    "nodes_results": [],
+    "element_results": [],
+    "modal_results": {
+      "modes": []
+    }
+  },
+
+  "visualization": {
+    "deformed_shape": {
+      "scale_factor": 50.0,
+      "show_undeformed": true,
+      "show_reactions": true
+    },
+    "diagrams": {
+      "axial_force": true,
+      "shear_force_y": true,
+      "shear_force_z": false,
+      "bending_moment_y": false,
+      "bending_moment_z": true,
+      "torsion": false,
+      "stress_contour": false
+    },
+    "animation": {
+      "mode_animation": false,
+      "time_history_animation": false,
+      "num_frames": 0
+    }
+  },
+
+  "fortran_interface": {
+    "input_format": "binary",
+    "binary_precision": "double",
+    "fortran_record_length": 8192,
+    "file_paths": {
+      "input_binary": "/tmp/portale_input.bin",
+      "input_ascii": "/tmp/portale_input.txt",
+      "output_binary": "/tmp/portale_output.bin",
+      "output_ascii": "/tmp/portale_output.txt"
+    },
+    "solver_command": "./solver --input /tmp/portale_input.bin --output /tmp/portale_output.bin --format binary --p-delta on"
+  },
+
+  "validation": {
+    "warnings": [
+      {
+        "type": "info",
+        "message": "Numero elementi: 3 (OK per test)",
+        "severity": "info"
+      },
+      {
+        "type": "info",
+        "message": "P-Delta abilitato: max 20 iterazioni",
+        "severity": "info"
+      }
+    ],
+    "error_checks": {
+      "duplicate_nodes": false,
+      "disconnected_elements": false,
+      "zero_length_elements": false,
+      "negative_areas": false,
+      "high_aspect_ratio_elements": false
+    }
+  },
+
+  "template_library": {},
+
+  "export_import": {
+    "supported_formats": [
+      {
+        "format": "dxf",
+        "description": "AutoCAD DXF (geometry only)",
+        "version": "2021"
+      },
+      {
+        "format": "json",
+        "description": "Native JSON format",
+        "version": "2.0"
+      }
+    ]
+  },
+
+  "notes": {
+    "test_case_description": "Portale semplice 2D per validazione schema JSON e test risolutore Fortran",
+    "expected_results": {
+      "max_displacement": "~0.01-0.05 m (dipende P-Delta)",
+      "max_moment_trave": "~50-100 kNm",
+      "reactions_totali": "~80-100 kN (dipende self-weight)"
+    },
+    "use_case": "Questo modello serve per test inicial: UI 3D rendering, JSON parsing, Fortran solver integration",
+    "next_steps": "Dopo validazione, creare modelli più complessi (multi-bay, floors, etc.)"
+  }
+}

@@ -1,0 +1,375 @@
+{
+  "metadata": {
+    "schema_version": "2.0",
+    "description": "Progetto Alessandra - Schema Dati Universale CAD ↔ Fortran ↔ Risultati",
+    "created_date": "2026-08-18",
+    "author": "Benedetta (Architettura Team)",
+    "status": "DRAFT_v1",
+    "notes": "Ponte universale tra UI 3D (JSON input) → Fortran solver → Risultati (JSON output)"
+  },
+
+  "project": {
+    "id": "string (uuid)",
+    "name": "string",
+    "description": "string",
+    "created_at": "ISO8601 timestamp",
+    "updated_at": "ISO8601 timestamp",
+    "units": {
+      "length": "m|mm|cm",
+      "force": "N|kN|MN",
+      "stress": "Pa|MPa|GPa",
+      "temperature": "C|F|K"
+    },
+    "analysis_type": "static|modal|spectral|time_history|harmonic",
+    "nonlinearity_options": {
+      "p_delta": true,
+      "plasticity": false,
+      "large_displacements": false,
+      "contact": false
+    }
+  },
+
+  "geometry": {
+    "nodes": [
+      {
+        "id": "integer",
+        "x": "float",
+        "y": "float",
+        "z": "float",
+        "restraints": {
+          "dx": "free|fixed|spring",
+          "dy": "free|fixed|spring",
+          "dz": "free|fixed|spring",
+          "rx": "free|fixed|spring",
+          "ry": "free|fixed|spring",
+          "rz": "free|fixed|spring",
+          "spring_stiffness": "object (optional)"
+        }
+      }
+    ],
+    "elements": [
+      {
+        "id": "integer",
+        "type": "beam_2d|truss_2d|frame_2d|plate_3d|solid_3d",
+        "nodes": ["node_id_start", "node_id_end"],
+        "section_id": "string",
+        "material_id": "string",
+        "orientation": {
+          "angle_z": "float (degrees, for 2D frames)",
+          "local_x": {"x": "float", "y": "float", "z": "float"},
+          "local_y": {"x": "float", "y": "float", "z": "float"}
+        },
+        "properties": {
+          "releases": {
+            "start": {"Mz": "fixed|free"},
+            "end": {"Mz": "fixed|free"}
+          },
+          "offset": {
+            "start": {"dy": "float", "dz": "float"},
+            "end": {"dy": "float", "dz": "float"}
+          }
+        }
+      }
+    ]
+  },
+
+  "materials": [
+    {
+      "id": "string",
+      "name": "string",
+      "type": "steel|concrete|wood|aluminum|custom",
+      "properties": {
+        "elastic_modulus": "float (Pa)",
+        "shear_modulus": "float (Pa)",
+        "density": "float (kg/m³)",
+        "poisson_ratio": "float",
+        "thermal_expansion": "float (1/°C)",
+        "yield_stress": "float (Pa, for nonlinear)",
+        "ultimate_stress": "float (Pa, optional)"
+      },
+      "nonlinear": {
+        "plasticity_model": "perfect_plastic|bilinear|trilinear",
+        "hardening": "isotropic|kinematic",
+        "stress_strain_curve": [
+          {"strain": "float", "stress": "float"}
+        ]
+      }
+    }
+  ],
+
+  "sections": [
+    {
+      "id": "string",
+      "name": "string",
+      "type": "rectangular|circular|i_beam|hollow_rectangular|custom",
+      "geometry": {
+        "b": "float (width)",
+        "h": "float (height)",
+        "t": "float (thickness, if applicable)",
+        "r": "float (radius, if applicable)"
+      },
+      "properties": {
+        "area": "float (m²)",
+        "inertia_y": "float (m⁴)",
+        "inertia_z": "float (m⁴)",
+        "torsional_constant": "float (m⁴)",
+        "shear_area_y": "float (m², optional)",
+        "shear_area_z": "float (m², optional)"
+      },
+      "computed": "boolean (true if area/inertia auto-computed from geometry)"
+    }
+  ],
+
+  "loads": {
+    "load_cases": [
+      {
+        "id": "string",
+        "name": "string",
+        "type": "dead|live|wind|seismic|thermal|custom",
+        "description": "string",
+        "load_factor": "float (for combinations)",
+        "node_loads": [
+          {
+            "node_id": "integer",
+            "fx": "float",
+            "fy": "float",
+            "fz": "float",
+            "mx": "float",
+            "my": "float",
+            "mz": "float"
+          }
+        ],
+        "element_loads": [
+          {
+            "element_id": "integer",
+            "type": "distributed|point|moment|temperature",
+            "direction": "local_x|local_y|local_z|global_x|global_y|global_z",
+            "value": "float or [float, float] (start, end for distributed)",
+            "position": "float (0-1, relative position on element)"
+          }
+        ],
+        "self_weight": "boolean"
+      }
+    ],
+    "load_combinations": [
+      {
+        "id": "string",
+        "name": "string",
+        "cases": [
+          {"case_id": "string", "factor": "float"}
+        ]
+      }
+    ]
+  },
+
+  "solver_parameters": {
+    "static": {
+      "method": "linear|nonlinear",
+      "nonlinear_p_delta": {
+        "enabled": "boolean",
+        "max_iterations": "integer (default: 20)",
+        "tolerance": "float (default: 1e-6)",
+        "load_steps": "integer (default: 1)"
+      },
+      "solver_type": "direct|iterative",
+      "convergence_criterion": "displacement|force|energy"
+    },
+    "modal": {
+      "enabled": "boolean",
+      "method": "lanczos|subspace|jacobi",
+      "num_modes": "integer",
+      "frequency_range": {"min": "float (Hz)", "max": "float (Hz)"},
+      "damping": {
+        "type": "mass_proportional|stiffness_proportional|rayleigh|modal_ratios",
+        "values": "float or [float, float, ...]"
+      }
+    },
+    "spectral": {
+      "enabled": "boolean",
+      "response_spectrum_file": "string (path to spectrum data)"
+    },
+    "time_history": {
+      "enabled": "boolean",
+      "analysis_duration": "float (seconds)",
+      "time_step": "float (seconds)",
+      "damping_type": "rayleigh|modal_ratios",
+      "integration_method": "newmark|wilson_theta|crank_nicolson"
+    }
+  },
+
+  "output_requests": {
+    "node_results": {
+      "displacements": "boolean",
+      "velocities": "boolean (for dynamic)",
+      "accelerations": "boolean (for dynamic)",
+      "reactions": "boolean"
+    },
+    "element_results": {
+      "internal_forces": "boolean",
+      "stresses": "boolean",
+      "strains": "boolean",
+      "stress_resultants": ["Nx", "Vy", "Vz", "Mx", "My", "Mz"]
+    },
+    "modal_results": {
+      "frequencies": "boolean",
+      "mode_shapes": "boolean",
+      "effective_mass": "boolean",
+      "participation_factors": "boolean"
+    },
+    "output_format": "json|binary|hdf5",
+    "output_frequency": "all|every_n_steps"
+  },
+
+  "results": {
+    "status": "not_run|running|completed|error",
+    "run_timestamp": "ISO8601 timestamp",
+    "solver_version": "string",
+    "convergence_info": {
+      "converged": "boolean",
+      "iterations": "integer",
+      "final_error": "float"
+    },
+    "nodes_results": [
+      {
+        "node_id": "integer",
+        "displacements": {"dx": "float", "dy": "float", "dz": "float", "rx": "float", "ry": "float", "rz": "float"},
+        "reactions": {"fx": "float", "fy": "float", "fz": "float", "mx": "float", "my": "float", "mz": "float"},
+        "velocities": {"vx": "float", "vy": "float", "vz": "float"},
+        "accelerations": {"ax": "float", "ay": "float", "az": "float"}
+      }
+    ],
+    "element_results": [
+      {
+        "element_id": "integer",
+        "load_case": "string",
+        "internal_forces": {"N": "float", "Vy": "float", "Vz": "float", "T": "float", "My": "float", "Mz": "float"},
+        "stresses": {
+          "normal_xx": "float",
+          "shear_xy": "float",
+          "shear_xz": "float",
+          "principal_1": "float",
+          "principal_2": "float",
+          "von_mises": "float"
+        },
+        "strains": {"exx": "float", "eyy": "float", "ezz": "float"},
+        "locations": ["integration_point_1", "node_start", "node_end"]
+      }
+    ],
+    "modal_results": {
+      "modes": [
+        {
+          "mode_number": "integer",
+          "frequency": "float (Hz)",
+          "period": "float (seconds)",
+          "damping_ratio": "float (percent)",
+          "mode_shape": [
+            {"node_id": "integer", "ux": "float", "uy": "float", "uz": "float"}
+          ],
+          "effective_mass": {"x": "float", "y": "float", "z": "float"},
+          "participation_factor": {"x": "float", "y": "float", "z": "float"}
+        }
+      ]
+    }
+  },
+
+  "visualization": {
+    "deformed_shape": {
+      "scale_factor": "float (optional, for display)",
+      "show_undeformed": "boolean",
+      "show_reactions": "boolean"
+    },
+    "diagrams": {
+      "axial_force": "boolean",
+      "shear_force_y": "boolean",
+      "shear_force_z": "boolean",
+      "bending_moment_y": "boolean",
+      "bending_moment_z": "boolean",
+      "torsion": "boolean",
+      "stress_contour": "boolean"
+    },
+    "animation": {
+      "mode_animation": "boolean",
+      "time_history_animation": "boolean",
+      "num_frames": "integer"
+    }
+  },
+
+  "fortran_interface": {
+    "input_format": "binary|ascii",
+    "binary_precision": "single|double",
+    "fortran_record_length": "integer (bytes)",
+    "file_paths": {
+      "input_binary": "string",
+      "input_ascii": "string",
+      "output_binary": "string",
+      "output_ascii": "string"
+    },
+    "solver_command": "string (e.g., './solver.exe --input model.bin --output results.bin')"
+  },
+
+  "validation": {
+    "warnings": [
+      {
+        "type": "string",
+        "message": "string",
+        "severity": "info|warning|error"
+      }
+    ],
+    "error_checks": {
+      "duplicate_nodes": "boolean",
+      "disconnected_elements": "boolean",
+      "zero_length_elements": "boolean",
+      "negative_areas": "boolean",
+      "high_aspect_ratio_elements": "boolean"
+    }
+  },
+
+  "template_library": {
+    "templates": [
+      {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "type": "beam|column|truss|frame|slab|wall",
+        "geometry": {
+          "num_nodes": "integer",
+          "num_elements": "integer"
+        },
+        "parameters": [
+          {
+            "name": "string",
+            "type": "length|angle|count",
+            "default_value": "float"
+          }
+        ],
+        "preview_image": "base64 string (optional)"
+      }
+    ]
+  },
+
+  "export_import": {
+    "supported_formats": [
+      "dxf|dwg|ifc|saf|modeest|opensees|abaqus|ansys",
+      {
+        "format": "dxf",
+        "description": "AutoCAD DXF (geometry only)",
+        "version": "2021"
+      },
+      {
+        "format": "ifc",
+        "description": "IFC 4.0+ (geometry + metadata)",
+        "version": "4.0"
+      },
+      {
+        "format": "modeest",
+        "description": "ModeSt format (bidirectional)",
+        "version": "2.x"
+      }
+    ],
+    "export_options": {
+      "include_results": "boolean",
+      "compress": "boolean",
+      "precision": "integer (decimal places)"
+    }
+  }
+}

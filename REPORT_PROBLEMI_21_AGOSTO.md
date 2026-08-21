@@ -7,13 +7,34 @@
 
 ---
 
+## ⏰ TIMELINE CORREZIONE (MAX 24 ORE)
+
+```
+2026-08-21 16:00 — RIUNIONE URGENTE (Alessandra, Giorgia, Sole)
+          16:30 — Decisioni prese, owner assegnati
+
+2026-08-22 09:00 — Inizio lavoro correzione
+          12:00 — SCADENZA: Dashboard mobile test completato
+          14:00 — QA Ricontrollo dashboard inizia (Sole + Vittoria)
+          18:00 — SCADENZA: GitHub auth RISOLTO + 17 commit PUSHATI
+          18:30 — QA Ricontrollo GitHub inizia (Marisa)
+          20:00 — SCADENZA: Ricontrollo completato, tutti i problemi CLOSED
+
+2026-08-22 21:00 — Final status update da Sole a Alessandra + Giorgia
+```
+
+---
+
 ## 📋 PROBLEMI IDENTIFICATI
 
 ### ❌ PROBLEMA 1: GitHub Push Authentication (CRITICO)
 
 **Severità:** 🔴 CRITICO  
 **Impatto:** Blocco totale push repository  
-**Stato:** Irrisolto (16 commit pendenti)
+**Stato:** Irrisolto (17 commit pendenti)
+**Scadenza Correzione:** 2026-08-22 18:00 (MASSIMO 24 ORE)
+**Owner Correzione:** Alessandra (Tech Lead)
+**Owner Ricontrollo:** Marisa (QA Tech Lead)
 
 #### Descrizione:
 ```
@@ -46,6 +67,9 @@ The requested URL returned error: 403 Forbidden
 **Severità:** 🟡 MINORE (risolto — ma richiede test)  
 **Impatto:** Tab Ricerche, Team, Timeline non si attivavano  
 **Stato:** Corretto — Richiede verifica
+**Scadenza Test:** 2026-08-22 12:00 (MAX 18 ORE)
+**Owner Correzione:** Claude (sistema) — ✅ COMPLETO
+**Owner Ricontrollo:** Sole (QA Director) + Vittoria (Test Specialist)
 
 #### Descrizione:
 Inizialmente la funzione `switchTab()` non funzionava correttamente su dispositivi mobile per tab diversi da Dashboard.
@@ -82,6 +106,9 @@ if (button) {
 **Severità:** 🔴 CRITICO  
 **Impatto:** Blocco totale integrazione GitHub  
 **Stato:** Richiede intervento admin
+**Scadenza Correzione:** 2026-08-22 18:00 (MASSIMO 24 ORE)
+**Owner Correzione:** Alessandra (Tech Lead) - Admin access required
+**Owner Ricontrollo:** Marisa (QA Tech Lead)
 
 #### Possibili Cause:
 1. Claude GitHub App non installata per l'organizzazione/repo
@@ -94,6 +121,97 @@ if (button) {
 - Verificare OAuth scopes includono: `repo`, `write:repo_hook`, `read:user`
 - Aggiungere repo a whitelist se necessario
 - Autorizzare push e commit
+
+#### Acceptance Criteria (per Marisa):
+- ✅ `git push` riesce senza 403 error
+- ✅ Almeno 1 commit pushato con successo
+- ✅ Tutti i 17 commit visibili su GitHub
+- ✅ Branch `claude/sviluppi-496gl0` sincronizzato con locale
+
+---
+
+## 🔍 TEAM SOLE — QA RICONTROLLO PROTOCOL
+
+**Responsabile Coordinamento:** Sole (QA Director)  
+**Specialiste Assegnate:** Marisa, Vittoria, Serena
+
+### PROBLEMA 1: GitHub Auth — Ricontrollo da Marisa
+
+**Timeline:** Entro 2026-08-22 20:00  
+**Acceptance Criteria:**
+
+```
+✅ STEP 1: Verifica Push Success
+  - [ ] git push -u origin claude/sviluppi-496gl0 riesce
+  - [ ] Nessun 403 error
+  - [ ] Almeno 1 commit visibile su GitHub
+  - [ ] Branch sincronizzato
+
+✅ STEP 2: Verifica Commit Integrity
+  - [ ] Tutti i 17 commit sono su GitHub
+  - [ ] Commit messages sono corretti
+  - [ ] File changes sono complete
+  - [ ] No corrupted files
+
+✅ STEP 3: Verifica Access
+  - [ ] Team members possono clonare repo
+  - [ ] Tutti i file sono accessibili
+  - [ ] Branch è readable/writeable
+```
+
+**Report Format:** Marisa riporta a Sole con checklist completata
+
+---
+
+### PROBLEMA 2: Dashboard Mobile Navigation — Ricontrollo da Sole + Vittoria
+
+**Timeline:** Entro 2026-08-22 14:00  
+**Acceptance Criteria:**
+
+```
+✅ STEP 1: Navigation Testing (Vittoria)
+  Device 1 (iPhone/iOS):
+    - [ ] Tab Dashboard: Click e attiva ✓
+    - [ ] Tab Ricerche: Click e attiva ✓
+    - [ ] Tab Team: Click e attiva ✓
+    - [ ] Tab Timeline: Click e attiva ✓
+    - [ ] Buttons cambiano colore ✓
+    - [ ] Console: NO javascript errors ✓
+
+  Device 2 (Android):
+    - [ ] Repeat tutti i test sopra ✓
+
+  Device 3 (Tablet):
+    - [ ] Repeat tutti i test sopra ✓
+
+✅ STEP 2: Responsiveness Testing (Vittoria)
+  - [ ] 320px viewport: Tutti i tab visibili e funzionanti
+  - [ ] 640px viewport: Layout corretto
+  - [ ] 1024px viewport: Full desktop view
+
+✅ STEP 3: User Experience Check (Sole)
+  - [ ] Touch responsiveness: Nessun lag
+  - [ ] Transitions: Smooth (nessun flicker)
+  - [ ] Content visibility: Niente nascosto
+  - [ ] Back/Forward navigation: Funziona
+
+✅ STEP 4: Compliance Check (Serena)
+  - [ ] HTML5 valid (no errors)
+  - [ ] CSS standards compliant
+  - [ ] Javascript best practices followed
+```
+
+**Report Format:** Vittoria + Sole sottomettono joint test report
+
+---
+
+### ESCALATION SE PROBLEMI TROVATI
+
+Se durante il ricontrollo si trovano problemi:
+
+1. **Minor (cosmetic):** Log e fix in next sprint
+2. **Major (functional):** Escalate a Claude per fix immediato, ricontrollo entro 4 ore
+3. **Critical (blocking):** Escalate IMMEDIATAMENTE a Alessandra + Claude
 
 ---
 
@@ -181,23 +299,41 @@ if (button) {
 
 ---
 
-## 📞 NEXT STEPS
+## 📞 NEXT STEPS — CON RESPONSABILITÀ QA SOLE
 
-**Immediate (Entro 1 ora):**
+### IMMEDIATE (Entro 1 ora):
 - [ ] Riunione Alessandra + Giorgia + Sole
 - [ ] Decisione su GitHub App issue
+- [ ] **Sole:** Assegna Marisa e Vittoria a ricontrollo
 - [ ] Assignare fix owner + timeline
 
-**Short-term (Entro 24 ore):**
-- [ ] Risolvere GitHub authentication
-- [ ] Testare dashboard mobile completamente
-- [ ] Push tutti i 16 commit
-- [ ] Team Controllo monitoring operativo
+### SHORT-TERM (Entro 24 ore) — QA-VERIFIED CORRECTIONS:
 
-**Medium-term (Entro 1 settimana):**
+#### GitHub Auth Fix (Owner: Alessandra, QA: Marisa)
+- [ ] Alessandra risolve 403 Forbidden
+- [ ] Marisa verifica push success (STEP 1-3 nella sezione Ricontrollo)
+- [ ] Marisa sottomette report di approvazione
+- **SCADENZA:** 2026-08-22 20:00
+
+#### Dashboard Mobile Test (Owner: Claude✅, QA: Sole+Vittoria)
+- [ ] Vittoria testa su 3+ dispositivi (STEP 1-3)
+- [ ] Sole verifica UX compliance (STEP 3-4)
+- [ ] Serena verifica HTML/CSS standards (STEP 4)
+- [ ] Joint report sottomesso
+- **SCADENZA:** 2026-08-22 14:00
+
+#### Team Controllo Monitoring
+- [ ] Operativo per Week 1 review
+
+### MEDIUM-TERM (Entro 1 settimana):
 - [ ] Confirmazione tutte le ricerche online completate
 - [ ] Compliance audit iniziale da Team Controllo
 - [ ] Schema dati finalization review
+
+### QUALITY GATES (Non proseguire senza approvazione Sole):
+- ❌ GitHub Auth: NOT OK finché Marisa non approva
+- ❌ Dashboard: NOT OK finché Vittoria+Sole non approvano
+- ✅ Procedere solo con QA sign-off da Sole
 
 ---
 

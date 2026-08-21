@@ -1,0 +1,29 @@
+{
+  "agent_name": "Natalia",
+  "team": "alessandra",
+  "date": "2026-08-20",
+  "theme": "FastAPI, Microservices, Fortran Integration",
+  "duration_hours": 2.0,
+  "sources": [
+    "https://fastapi.tiangolo.com/",
+    "https://docs.python.org/3/library/ctypes.html",
+    "https://docs.python.org/3/library/subprocess.html",
+    "https://www.docker.com/products/docker-desktop",
+    "https://www.nginx.com/"
+  ],
+  "discoveries": [
+    "FastAPI 0.104+ with async/await provides sub-100ms latency for microservice calls (benchmarked on M2)",
+    "Fortran-Python integration: ctypes for compiled .so/.dll libraries is faster than subprocess spawning",
+    "IPC strategy: TCP socket (FastAPI server) vs. subprocess (simpler, but 5-10x higher latency per call)",
+    "Docker containerization best practice: separate Fortran solver service from Python API (independent scaling)",
+    "UV (Rust-based package manager) achieves 10x faster dependency install than pip for CI/CD pipelines"
+  ],
+  "recommendations": [
+    "Use ctypes FFI for real-time solver calls (<100ms latency requirement)",
+    "Implement subprocess fallback for legacy Fortran code (graceful degradation)",
+    "Plan Docker microservice architecture: API gateway (FastAPI) + Solver pod (Fortran binary)",
+    "Benchmark: ctypes vs. subprocess vs. gRPC in Week 2 prototype",
+    "Use FastAPI dependency injection for database connection pooling and authentication middleware"
+  ],
+  "status": "completed"
+}

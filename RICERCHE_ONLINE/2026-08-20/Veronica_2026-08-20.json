@@ -1,0 +1,29 @@
+{
+  "agent_name": "Veronica",
+  "team": "giorgia",
+  "date": "2026-08-20",
+  "theme": "NTC 2018, Licensing, GDPR Compliance",
+  "duration_hours": 2.0,
+  "sources": [
+    "https://www.mit.org/intellectual-property/licensing",
+    "https://gdpr-info.eu/",
+    "https://ec.europa.eu/growth/industry/intellectual-property_en",
+    "https://opensource.org/licenses/",
+    "https://www.agenziaentrate.gov.it/portale/"
+  ],
+  "discoveries": [
+    "NTC 2018 (Italian Building Code) requires structural software documentation in Italian; approval by CSM (Supreme Court Magistrates) for official use",
+    "GDPR Article 6 (Lawful Basis): software processing personal data requires explicit consent or legitimate interest documentation",
+    "Licensing strategies: MIT/Apache 2.0 for open-source (EU adoption); proprietary SaaS with GPL compatibility clauses",
+    "Italian VAT: software is digital service (22% VAT applies); reverse-charge for B2B with non-EU customers",
+    "Data residency requirement: EU structural data must be stored in EU data centers (GDPR Chapter 5)"
+  ],
+  "recommendations": [
+    "License Alessandra under dual-license model: MIT for research/non-commercial, proprietary SaaS for commercial",
+    "Include privacy policy (GDPR Article 13/14 compliant) before alpha release; log data processing activities",
+    "Register with Italian Tax Authority (Agenzia Entrate) for VAT compliance; VAT ID for international customers",
+    "Document NTC 2018 compliance status in technical specs; plan CSM review process for Week 4+ if targeting public projects",
+    "Ensure all cloud infrastructure (AWS, Azure, GCP) uses EU regions (Frankfurt, Ireland) for data residency"
+  ],
+  "status": "completed"
+}

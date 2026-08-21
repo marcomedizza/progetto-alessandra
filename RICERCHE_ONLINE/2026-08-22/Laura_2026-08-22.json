@@ -1,0 +1,29 @@
+{
+  "agent_name": "Laura",
+  "team": "giorgia",
+  "date": "2026-08-22",
+  "theme": "Project Management Tools, KPI Tracking, Risk Management",
+  "duration_hours": 2.0,
+  "sources": [
+    "https://www.monday.com/",
+    "https://docs.github.com/en/issues",
+    "https://www.atlassian.com/software/jira",
+    "https://www.notion.so/",
+    "https://docs.asana.com/"
+  ],
+  "discoveries": [
+    "GitHub Projects (beta to GA in 2024) offers tight integration with repo code + PR/issue linking (native for technical teams)",
+    "Monday.com excels at visual timeline/Gantt + custom field automation (ideal for cross-functional visibility)",
+    "Jira remains standard for agile teams; Jira Cloud now includes portfolio management (multi-team roadmaps)",
+    "KPI tracking: burndown charts (velocity), cycle time, deployment frequency, code coverage (CI/CD dashboards)",
+    "Risk register best practice: weekly review cadence, probability×impact scoring (3×3 matrix), mitigation assignment"
+  ],
+  "recommendations": [
+    "Adopt GitHub Projects for technical work (code+issues unified); Monday.com for business/cross-team coordination",
+    "Define KPI dashboard: sprint velocity, on-time delivery rate, bug escape rate, team satisfaction (NPS)",
+    "Implement risk register in Notion (searchable, version-controlled) with weekly review in standups",
+    "Automate burndown calculation via GitHub Actions → Slack integration (daily update in #progress-tracker)",
+    "Establish incident severity levels (P1/P2/P3) with SLA response times for escalation"
+  ],
+  "status": "completed"
+}

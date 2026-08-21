@@ -1,0 +1,29 @@
+{
+  "agent_name": "Livia",
+  "team": "giorgia",
+  "date": "2026-08-19",
+  "theme": "Email Management, Customer Support, Communication",
+  "duration_hours": 2.0,
+  "sources": [
+    "https://www.zendesk.com/",
+    "https://www.helpscout.com/",
+    "https://sendgrid.com/",
+    "https://www.intercom.com/",
+    "https://mailchimp.com/"
+  ],
+  "discoveries": [
+    "Zendesk + Help Scout lead market for GDPR-compliant customer support (both EU-hosted options available)",
+    "Email management: Sendgrid or Mailgun for transactional emails, Mailchimp for marketing campaigns",
+    "SaaS support best practices: avg response time <2h, ticket-to-close conversion rate 85%+, CSAT >80%",
+    "Intercom offers in-app messaging and knowledge base integration (competitor to Zendesk for SMBs)",
+    "Compliance requirement: Email templates must include privacy policy, unsubscribe links, data processing info"
+  ],
+  "recommendations": [
+    "Integrate Help Scout (simpler than Zendesk for startup phase, better UX)",
+    "Use Sendgrid for transactional emails (order confirmations, password resets, license keys)",
+    "Plan knowledge base (Help Scout native or Notion integration) for Week 2",
+    "Template library: onboarding sequence (5 emails), troubleshooting guides, feature announcements",
+    "Track metrics: response time, resolution time, customer satisfaction (NPS 40+ target for alpha)"
+  ],
+  "status": "completed"
+}

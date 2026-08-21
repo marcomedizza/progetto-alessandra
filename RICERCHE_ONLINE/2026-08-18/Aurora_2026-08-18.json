@@ -1,0 +1,29 @@
+{
+  "agent_name": "Aurora",
+  "team": "giorgia",
+  "date": "2026-08-18",
+  "theme": "SaaS Pricing Models, Payment Tools",
+  "duration_hours": 2.0,
+  "sources": [
+    "https://www.stripe.com/docs",
+    "https://www.saasstr.com/",
+    "https://www.paddle.com/",
+    "https://openai.com/pricing",
+    "https://github.com/pricing"
+  ],
+  "discoveries": [
+    "SaaS pricing models: per-seat, per-project, usage-based hybrid, and consumption-based are market leaders",
+    "Stripe + Paddle integrate seamlessly for EU VAT compliance (critical for GDPR-aligned product)",
+    "Trial-to-paid conversion rates: 5-10% for free tier, 25-40% for free trial (14-30 days optimal)",
+    "GitHub/OpenAI models show success with tiered features (pro/enterprise) vs. pure usage metering",
+    "Payment processing fees: Stripe 2.9%+$0.30, Paddle 5% for digital products (all-in approach)"
+  ],
+  "recommendations": [
+    "Recommend freemium model: basic viewer free, professional features in Pro/Enterprise tiers",
+    "Integrate Stripe for EU market, Paddle for UK/non-EU customers (post-Brexit compliance)",
+    "Plan 30-day free trial for professional tier to drive adoption",
+    "Usage-based add-ons (extra projects, cloud storage) for monetization above base subscription",
+    "Benchmark pricing against Tekla, Revit (enterprise pricing ranges: $3K-$8K/year/seat)"
+  ],
+  "status": "completed"
+}

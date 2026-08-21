@@ -1,0 +1,37 @@
+
+╔════════════════════════════════════════════════════════════════════╗
+║           🔴 COMPLIANCE CHECK — Ricerche Online                    ║
+║                  2026-08-21                              ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📊 STATUS ODIERNO
+─────────────────────────────────────────────────────────────────────
+Expected Agents:      2
+Completed:            0  ✅
+Missing:              2  🔴
+Invalid Quality:      0  ⚠️
+Completion Rate:      0%
+Deadline:             18:00 (NON NEGOZIABILE)
+
+🔴 MANCANTI (ESCALATE):
+   • Elisa (Fortran Solver) — 🔴 MISSING — Deadline 18:00
+   • Camilla (News) — 🔴 MISSING — Deadline 18:00
+
+
+🚨 AZIONE RICHIESTA (ENTRO 18:00):
+───────────────────────────────────────────────────────────────────
+1. Contatta agenti mancanti via Slack IMMEDIATAMENTE
+2. Fornisci supporto se hanno dubbi su tema ricerca
+3. Se problemi tecnici → fornisci alternativa (mobile, tablet, etc.)
+4. Report invalidi → chiedi revisione entro 1 ora
+
+⚠️  Se deadline passa senza compliance → ESCALATE a Alessandra/Giorgia
+
+✍️  SLACK UPDATE (post in #progetto-alessandra):
+```
+📊 Ricerche Online — 2026-08-21
+🔴 Elisa
+🔴 Camilla
+
+Completion: 0% (0/2)
+```

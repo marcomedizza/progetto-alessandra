@@ -391,11 +391,24 @@
             { name: 'Laura', role: 'Progress', team: 'Business' }
         ];
 
-        function switchTab(tab) {
+        function switchTab(tabName) {
+            // Nascondi tutti i tab
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            event.target.classList.add('active');
+
+            // Mostra il tab selezionato
+            const tabElement = document.getElementById(tabName);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+
+            // Attiva il bottone corrispondente
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes(tabName)) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         function saveLocal() {

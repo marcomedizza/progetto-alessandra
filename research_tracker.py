@@ -29,6 +29,7 @@ REPORT_SCHEMA = {
 
 AGENT_DATABASE = {
     "alessandra_team": [
+        # Tech Core
         {"name": "Benedetta", "specialty": "Architettura", "date": "2026-08-18"},
         {"name": "Irene", "specialty": "Frontend 3D", "date": "2026-08-19"},
         {"name": "Natalia", "specialty": "Backend", "date": "2026-08-20"},
@@ -41,6 +42,14 @@ AGENT_DATABASE = {
         {"name": "Mariana", "specialty": "Results Viz", "date": "2026-08-27"},
         {"name": "Ottavia", "specialty": "Build Wrapper", "date": "2026-08-28"},
         {"name": "Paola", "specialty": "Data Converter", "date": "2026-08-29"},
+        # Team Strutturale
+        {"name": "Roberta", "specialty": "Calcestruzzo Armato", "date": "2026-08-30"},
+        {"name": "Martina", "specialty": "Acciaio", "date": "2026-08-31"},
+        {"name": "Sofia", "specialty": "Alluminio", "date": "2026-09-01"},
+        {"name": "Giulia", "specialty": "Legno e Rinforzi Fibre", "date": "2026-09-02"},
+        {"name": "Alessia", "specialty": "Geotecnica", "date": "2026-09-03"},
+        {"name": "Chiara", "specialty": "Muratura Normale", "date": "2026-09-04"},
+        {"name": "Ilaria", "specialty": "Muratura Armata", "date": "2026-09-05"},
     ],
     "giorgia_team": [
         {"name": "Aurora", "specialty": "Pricing & Fatturazione", "date": "2026-08-18"},

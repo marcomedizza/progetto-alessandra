@@ -1,9 +1,10 @@
 # 📱 TRACKING RICERCHE ONLINE — Team Alessandra & Giorgia
 
-**Periodo**: 18 agosto - 29 agosto 2026 (12 giorni)  
+**Periodo**: 18 agosto - 5 settembre 2026 (19 giorni)  
 **Status**: 🟢 ATTIVO  
 **Owner**: Alessandra (Project Lead) + Giorgia (Business Lead)  
-**Deadline Giornaliera**: 18:00 ogni giorno
+**Deadline Giornaliera**: 18:00 ogni giorno  
+**Agenti**: 24 totali (12 Tech + 7 Strutturale + 5 Business)
 
 ---
 
@@ -17,7 +18,7 @@ Ogni giorno → **1 agente raccoglie report** → **Summary giornaliero**
 
 ---
 
-## 📋 TEAM ALESSANDRA (Tech — 12 agenti)
+## 📋 TEAM ALESSANDRA (Tech Core — 12 agenti)
 
 | # | Agente | Specialità | Tema Ricerca | Deadline |
 |----|--------|-----------|-------------|----------|
@@ -25,7 +26,7 @@ Ogni giorno → **1 agente raccoglie report** → **Summary giornaliero**
 | 2 | **Irene** | Frontend 3D | Three.js, WebGL, UI/UX CAD | 19/08 |
 | 3 | **Natalia** | Backend | FastAPI, microservices, Fortran integration | 20/08 |
 | 4 | **Elisa** | Fortran Solver | P-Delta, nonlinear analysis, LAPACK | 21/08 |
-| 5 | **Francesca** | Ricerca | ModeSt API, OpenFOAM, CFD integration | 22/08 |
+| 5 | **Francesca** | Ricerca CFD | ModeSt API, OpenFOAM, CFD integration | 22/08 |
 | 6 | **Valentina** | QA Testing | Testing frameworks, regression, performance | 23/08 |
 | 7 | **Carla** | ModeSt Bridge | ModeSt format, export/import, compatibility | 24/08 |
 | 8 | **Daniela** | ModeSt Research | ModeSt solver capabilities, documentation | 25/08 |
@@ -33,6 +34,20 @@ Ogni giorno → **1 agente raccoglie report** → **Summary giornaliero**
 | 10 | **Mariana** | Results Viz | 3D visualization, diagram rendering, D3/Plotly | 27/08 |
 | 11 | **Ottavia** | Build Wrapper | CMake, Fortran compilation, ctypes binding | 28/08 |
 | 12 | **Paola** | Data Converter | JSON validation, schema mapping, data pipeline | 29/08 |
+
+---
+
+## 🏗️ TEAM ALESSANDRA (Strutturale — 7 agenti)
+
+| # | Agente | Specialità | Tema Ricerca | Deadline |
+|----|--------|-----------|-------------|----------|
+| 13 | **Roberta** | Calcestruzzo Armato | Proprietà C.A., norme EC2, modelli costitutivi | 30/08 |
+| 14 | **Martina** | Acciaio | Acciaio strutturale, EC3, duttilità, giunto | 31/08 |
+| 15 | **Sofia** | Alluminio | Alluminio strutturale, EC9, proprietà termiche | 1/09 |
+| 16 | **Giulia** | Legno e Fibre | Legno, FRP, CFRP, rinforzi compositi | 2/09 |
+| 17 | **Alessia** | Geotecnica | Fondazioni, spinta terreno, capacità portante | 3/09 |
+| 18 | **Chiara** | Muratura Normale | Muratura in mattone/pietra, EC6 | 4/09 |
+| 19 | **Ilaria** | Muratura Armata | Muratura armata, armature, duttilità | 5/09 |
 
 ---
 
@@ -48,17 +63,21 @@ Ogni giorno → **1 agente raccoglie report** → **Summary giornaliero**
 
 ---
 
-## 📅 CALENDARIO RICERCHE
+## 📅 CALENDARIO RICERCHE (19 giorni)
 
 ```
 SETTIMANA 1 (18-22 agosto)
 Mon 18   Tue 19   Wed 20   Thu 21   Fri 22
-ALE+BeneD IRE     NAT      ELI      FRA
+BeneD    IRE      NAT      ELI      FRA
 AUR      LIV      VER      CAM      LAU
 
 SETTIMANA 2 (23-29 agosto)
 Sat 23   Sun 24   Mon 25   Tue 26   Wed 27   Thu 28   Fri 29
 VALE     CAR      DANI     LUCIA    MARIA    OTTA     PAOLA
+
+SETTIMANA 3 (30 ago - 5 sett) — TEAM STRUTTURALE
+Fri 30   Sat 31   Sun 1    Mon 2    Tue 3    Wed 4    Thu 5
+ROBE     MART     SOFIA    GIULIA   ALES     CHIARA   ILARIA
 ```
 
 ---

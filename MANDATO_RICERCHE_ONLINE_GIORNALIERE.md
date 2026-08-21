@@ -1,9 +1,9 @@
 # 📋 MANDATO UFFICIALE — Ricerche Online Giornaliere
 
-**Emesso**: 18 agosto 2026  
+**Emesso**: 18 agosto 2026 (Aggiornato: 19 agosto con Team Strutturale)  
 **From**: Alessandra (Project Lead) & Giorgia (Business Lead)  
-**To**: Tutti gli agenti Team Alessandra (12) + Team Giorgia (5)  
-**Periodo**: 18 agosto - 29 agosto 2026 (12 giorni)  
+**To**: 24 agenti totali — Tech (12) + Strutturale (7) + Business (5)  
+**Periodo**: 18 agosto - 5 settembre 2026 (19 giorni)  
 **Status**: 🔴 OBBLIGATORIO
 
 ---
@@ -53,19 +53,19 @@
 
 ---
 
-## 📅 CALENDARIO OBBLIGATORIO
+## 📅 CALENDARIO OBBLIGATORIO (19 GIORNI)
 
 ```
-AGOSTO 2026 — RICERCHE GIORNALIERE OBBLIGATORIE
+AGOSTO 2026 — TEAM TECH + TEAM STRUTTURALE
 
-SETTIMANA 1:
-18 (LUN) → Benedetta + Aurora      ← ⚠️  OGGI!
+SETTIMANA 1 (Tech Core):
+18 (LUN) → Benedetta + Aurora
 19 (MAR) → Irene + Livia
 20 (MER) → Natalia + Veronica
 21 (GIO) → Elisa + Camilla
 22 (VEN) → Francesca + Laura
 
-SETTIMANA 2:
+SETTIMANA 2 (Tech Core):
 23 (SAB) → Valentina
 24 (DOM) → Carla
 25 (LUN) → Daniela
@@ -74,7 +74,16 @@ SETTIMANA 2:
 28 (GIO) → Ottavia
 29 (VEN) → Paola
 
-⚠️ NON OPZIONALE - OGNI GIORNO UN AGENTE
+SETTEMBRE 2026 — TEAM STRUTTURALE:
+30 (VEN) → Roberta
+31 (SAB) → Martina
+1 (DOM) → Sofia
+2 (LUN) → Giulia
+3 (MAR) → Alessia
+4 (MER) → Chiara
+5 (GIO) → Ilaria
+
+⚠️ NON OPZIONALE - OGNI GIORNO UN AGENTE (24 TOTALI)
 ```
 
 ---
@@ -194,6 +203,57 @@ CMake, Fortran Compilation, ctypes Binding
 JSON Validation, Schema Mapping, Data Pipeline
 → Fonti: json-schema.org, validation libraries, ETL patterns
 → Scoperte: validator tools, schema design, error handling
+```
+
+### TEAM ALESSANDRA (Strutturale)
+
+**Roberta** (30 ago):
+```
+Calcestruzzo Armato, Normative EC2, Modelli Costitutivi
+→ Fonti: EC2 2004, ACI standards, research papers
+→ Scoperte: proprietà C.A., durabilità, confinamento
+```
+
+**Martina** (31 ago):
+```
+Acciaio Strutturale, EC3, Ductilità, Giunti
+→ Fonti: EC3 2005, AISC guidelines, connection design
+→ Scoperte: classificazione sezioni, instabilità, rinforzi
+```
+
+**Sofia** (1 sett):
+```
+Alluminio Strutturale, EC9, Proprietà Termiche
+→ Fonti: EC9 2007, Aluminum Association docs
+→ Scoperte: leghe strutturali, fatica, protezione
+```
+
+**Giulia** (2 sett):
+```
+Legno, Fibre Composite (FRP/CFRP), Rinforzi Ibridi
+→ Fonti: EC5, ACI 440, composites research
+→ Scoperte: rinforzo legno, rinforzo muratura, proprietà fibre
+```
+
+**Alessia** (3 sett):
+```
+Geotecnica, Fondazioni, Capacità Portante, Spinta
+→ Fonti: EC7, Terzaghi, geotechnical handbooks
+→ Scoperte: calcolo fondazioni, cedimenti, interazione terreno-struttura
+```
+
+**Chiara** (4 sett):
+```
+Muratura Normale (Mattone/Pietra), EC6, Progettazione
+→ Fonti: EC6 2005, normed Italian standards, masonry research
+→ Scoperte: resistenza muratura, moduli elastici, tecniche rinforzo
+```
+
+**Ilaria** (5 sett):
+```
+Muratura Armata, Armature Interne, Ductilità, Sismica
+→ Fonti: EC6 annex K, masonry reinforcement guides
+→ Scoperte: armature verticali/orizzontali, duttilità, comportamento sismico
 ```
 
 ### TEAM GIORGIA (Business)
@@ -376,24 +436,31 @@ Actionable Recommendations: 47
 
 ---
 
-## 🎯 GOAL FINALE (29 agosto EOD)
+## 🎯 GOAL FINALE (5 settembre EOD)
 
 ```
-✅ 17 agenti × 12 giorni = 204 ore ricerca
-✅ 12 daily summary completi
+✅ 24 agenti × 19 giorni = 456 ore ricerca
+✅ 19 daily summary completi
 ✅ 1 master report consolidato
-✅ 100+ scoperte chiave documentate
-✅ 50+ raccomandazioni actionable
+✅ 150+ scoperte chiave documentate
+✅ 75+ raccomandazioni actionable
 ✅ All sources bookmarked per team
-✅ Pronto per Week 2 decisions!
+✅ Pronto per Week 2+ decisions!
+
+BREAKDOWN PER TEAM:
+✅ Tech Core (12 agenti, 12 giorni): 144 ore
+✅ Strutturale (7 agenti, 7 giorni): 84 ore
+✅ Business (5 agenti, 5 giorni): 30 ore
+TOTAL: 258 ore ricerca specializzata
 ```
 
 ---
 
-## ✍️ FIRMA AGENTI
+## ✍️ FIRMA AGENTI (24 TOTALI)
 
 Agenti che confermano comprensione:
 
+### TEAM TECH CORE (12)
 ```
 ☐ Benedetta      (Architettura)
 ☐ Irene          (Frontend 3D)
@@ -407,19 +474,35 @@ Agenti che confermano comprensione:
 ☐ Mariana        (Results Viz)
 ☐ Ottavia        (Build)
 ☐ Paola          (Data Converter)
+```
+
+### TEAM STRUTTURALE (7)
+```
+☐ Roberta        (Calcestruzzo Armato)
+☐ Martina        (Acciaio)
+☐ Sofia          (Alluminio)
+☐ Giulia         (Legno e Fibre)
+☐ Alessia        (Geotecnica)
+☐ Chiara         (Muratura Normale)
+☐ Ilaria         (Muratura Armata)
+```
+
+### TEAM BUSINESS (5)
+```
 ☐ Aurora         (Pricing)
 ☐ Livia          (Email)
 ☐ Veronica       (Normative)
 ☐ Camilla        (News)
 ☐ Laura          (Progress)
+```
 
 _______________
 Alessandra (Project Lead)
-Data: 18 agosto 2026
+Data: 18 agosto 2026 (Aggiornato: 19 agosto)
 
 _______________
 Giorgia (Business Lead)
-Data: 18 agosto 2026
+Data: 18 agosto 2026 (Aggiornato: 19 agosto)
 ```
 
 ---

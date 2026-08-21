@@ -14,6 +14,7 @@ from typing import Dict, List, Tuple
 # Database agenti con date obbligatorie
 AGENTS_CALENDAR = {
     "alessandra_team": [
+        # Tech Core
         {"name": "Benedetta", "specialty": "Architettura", "required_date": "2026-08-18"},
         {"name": "Irene", "specialty": "Frontend 3D", "required_date": "2026-08-19"},
         {"name": "Natalia", "specialty": "Backend", "required_date": "2026-08-20"},
@@ -26,6 +27,14 @@ AGENTS_CALENDAR = {
         {"name": "Mariana", "specialty": "Results Viz", "required_date": "2026-08-27"},
         {"name": "Ottavia", "specialty": "Build Wrapper", "required_date": "2026-08-28"},
         {"name": "Paola", "specialty": "Data Converter", "required_date": "2026-08-29"},
+        # Team Strutturale
+        {"name": "Roberta", "specialty": "Calcestruzzo Armato", "required_date": "2026-08-30"},
+        {"name": "Martina", "specialty": "Acciaio", "required_date": "2026-08-31"},
+        {"name": "Sofia", "specialty": "Alluminio", "required_date": "2026-09-01"},
+        {"name": "Giulia", "specialty": "Legno e Rinforzi Fibre", "required_date": "2026-09-02"},
+        {"name": "Alessia", "specialty": "Geotecnica", "required_date": "2026-09-03"},
+        {"name": "Chiara", "specialty": "Muratura Normale", "required_date": "2026-09-04"},
+        {"name": "Ilaria", "specialty": "Muratura Armata", "required_date": "2026-09-05"},
     ],
     "giorgia_team": [
         {"name": "Aurora", "specialty": "Pricing", "required_date": "2026-08-18"},

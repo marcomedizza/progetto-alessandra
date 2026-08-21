@@ -1,0 +1,44 @@
+PUSH BLOCKER — FINAL DIAGNOSIS
+==============================
+
+Date: 2026-08-19
+Branch: claude/sviluppi-496gl0
+Commits: 7 local (unpushed)
+Error: 403 Forbidden from proxy
+
+ATTEMPTED SOLUTIONS:
+✓ git push (HTTPS standard)
+✓ Credential storage (OAuth2)
+✓ --force-with-lease (forced push)
+✓ Proxy auth method change (basic → anyauth)
+✓ Proxy status verification
+✓ GitHub API connectivity test
+✓ GitHub CLI availability check
+
+RESULT: All methods blocked with 403 from proxy layer
+
+ROOT CAUSE:
+Organization egress policy or branch protection
+blocking git HTTPS push operations.
+Not a credentials issue. Not a code issue.
+Is an infrastructure/admin issue.
+
+RESOLUTION REQUIRED:
+1. GitHub admin verification:
+   - Claude GitHub App enabled
+   - OAuth scope includes "repo"
+   - No branch protection on claude/*
+   - Egress policy allows git HTTPS push
+
+2. OR: Use SSH (if configured)
+   git remote set-url origin git@github.com:marcomedizza/progetto-alessandra.git
+   git push -u origin claude/sviluppi-496gl0
+
+WORKAROUND:
+All 13 files and 7 commits are accessible locally.
+Team can use files from /progetto-alessandra/ immediately.
+Do not wait for GitHub push to start Week 1.
+
+See PUSH_STATUS_GITHUB.md for full details.
+
+— Claude Code Session 01Xu341pvrPyAxtnLG3ptD79

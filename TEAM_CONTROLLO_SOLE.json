@@ -1,0 +1,149 @@
+{
+  "team_name": "Controllo & Verifica",
+  "leader": {
+    "name": "Sole",
+    "role": "Quality Assurance Director",
+    "email": "sole@progetto-alessandra.local",
+    "responsibilities": "Supervisione totale controllo qualità, verifica conformità cross-team, escalation blocchi critici",
+    "daily_hours": 3.0
+  },
+  "team_size": 7,
+  "creation_date": "2026-08-21",
+  "monitoring_scope": ["Team Alessandra (Tech)", "Team Strutturale", "Team Giorgia (Business)"],
+  "specialists": [
+    {
+      "id": 1,
+      "name": "Marisa",
+      "role": "QA Tech Lead",
+      "specialization": "Controllo qualità Technical Team",
+      "team_monitored": "Team Alessandra (12 agenti Tech)",
+      "responsibilities": [
+        "Verifica code quality e best practices",
+        "Controllo architettura Fortran",
+        "Validazione schema dati JSON",
+        "Test compatibilità cross-platform",
+        "Approvazione/blocco merge code"
+      ],
+      "daily_hours": 2.5,
+      "check_frequency": "continuous"
+    },
+    {
+      "id": 2,
+      "name": "Ginevra",
+      "role": "Structural Verification Lead",
+      "specialization": "Verifica team strutturale",
+      "team_monitored": "Team Strutturale (7 agenti)",
+      "responsibilities": [
+        "Controllo calcoli strutturali",
+        "Verifica conformità NTC 2018 / EC codes",
+        "Validazione modelli BIM",
+        "Controllo risultati P-Delta analysis",
+        "Audit metodologia tecnica"
+      ],
+      "daily_hours": 2.0,
+      "check_frequency": "weekly_intensive"
+    },
+    {
+      "id": 3,
+      "name": "Raffaella",
+      "role": "Business Compliance Officer",
+      "specialization": "Conformità team business",
+      "team_monitored": "Team Giorgia (5 agenti Business)",
+      "responsibilities": [
+        "Verifica conformità GDPR",
+        "Controllo pricing strategy",
+        "Audit marketing materials",
+        "Verifica normative compliance",
+        "Risk assessment regulatory"
+      ],
+      "daily_hours": 1.5,
+      "check_frequency": "daily"
+    },
+    {
+      "id": 4,
+      "name": "Vittoria",
+      "role": "Test & Validation Specialist",
+      "specialization": "Test funzionali e validazione",
+      "team_monitored": "Cross-team",
+      "responsibilities": [
+        "Esecuzione test suite",
+        "Validazione UI/UX responsive",
+        "Performance testing",
+        "Stress testing",
+        "Bug report compilation"
+      ],
+      "daily_hours": 2.0,
+      "check_frequency": "daily"
+    },
+    {
+      "id": 5,
+      "name": "Serena",
+      "role": "Documentation & Audit Lead",
+      "specialization": "Documentazione e audit trail",
+      "team_monitored": "Cross-team",
+      "responsibilities": [
+        "Verifica completezza documentazione",
+        "Audit trail tracking",
+        "Setup environment verification",
+        "Best practices compliance",
+        "ISO standard audit"
+      ],
+      "daily_hours": 1.5,
+      "check_frequency": "daily"
+    },
+    {
+      "id": 6,
+      "name": "Isotta",
+      "role": "Performance & Benchmark Monitor",
+      "specialization": "Performance e optimization",
+      "team_monitored": "Tech Team (Fortran solver)",
+      "responsibilities": [
+        "Monitoraggio performance Fortran",
+        "Benchmark analysis",
+        "CPU/memory footprint analysis",
+        "Scalability testing",
+        "Optimization recommendations"
+      ],
+      "daily_hours": 1.5,
+      "check_frequency": "daily"
+    },
+    {
+      "id": 7,
+      "name": "Margherita",
+      "role": "Integration & Workflow Verifier",
+      "specialization": "Integrazione sistemi e CI/CD",
+      "team_monitored": "Cross-team infrastructure",
+      "responsibilities": [
+        "Verifica pipeline CI/CD",
+        "Controllo integration CAD-Fortran-Results",
+        "Validazione data flow",
+        "Versionamento control",
+        "Deployment procedures"
+      ],
+      "daily_hours": 1.5,
+      "check_frequency": "daily"
+    }
+  ],
+  "daily_schedule": {
+    "morning_review": "09:00-11:00",
+    "afternoon_testing": "14:00-15:30",
+    "weekly_compliance_checkpoint": "Monday 18:00",
+    "weekly_documentation_audit": "Wednesday 10:00"
+  },
+  "escalation_levels": {
+    "critical": "immediate to Sole → Alessandra/Giorgia",
+    "major": "within 24h review request",
+    "minor": "log to backlog"
+  },
+  "kpis_monitored": [
+    "defect_density",
+    "compliance_rate",
+    "rework_rate",
+    "time_to_approval",
+    "critical_blockers_count",
+    "documentation_coverage",
+    "test_pass_rate"
+  ],
+  "status": "ACTIVE",
+  "operational_since": "2026-08-21"
+}

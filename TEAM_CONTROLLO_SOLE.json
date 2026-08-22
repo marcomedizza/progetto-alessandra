@@ -8,8 +8,9 @@
     "daily_hours": 3.0
   },
   "team_size": 7,
+  "agents_monitored": 25,
   "creation_date": "2026-08-21",
-  "monitoring_scope": ["Team Alessandra (Tech)", "Team Strutturale", "Team Giorgia (Business)"],
+  "monitoring_scope": ["Team Alessandra (Tech - 12)", "Team Strutturale (8)", "Team Giorgia (Business - 6)", "Agata (Biblioteca)"],
   "specialists": [
     {
       "id": 1,
@@ -32,13 +33,14 @@
       "name": "Ginevra",
       "role": "Structural Verification Lead",
       "specialization": "Verifica team strutturale",
-      "team_monitored": "Team Strutturale (7 agenti)",
+      "team_monitored": "Team Strutturale (8 agenti: Beatrice, Roberta, Martina, Sofia, Giulia, Alessia, Chiara, Ilaria)",
       "responsibilities": [
         "Controllo calcoli strutturali",
         "Verifica conformità NTC 2018 / EC codes",
         "Validazione modelli BIM",
         "Controllo risultati P-Delta analysis",
-        "Audit metodologia tecnica"
+        "Audit metodologia tecnica",
+        "QA verification teoria strutturale (Beatrice)"
       ],
       "daily_hours": 2.0,
       "check_frequency": "weekly_intensive"

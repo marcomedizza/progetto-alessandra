@@ -1,9 +1,9 @@
 # 👁️ TEAM CONTROLLO & VERIFICA — Guidato da Sole
 
 **Responsabile:** Sole (Quality Assurance Director)  
-**Ruolo:** Supervisione, controllo qualità, verifica conformità del lavoro svolto da Team Alessandra e Team Giorgia  
+**Ruolo:** Supervisione, controllo qualità, verifica conformità del lavoro svolto da Team Alessandra, Team Strutturale, e Team Giorgia  
 **Data Costituzione:** 2026-08-21  
-**Agenti Totali:** 7 specialiste
+**Agenti Totali:** 7 specialiste QA + 25 agenti Tech/Structural/Business (da monitorare)
 
 ---
 

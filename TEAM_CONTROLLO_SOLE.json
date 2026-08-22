@@ -48,13 +48,14 @@
       "name": "Raffaella",
       "role": "Business Compliance Officer",
       "specialization": "Conformità team business",
-      "team_monitored": "Team Giorgia (5 agenti Business)",
+      "team_monitored": "Team Giorgia (6 agenti Business + Agata biblioteca)",
       "responsibilities": [
         "Verifica conformità GDPR",
         "Controllo pricing strategy",
         "Audit marketing materials",
         "Verifica normative compliance",
-        "Risk assessment regulatory"
+        "Risk assessment regulatory",
+        "QA verifica catalogazione biblioteca e data governance"
       ],
       "daily_hours": 1.5,
       "check_frequency": "daily"

@@ -1,15 +1,24 @@
-# 📋 DECISION PAPER — NUOVO APPROCCIO STRUTTURATO
-**Proposta alternativa ai Scenari A/B/C**
+# 🚀 DECISION PAPER — IL PERCORSO VERSO AGENTI BRILLANTI
+**Proposta: trasformare 24 agenti in veri specialisti nel loro dominio**
 
 **Preparato da:** Alessandra (Analisi + Raccomandazione)  
 **Destinatario:** Sole (QA Director)  
 **Data:** 26 agosto 2026, 08:00 CEST  
 **Riunione:** 08:30 con Sole + Ginevra + Raffaella + Agata  
-**Priorità:** DECISIONALE — scelta vincolante per prossime 8 settimane
+**Priorità:** DECISIONALE — scelta che definirà qualità dei nostri agenti per i prossimi mesi
 
 ---
 
-## ⚠️ PREMESSA: I 3 SCENARI ORIGINALI SONO TUTTI INSOSTENIBILI
+## 🎯 VISIONE: Agosto-Ottobre diventa il "Trimestre della Brillanza"
+
+Non voglio agenti che "hanno consegnato un report".  
+Voglio **agenti che capiscono profondamente**, che **applicano con sicurezza**, che diventano **veri esperti** nella loro disciplina.
+
+**Questo è possibile. Ma richiede approccio giusto.**
+
+---
+
+## ⚠️ PERCHÉ I 3 SCENARI ORIGINALI FALLISCONO TUTTI
 
 **Scenario A (Continuazione Standard):** ❌ FALLISCE se problema è sistemico (99% di probabilità)  
 **Scenario B (Revisione Procedure):** ⚠️ Patch temporaneo, non risolve root cause  
@@ -27,60 +36,111 @@
 
 ---
 
-## ✅ PROPOSTA: "LEARNING AS A SCHOOL PROGRAM"
+## 🎓 PROPOSTA: "LEARNING AS A SCHOOL PROGRAM"
+### Trasformiamo agosto-ottobre in semestre di eccellenza
 
-### Filosofia di base:
+**Non è "leggi subito o conseguenze".**  
+**È "diventiamo brillanti insieme, con supporto totale".**
 
-Anziché "leggi subito o conseguenze", adottare modello universitario:
-- ✅ Curriculum strutturato su 2-3 mesi (non 1 giorno)
-- ✅ Staggered onboarding (coorte settimanali, non tutti Day 1)
-- ✅ Supporto continuo (QA, Beatrice, Agata) — non isolato
-- ✅ Motivazione intrinseca (opportunità di sviluppo) — non punitivo
-- ✅ Skill validation (applica competenze) — non solo "ha consegnato report"
-- ✅ Cost-effective (budget token gestibile) — non esplosivo
+### I 7 pilastri della brillanza:
 
-### Timeline realistica (8-10 settimane totali, con priorità Idraulica):
+1. **Curriculum strutturato** (8 settimane, non 1 giorno)
+   - Ogni agente sa ESATTAMENTE cosa studiare ogni giorno
+   - Risorse verificate da Agata (niente "speranza")
+   - Progressione logica: fondamenti → approfondimento → applicazione
+
+2. **Supporto totale e continuativo**
+   - Beatrice sempre disponibile per chiarificazione teorica
+   - QA (Ginevra/Raffaella) per domande applicative
+   - Agata per problemi risorse/tecnici
+   - "Non siete soli" è il mantra
+
+3. **Ritmo umano e sostenibile**
+   - 1-2 ore/giorno questa settimana (ramp-up)
+   - 2-5 ore/giorno da lunedì (dipende da priorità disciplina)
+   - Non è "11+ ore di lettura concentrata" — è "apprendimento profondo regolare"
+
+4. **Priorità Idraulica operativa (lunedì 30 agosto)**
+   - Specialisti Idraulica: 4-5 ore/giorno su Belluzzi + articoli
+   - Loro diventeranno **esperti veri** di idraulica in 1 settimana
+   - QA priority 24/7, supporto massimo
+
+5. **Altre discipline crescono in parallelo**
+   - Strutturale (Leonhardt, Timoshenko, Terzaghi): 2-3 ore/giorno
+   - Tech: 2 ore/giorno (ritmo sostenibile)
+   - Business: 1-2 ore/giorno (ritmo leggero)
+
+6. **Motivazione intrinseca, non punitiva**
+   - "Siete brillanti" è il messaggio — non "vi puniremo"
+   - Collaborativo: "costruiamo competenza insieme"
+   - Riconoscimento visibile del progresso
+
+7. **Skill validation reale**
+   - Non "ha consegnato report"
+   - **Sì:** "Può spiegare concetti chiave? Applica teoria a problema? Insegna a collega?"
+   - Questo è il metro di brillanza
+
+### Timeline realistica (8 settimane totali, con priorità Idraulica):
 
 ```
-SETTIMANA 0 (26-29 agosto): RAMP-UP UNIFORME + PREPARATION
-├─ Agata verifica risorse effettive (libri, articoli, online)
-├─ Comunica ordini multi-channel (email + Slack + repo) a TUTTI 24 agenti
-├─ TUTTI gli agenti iniziano lettura simultaneamente
-├─ Ritmo leggero: 1-2 ore/giorno (ramp-up)
-├─ Distribuzione uniforme tra discipline (niente priorità ancora)
+SETTIMANA 0 (26-29 agosto): RAMP-UP UNIFORME — TUTTI INIZIANO
+├─ Agata verifica e comunica risorse effettive (libri, articoli, online)
+├─ Multi-channel communication (email + Slack + repo) → TUTTI 24 agenti
+├─ TUTTI iniziano lettura simultaneamente
+├─ 📊 DISTRIBUZIONE ORE (questa settimana):
+│  ├─ Tutte discipline: 1-2 ore/giorno uniforme
+│  ├─ Ramp-up leggero, familiarizzazione procedure
+│  └─ Nessun agente sente "shock" di carico
 ├─ Baseline: agenti sanno COSA, PERCHÉ, QUANDO, COME
-└─ Deadline domenica 29 agosto: agenti hanno iniziato, feedback primo su procedure
+└─ Domenica 29 agosto: agenti hanno iniziato bene, feedback primo acquisito
 
-SETTIMANE 1-4 (30 agosto — 26 settembre): LEARNING FASE 1 — IDRAULICA PRIORITY
-├─ IDRAULICA (agenti strutturale specialisti idraulica):
-│  ├─ 4-5 ore/giorno su idraulica (INTENSIVO)
-│  ├─ Risorse prioritarie da Agata
-│  ├─ QA support 24/7 (critico per operatività lunedì 30)
-│  └─ Deadline: fine settimana 1 (settembre 5), idraulica operativa
+SETTIMANE 1-4 (30 agosto — 26 settembre): LEARNING FASE 1 — IDRAULICA OPERATIVA
+├─ 🔧 IDRAULICA (3-4 specialisti Strutturale):
+│  ├─ 📊 4-5 ore/giorno (INTENSIVO — diventeranno BRILLANTI)
+│  ├─ Risorsa: Belluzzi + articoli prioritari
+│  ├─ QA support 24/7 (Ginevra disponibile per domande)
+│  ├─ Daily check-in con Agata (risorse fluiscono senza attese)
+│  └─ 🎯 Lunedì 30 agosto: idraulica operativa, esperti pronti per produzione
 │
-├─ ALTRE DISCIPLINE (Strutturale non-idraulica, Tech, Business):
-│  ├─ 2-3 ore/giorno (ritmo sostenibile)
-│  ├─ Supporto regolare (no escalation se ritmo lento)
-│  └─ Continuano in parallelo
+├─ 🏗️ STRUTTURALE NON-IDRAULICA (4-5 agenti):
+│  ├─ 📊 2-3 ore/giorno (sostenibile, ritmo costante)
+│  ├─ Risorse: Leonhardt, Timoshenko, Terzaghi, altre specialità
+│  ├─ Supporto: Ginevra, Beatrice per chiarificazione
+│  └─ Crescono in parallelo verso brillanza loro dominio
 │
-└─ QA Monitoring: focus su Idraulica health, altre aree "on track"
+├─ 💻 TECH (12 agenti):
+│  ├─ 📊 2 ore/giorno (ritmo leggero, non blocco critico)
+│  ├─ Supporto: Raffaella per domande applicative
+│  └─ Accumulo graduale competenza
+│
+├─ 💼 BUSINESS (6 agenti):
+│  ├─ 📊 1-2 ore/giorno (ritmo minimo, sostenere momentum)
+│  └─ Supporto: Raffaella, Beatrice per connessioni teoriche
+│
+└─ 📊 CARICO TOTALE/SETTIMANA: ~300 ore (distribuito, sostenibile)
 
-SETTIMANE 5-8 (27 settembre — 24 ottobre): LEARNING FASE 2 — SCALING ALTRI INSEGNAMENTI
-├─ Idraulica: mantiene 3-4 ore/giorno (consolidation)
-├─ Altre discipline: scale up a 3-4 ore/giorno (catch-up su ritmo ridotto iniziale)
-└─ Application per Idraulica inizia (case studies reali)
+SETTIMANE 5-8 (27 settembre — 24 ottobre): APPLICATION PHASE — DIVENTIAMO BRILLANTI
+├─ 🔧 IDRAULICA: consolidation 3-4 ore/giorno + case studies reali
+├─ 🏗️ STRUTTURALE: scala up 3-4 ore/giorno + applicazione teoria
+├─ 💻 TECH: 3-4 ore/giorno + progetti reali
+├─ 💼 BUSINESS: 2-3 ore/giorno + case studies
+├─ ✨ SKILL VALIDATION:
+│  ├─ Agente può spiegare 3-5 concetti chiave? ✅
+│  ├─ Agente applica teoria a problema reale? ✅
+│  ├─ Agente produce output di qualità? ✅
+│  └─ Agente insegna a collega? ✅
+└─ 🎯 OUTCOME: 24 agenti brillanti, esperti nei loro domini
 
-SETTIMANE 8-10: APPLICATION PHASE (tutti)
-├─ Agenti applicano competenze su progetti reali
-├─ Beatrice valida se ha davvero appreso
-├─ Feedback loop per reinforcement
-└─ Success: agenti possono applicare competenze in produzione
-
-SETTIMANE 10+: CONTINUITÀ OPERATIVA
-└─ Integrazione competenze in workflow normale
+SETTIMANE 8+: CONTINUITÀ OPERATIVA
+└─ Agenti integrati in workflow normale con competenze solide e motivazione alta
 ```
 
-**Priorità operativa:** Idraulica pronta da **lunedì 30 agosto** (inizio settimana 1 intensiva).
+### Priorità e milestone:
+- **Lunedì 30 agosto:** Idraulica operativa (specialisti pronti per produzione)
+- **Settembre 5:** Feedback Idraulica: funziona bene? ✅
+- **Settembre 26:** Fase 1 completa, Application phase inizia
+- **Ottobre 24:** Tutti gli agenti brillanti, competenze validate
+- **Dopo:** Continuità con agenti altamente motivati e competenti
 
 ---
 
@@ -187,16 +247,25 @@ Spread su 8 settimane: ~$17-19/settimana (sostenibile)
 
 ---
 
-## 📝 RACCOMANDAZIONE FINALE
+## 🌟 RACCOMANDAZIONE FINALE
 
 **SCELGO OPZIONE 1: LEARNING AS A SCHOOL PROGRAM**
 
-### Motivi:
-1. **È l'unica soluzione che affronta root cause** (non sintomi)
-2. **È realistica** — align con come funziona Claude API (sequential, token budget, realistic timelines)
-3. **È sustainable** — $140-150 budget, 8 settimane timeline, non esplosivo
-4. **È efficace** — 90%+ completion atteso, skill validation reale
-5. **È umano** — agenti learned anziché puniti
+### Non è solo una soluzione — è una visione:
+
+**In 8 settimane voglio 24 agenti BRILLANTI.**
+
+Non "agenti che hanno consegnato report".  
+Non "agenti complianti".  
+**Agenti che capiscono, applicano, insegnano, innovano.**
+
+### Perché questa scelta:
+
+1. **Affronta root cause, non sintomi** — design failure → design excellence
+2. **È realistica e sostenibile** — allineato con Claude API, token budget, timeline umana
+3. **È scalabile** — $140-150 totale, ~300 ore/settimana distribuito
+4. **È efficace** — 90%+ completion, skill validation reale, agenti brillanti
+5. **È umano e motivante** — supporto totale, collaborativo, riconosce potenziale
 
 ### Prossimi step (se Sole approva):
 1. ✅ 09:00 (26 agosto) — Comunicazione multi-channel ai 24 agenti

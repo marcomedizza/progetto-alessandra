@@ -1,0 +1,256 @@
+{
+  "metadata": {
+    "titolo": "IDRAULICA — Esercizi Intensivo (Belluzzi Cap 1-5)",
+    "fase": "Fase 1 Intensive (1-5 settembre 2026)",
+    "destinatari": ["Specialisti Idraulica (esercitazione giornaliera)"],
+    "formato": "5 esercizi/giorno × 5 giorni = 25 esercizi totali",
+    "scopo": "Padronanza concetti attraverso problem-solving pratico",
+    "data_creazione": "2026-08-31",
+    "versione": "1.0",
+    "formato_originale": "markdown"
+  },
+  "giorni_esercizi": [
+    {
+      "giorno": "GIORNO 1 (LUN 31 AGO)",
+      "tema": "Proprietà Fluidi & Statica",
+      "esercizi": [
+        {
+          "numero": "1.1",
+          "titolo": "Densità e Peso Specifico",
+          "problema": "Un serbatoio contiene olio con densità ρ = 850 kg/m³. Calcolare: a) Peso specifico dell'olio, b) Massa di olio in serbatoio di 50 m³, c) Pressione sul fondo a profondità 4 m",
+          "dati": {
+            "densita_kg_m3": 850,
+            "g_m_s2": 9.81,
+            "volume_m3": 50,
+            "profondita_m": 4
+          },
+          "soluzione": {
+            "peso_specifico": {
+              "formula": "γ = ρ × g",
+              "calcolo": "850 × 9.81 = 8,338.5 N/m³",
+              "risultato": "≈ 8.34 kN/m³"
+            },
+            "massa": {
+              "formula": "m = ρ × V",
+              "calcolo": "850 × 50 = 42,500 kg",
+              "risultato": "42,500 kg"
+            },
+            "pressione_fondo": {
+              "formula": "p = γ × h",
+              "calcolo": "8,338.5 × 4 = 33,354 Pa",
+              "risultato_relativa": "≈ 33.4 kPa",
+              "risultato_assoluta": "33.4 + 101.3 = 134.7 kPa"
+            }
+          }
+        },
+        {
+          "numero": "1.2",
+          "titolo": "Viscosità e Numero Reynolds",
+          "problema": "Nel tubo orizzontale di diametro 25 mm scorre olio (da Esercizio 1.1) a velocità media 2 m/s. Viscosità cinematica olio: ν = 15 × 10⁻⁶ m²/s. Calcolare: a) Numero Reynolds, b) Regime di flusso, c) Fattore di attrito",
+          "dati": {
+            "diametro_mm": 25,
+            "velocita_m_s": 2,
+            "viscosita_cinematica": "15 × 10⁻⁶ m²/s"
+          },
+          "soluzione": {
+            "reynolds": {
+              "formula": "Re = (v × D) / ν",
+              "calcolo": "(2 × 0.025) / (15 × 10⁻⁶) = 3,333",
+              "risultato": 3333
+            },
+            "regime": {
+              "calcolo": "Re = 3,333 → FLUSSO TURBOLENTO (Re > 2000)",
+              "nota": "Confine a Re ≈ 2000-2300 per tubi lisci"
+            },
+            "fattore_attrito": {
+              "formula": "f = 0.316 / Re^0.25 (Blasius)",
+              "calcolo": "0.316 / (3333)^0.25 = 0.316 / 7.58",
+              "risultato": "≈ 0.042"
+            }
+          }
+        },
+        {
+          "numero": "1.3",
+          "titolo": "Spinta Idrostatica su Parete",
+          "problema": "Serbatoio rettangolare con parete verticale di larghezza 6 m, profondità acqua 3 m. Calcolare: a) Forza totale su parete, b) Profondità del centro di pressione, c) Momento ribaltante",
+          "dati": {
+            "larghezza_m": 6,
+            "profondita_m": 3,
+            "densita_kg_m3": 1000,
+            "g_m_s2": 9.81
+          },
+          "soluzione": {
+            "forza_totale": {
+              "formula": "F = (1/2) × γ × H² × B",
+              "calcolo": "(1/2) × 9810 × 3² × 6 = 264,870 N",
+              "risultato": "≈ 265 kN"
+            },
+            "centro_pressione": {
+              "formula": "zcp = H / 3",
+              "calcolo": "3 / 3 = 1 m",
+              "nota": "1/3 della profondità dal fondo, o 2/3 dal top"
+            },
+            "momento_ribaltante": {
+              "formula": "M = F × (H/3)",
+              "calcolo": "264,870 × (3/3) = 264,870 N·m",
+              "nota": "Braccio è H/3 perché forza agisce a H/3 da fondo"
+            }
+          }
+        },
+        {
+          "numero": "1.4",
+          "titolo": "Principio di Pascal e Moltiplicatore Idraulico",
+          "problema": "Pressa idraulica con cilindro piccolo (d₁ = 20 mm) e cilindro grande (d₂ = 100 mm). Forza applicata su cilindro piccolo: F₁ = 500 N. Calcolare: a) Pressione nel sistema, b) Forza su cilindro grande, c) Vantaggio meccanico",
+          "dati": {
+            "diametro_piccolo_mm": 20,
+            "diametro_grande_mm": 100,
+            "forza_piccolo_N": 500
+          },
+          "soluzione": {
+            "pressione": {
+              "formula": "p = F₁ / A₁ = F₁ / (π × r₁²)",
+              "calcolo": "500 / (π × 0.01²) = 1,591,549 Pa",
+              "risultato": "≈ 1.59 MPa"
+            },
+            "forza_grande": {
+              "formula": "F₂ = p × A₂ = p × (π × r₂²)",
+              "calcolo": "1,591,549 × (π × 0.05²) = 12,500 N",
+              "risultato": "12,500 N"
+            },
+            "vantaggio_meccanico": {
+              "formula": "VM = F₂ / F₁ = (d₂/d₁)²",
+              "calcolo": "(100/20)² = 25",
+              "risultato": 25
+            }
+          }
+        },
+        {
+          "numero": "1.5",
+          "titolo": "Barometro ad Acqua",
+          "problema": "Barometro ad acqua (non a mercurio). Pressione atmosferica standard = 101,325 Pa. Calcolare altezza colonna d'acqua in equilibrio.",
+          "dati": {
+            "pressione_atmosferica_Pa": 101325,
+            "densita_acqua_kg_m3": 1000,
+            "g_m_s2": 9.81
+          },
+          "soluzione": {
+            "altezza": {
+              "formula": "p_atm = ρ_acqua × g × h",
+              "calcolo": "101,325 / (1000 × 9.81) = 10.33 m",
+              "risultato": "10.33 m"
+            },
+            "nota": "Barometri ad acqua sono impraticabili (~10 m di altezza!). Mercurio è usato: h = 0.76 m (760 mm)",
+            "verifica_mercurio": {
+              "densita_mercurio": 13600,
+              "calcolo": "101,325 / (13,600 × 9.81) = 0.76 m ✓"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "giorno": "GIORNO 2 (MAR 1 SET)",
+      "tema": "Cinematica & Bernoulli",
+      "esercizi_summary": "5 esercizi su Equazione di Continuità, Bernoulli, Torricelli, Portata Orifizio",
+      "esercizi_key": [
+        {
+          "numero": "2.1",
+          "titolo": "Equazione di Continuità",
+          "risposta_chiave": {
+            "velocita_sezione_2": "8 m/s",
+            "portata": "15.7 L/s",
+            "rapporto_velocita": 4
+          }
+        },
+        {
+          "numero": "2.2",
+          "titolo": "Equazione di Bernoulli (Tubo Inclinato)",
+          "risposta_chiave": {
+            "pressione_punto_2": "-49,050 Pa",
+            "nota": "Pressione negativa possibile ma se < -91 kPa → cavitazione"
+          }
+        },
+        {
+          "numero": "2.3",
+          "titolo": "Teorema di Torricelli",
+          "risposta_chiave": {
+            "velocita_uscita": "6.26 m/s",
+            "formula_generale": "v = √(2gh)"
+          }
+        },
+        {
+          "numero": "2.4",
+          "titolo": "Portata da Orifizio",
+          "risposta_chiave": {
+            "portata_L_s": 0.374,
+            "portata_L_min": 22.4
+          }
+        }
+      ]
+    },
+    {
+      "giorno": "GIORNO 3 (MER 2 SET)",
+      "tema": "Perdite di Carico",
+      "nota": "Esercizi 3.1-3.5 omessi per brevità, seguono pattern simile di calcolo Darcy-Weisbach, Moody diagram, perdite localizzate"
+    },
+    {
+      "giorno": "GIORNO 4 (GIO 3 SET)",
+      "tema": "Dinamica Avanzata",
+      "nota": "Esercizi 4.1-4.5 su Diagrammi energetici, linee piezometriche, casi combinati"
+    },
+    {
+      "giorno": "GIORNO 5 (VEN 4 SET)",
+      "tema": "Integrazione e Sintesi",
+      "esercizi": [
+        {
+          "numero": "5.1",
+          "titolo": "Progetto Completo Mini-Acquedotto",
+          "tipo": "Problema Integrativo",
+          "descrizione": "Progettare mini-acquedotto che: - Prende acqua da sorgente a quota 150 m - Serve villaggio a quota 100 m - Distanza = 5 km - Portata richiesta = 100 L/min - Calcolare: diametro tubo, perdite, pressione finale, eventuale pompa?",
+          "competenze_richieste": [
+            "Calcolo velocità ottimale",
+            "Perdita Darcy-Weisbach",
+            "Verifiche cavitazione",
+            "Selezione pompa"
+          ]
+        }
+      ]
+    }
+  ],
+  "chiavi_lettura": {
+    "pattern_risolutivo": [
+      "1. Identifica tipo problema (statica, cinematica, energia, etc)",
+      "2. Scrivi equazioni pertinenti (Bernoulli, continuità, Darcy-Weisbach)",
+      "3. Raccogli dati e converti unità se necessario",
+      "4. Applica formula sostituendo valori",
+      "5. Verifica ragionevolezza risultato (pressioni negative? Velocità unreasonable? Portate fisiche?)",
+      "6. Commenta interpretazione (cosa significa il risultato?)"
+    ],
+    "errori_comuni": [
+      "❌ Dimenticare fattore 2 in Bernoulli (v²/2g non v²/g)",
+      "❌ Mescolare pressioni gauge vs assolute",
+      "❌ Invertire formule (Re =?, non v × D / ν backwards)",
+      "❌ Unità inconsistenti (m/s con diametro in mm?)",
+      "❌ Ignorare perdite localizzate (valvole, curve)"
+    ]
+  },
+  "risorse_supporto": {
+    "fogli_calcolo": [
+      "Diagramma Moody (riprodotto in Belluzzi Fig. 5.2)",
+      "Tabelle fattori attrito per vari materiali tubi",
+      "Coefficienti perdite localizzate (curve 0.3-1.0, valvole 0.5-5.0)"
+    ],
+    "tools_online": [
+      "Online Moody diagram calculator",
+      "Darcy-Weisbach solver",
+      "Unit converter (m/s, cm/s, ft/s)"
+    ],
+    "contatti_supporto": {
+      "beatrice": "Domande teoriche (supporto concetti)",
+      "specialisti": "Scambio soluzioni esercizi, group review venerdì",
+      "roberta": "Coordinamento, debrief settimanale"
+    }
+  },
+  "obiettivo_finale": "Completare 5 esercizi/giorno → Master concetti Belluzzi Cap 1-5",
+  "scadenza": "Venerdì 4 settembre: Sintesi e assessment finale Fase 1 Intensive"
+}

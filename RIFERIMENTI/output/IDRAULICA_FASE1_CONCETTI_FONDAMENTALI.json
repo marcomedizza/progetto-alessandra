@@ -1,0 +1,314 @@
+{
+  "metadata": {
+    "titolo": "IDRAULICA — Fase 1 Intensive: Concetti Fondamentali",
+    "fase": "Fase 1 (30 agosto - 5 settembre 2026)",
+    "destinatari": ["Specialisti Idraulica (3-4 agenti)"],
+    "riferimento": "Belluzzi 'Fondamenti di Idraulica' Cap 1-5",
+    "durata_intensive": "4-5 ore/giorno",
+    "obiettivo": "Ramp-up specialisti su principi fondamentali idraulici",
+    "data_creazione": "2026-08-31",
+    "versione": "1.0",
+    "formato_originale": "markdown"
+  },
+  "capitoli": [
+    {
+      "numero": 1,
+      "titolo": "Proprietà dei Fluidi",
+      "sezioni": [
+        {
+          "titolo": "Fluidi Incomprimibili vs Comprimibili",
+          "contenuto": "Acqua è incomprimibile (densità costante). Gas sono comprimibili (densità varia con pressione). Nell'idraulica civile: focus su liquidi incomprimibili."
+        },
+        {
+          "titolo": "Densità e Peso Specifico",
+          "concetti": [
+            {
+              "nome": "Densità (ρ)",
+              "definizione": "massa per unità volume",
+              "unita": "kg/m³",
+              "esempio": "Acqua a 4°C: 1000 kg/m³"
+            },
+            {
+              "nome": "Peso specifico (γ)",
+              "definizione": "peso per unità volume",
+              "unita": "N/m³",
+              "formula": "γ = ρ × g = 1000 × 9.81 = 9810 N/m³",
+              "esempio": "Acqua: 9810 N/m³"
+            }
+          ]
+        },
+        {
+          "titolo": "Viscosità",
+          "concetti": [
+            {
+              "nome": "Viscosità dinamica (μ)",
+              "definizione": "resistenza a flusso",
+              "unita": "Pa·s"
+            },
+            {
+              "nome": "Viscosità cinematica (ν)",
+              "formula": "ν = μ/ρ",
+              "unita": "m²/s",
+              "esempio": "Acqua a 20°C: ν ≈ 1.0 × 10⁻⁶ m²/s"
+            }
+          ]
+        },
+        {
+          "titolo": "Pressione",
+          "concetti": [
+            {
+              "nome": "Pressione assoluta",
+              "definizione": "pressione rispetto a vuoto perfetto",
+              "unita": "Pa"
+            },
+            {
+              "nome": "Pressione relativa (gauge)",
+              "definizione": "pressione rispetto atmosfera",
+              "unita": "Pa"
+            },
+            {
+              "nome": "Pressione atmosferica standard",
+              "valore": "101,325 Pa ≈ 101.3 kPa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titolo": "Statica dei Fluidi (Idrostatica)",
+      "sezioni": [
+        {
+          "titolo": "Equazione Fondamentale",
+          "concetti": [
+            {
+              "formula": "dp/dz = -ρg",
+              "dove": "z è altitudine",
+              "interpretazione": "Pressione aumenta linearmente con profondità"
+            },
+            {
+              "formula": "p = p₀ + ρgh",
+              "dove": "h è profondità sotto superficie",
+              "applicazione": "Calcolo pressione idrostatica a profondità"
+            }
+          ]
+        },
+        {
+          "titolo": "Principio di Pascal",
+          "contenuto": "Pressione in un punto si trasmette uniformemente in tutte direzioni",
+          "applicazioni": ["Moltiplicatori idraulici", "Presse idrauliche"]
+        },
+        {
+          "titolo": "Forze su Superfici Immerse",
+          "tipi": [
+            {
+              "tipo": "Superficie orizzontale (fondo bacino)",
+              "forza_totale": "F = p × A = ρgh × A",
+              "punto_applicazione": "Al centro della superficie"
+            },
+            {
+              "tipo": "Superficie verticale (parete)",
+              "forza_totale": "F = ρg × (h/2) × A",
+              "punto_applicazione": "A 2/3 profondità (non al centro!)"
+            }
+          ]
+        },
+        {
+          "titolo": "Spinta Idrostatica su Dighe",
+          "caratteristiche": [
+            "Carico aumenta con profondità (triangolare)",
+            "Risultante agisce a 1/3 da superficie, 2/3 da fondo",
+            "Momento ribaltante deve essere equilibrato"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titolo": "Cinematica dei Fluidi",
+      "sezioni": [
+        {
+          "titolo": "Tipi di Flusso",
+          "flussi": [
+            {
+              "tipo": "Flusso laminare",
+              "caratteristiche": "Strati paralleli che non si mescolano",
+              "reynolds": "Re < 500",
+              "note": "Perdite per attrito maggiori"
+            },
+            {
+              "tipo": "Flusso turbolento",
+              "caratteristiche": "Moto caotico, mescolamento",
+              "reynolds": "Re > 2000 (in tubi)",
+              "note": "Perdite per attrito minori ma resistenza varia"
+            },
+            {
+              "tipo": "Flusso transitorio",
+              "caratteristiche": "Instabile, difficile da analizzare",
+              "reynolds": "500 < Re < 2000"
+            }
+          ]
+        },
+        {
+          "titolo": "Numero di Reynolds",
+          "formula": "Re = (v × D) / ν",
+          "parametri": [
+            {"simbolo": "v", "descrizione": "velocità media", "unita": "m/s"},
+            {"simbolo": "D", "descrizione": "diametro", "unita": "m"},
+            {"simbolo": "ν", "descrizione": "viscosità cinematica", "unita": "m²/s"}
+          ]
+        },
+        {
+          "titolo": "Equazione di Continuità",
+          "formula": "Q = A × v = costante",
+          "nota": "Lungo un condotto",
+          "parametri": [
+            {"simbolo": "Q", "descrizione": "portata", "unita": "m³/s"},
+            {"simbolo": "A", "descrizione": "sezione trasversale", "unita": "m²"},
+            {"simbolo": "v", "descrizione": "velocità media", "unita": "m/s"}
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titolo": "Dinamica dei Fluidi (Equazione di Bernoulli)",
+      "sezioni": [
+        {
+          "titolo": "Equazione di Bernoulli (forma energetica)",
+          "formula": "(p/γ) + (v²/2g) + z = costante",
+          "nota": "Per flusso ideale",
+          "componenti": [
+            {"nome": "p/γ", "descrizione": "quota di pressione", "unita": "m"},
+            {"nome": "v²/2g", "descrizione": "quota di velocità", "unita": "m"},
+            {"nome": "z", "descrizione": "quota geometrica", "unita": "m"}
+          ]
+        },
+        {
+          "titolo": "Interpretazione Fisica",
+          "punti_chiave": [
+            "Somma di tre 'quote' rimane costante lungo linea di corrente",
+            "Se velocità aumenta → pressione diminuisce",
+            "Se quota aumenta → pressione diminuisce"
+          ]
+        },
+        {
+          "titolo": "Applicazioni Pratiche",
+          "applicazioni": [
+            "Tubi di Pitot (misura velocità)",
+            "Venturimetri (misura portata)",
+            "Sifoni (flusso a pressione atmosferica)",
+            "Effetto Coanda (aderenza a superficie)"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titolo": "Perdite di Carico in Condotti",
+      "sezioni": [
+        {
+          "titolo": "Perdite Lineari (Darcy-Weisbach)",
+          "formula": "hf = f × (L/D) × (v²/2g)",
+          "parametri": [
+            {"simbolo": "hf", "descrizione": "perdita di carico", "unita": "m"},
+            {"simbolo": "f", "descrizione": "fattore di attrito (Moody diagram)", "unita": "-"},
+            {"simbolo": "L", "descrizione": "lunghezza condotto", "unita": "m"},
+            {"simbolo": "D", "descrizione": "diametro", "unita": "m"},
+            {"simbolo": "v", "descrizione": "velocità media", "unita": "m/s"}
+          ]
+        },
+        {
+          "titolo": "Fattore di Attrito",
+          "casi": [
+            {
+              "regime": "Flusso laminare",
+              "formula": "f = 64/Re",
+              "nota": "Indipendente da rugosità"
+            },
+            {
+              "regime": "Flusso turbolento",
+              "caratteristica": "Dipende da Re e rugosità relativa (ε/D)"
+            }
+          ]
+        },
+        {
+          "titolo": "Perdite Localizzate",
+          "formula": "hL = K × (v²/2g)",
+          "sorgenti": [
+            {"causa": "Curve e gomiti", "K": "0.3-1.0"},
+            {"causa": "Allargamenti/restringimenti", "K": "variabile"},
+            {"causa": "Valvole e raccordi", "K": "variabile"},
+            {"causa": "Entrate/uscite", "K": "variabile"}
+          ]
+        },
+        {
+          "titolo": "Linea Piezometrica e Linea Energetica",
+          "concetti": [
+            {
+              "nome": "Linea energetica",
+              "rappresenta": "(p/γ) + (v²/2g) + z"
+            },
+            {
+              "nome": "Linea piezometrica",
+              "rappresenta": "(p/γ) + z"
+            },
+            {
+              "differenza": "Distanza tra le due = (v²/2g)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "tabella_riassuntiva": [
+    {
+      "concetto": "Peso specifico acqua",
+      "formula": "γ = 9810 N/m³",
+      "unita": "N/m³",
+      "note": "A 4°C, standard"
+    },
+    {
+      "concetto": "Pressione idrostatica",
+      "formula": "p = ρgh",
+      "unita": "Pa",
+      "note": "h è profondità"
+    },
+    {
+      "concetto": "Numero Reynolds",
+      "formula": "Re = vD/ν",
+      "unita": "-",
+      "note": "Determina regime flusso"
+    },
+    {
+      "concetto": "Portata",
+      "formula": "Q = A × v",
+      "unita": "m³/s",
+      "note": "Costante per continuità"
+    },
+    {
+      "concetto": "Bernoulli",
+      "formula": "p/γ + v²/2g + z = cost",
+      "unita": "m",
+      "note": "Tre quote energetiche"
+    },
+    {
+      "concetto": "Perdita lineale",
+      "formula": "hf = f(L/D)(v²/2g)",
+      "unita": "m",
+      "note": "Dipende da Reynolds"
+    }
+  ],
+  "supporto": {
+    "teoria": "Contatta Beatrice (Slack @beatrice)",
+    "risorse": "Contatta Agata (Slack #resources)",
+    "coordinamento": "Roberta (Team lead Strutturale)"
+  },
+  "prossimo_studio": {
+    "lunedi_31_ago": "Capitoli 1-3 (Proprietà, Statica, Cinematica)",
+    "martedi_1_set": "Capitoli 4-5 (Bernoulli, Perdite)",
+    "mercoledi_2_set": "Esercizi applicativi + casi studio",
+    "giovedi_3_set": "Approfondimento specialistico per ogni agente",
+    "venerdi_4_set": "Debrief e preparazione operativo"
+  }
+}

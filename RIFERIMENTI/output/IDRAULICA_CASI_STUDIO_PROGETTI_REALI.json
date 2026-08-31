@@ -1,0 +1,245 @@
+{
+  "metadata": {
+    "titolo": "IDRAULICA — Casi Studio: Progetti Reali",
+    "fase": "Fase 1 Intensive (1-5 settembre 2026)",
+    "destinatari": ["Specialisti Idraulica (per applicazione pratica)"],
+    "riferimento": "Belluzzi Cap 4-5 + applicazioni pratiche",
+    "scopo": "Collegare teoria a problemi reali di ingegneria civile",
+    "data_creazione": "2026-08-31",
+    "versione": "1.0",
+    "formato_originale": "markdown"
+  },
+  "casi_studio": [
+    {
+      "numero": 1,
+      "titolo": "Sistema Acquedotto Urbano",
+      "contesto_progettuale": {
+        "citta": "Metropoli di 500,000 abitanti",
+        "consumo_medio": "150 litri/abitante/giorno",
+        "popolazione_servita": 500000,
+        "consumo_totale_giorno": "75,000 m³/giorno",
+        "portata_oraria_picco": "3,125 m³/h"
+      },
+      "sistema_idraulico": {
+        "sorgente": "Bacino montano, 800 m sopra città",
+        "percorso": [
+          "Vasca di carica: 20 m³ (raccoglitore)",
+          "Condotta principale: 500 mm diametro, 45 km lunghezza",
+          "Stazione di pompaggio: ogni 15 km",
+          "Serbatoio di distribuzione: 5,000 m³",
+          "Reti urbane: 500 km tubi distribuzione"
+        ]
+      },
+      "analisi_idraulica": {
+        "perdita_carico_condotta": {
+          "diametro_m": 0.5,
+          "lunghezza_m": 45000,
+          "portata_ms": 0.868,
+          "velocita_ms": 4.42,
+          "reynolds": 2210000,
+          "fattore_attrito": 0.015,
+          "formula": "hf = f × (L/D) × (v²/2g)",
+          "perdita_m": 1344,
+          "nota": "1,344 m perdita di carico!"
+        },
+        "implicazioni": "Batteria di pompe necessaria per sollevare 1,344 m + 800 m (quota) = ~2,100 m di alzata",
+        "stazioni_pompaggio": {
+          "perdita_per_15km": 448,
+          "numero_stazioni": 3,
+          "alzata_per_stazione": 500,
+          "details": [
+            "Stazione 1 (km 0): Pompa 3,125 m³/h, 500 m alzata",
+            "Stazione 2 (km 15): Pompa 3,125 m³/h, 500 m alzata",
+            "Stazione 3 (km 30): Pompa 3,125 m³/h, 500 m alzata"
+          ]
+        }
+      },
+      "linea_energetica": "Visualizzazione grafica della decrescita energetica lungo il percorso con punti di pompaggio che ripristinano l'energia"
+    },
+    {
+      "numero": 2,
+      "titolo": "Diga Irrigua (Belluzzi Fig. 4.1)",
+      "geometria_diga": {
+        "altezza_m": 30,
+        "lunghezza_coronamento_m": 150,
+        "tipo": "Diga in calcestruzzo a gravità"
+      },
+      "analisi_forze_idrostatiche": {
+        "pressione_distribuzione": {
+          "formula": "p(z) = ρ × g × z = 9,810 × z",
+          "dove": "z è profondità dal pelo libero",
+          "a_superficie": "p = 0 Pa",
+          "a_fondo_30m": "p = 294,300 Pa ≈ 294 kPa"
+        },
+        "forza_totale_per_metro": {
+          "formula": "F = ∫[0 to H] ρgz × dz = ρg × (H²/2)",
+          "calcolo": "9,810 × (30²/2) = 4,414,500 N/m",
+          "risultato": "4,414.5 kN/m"
+        },
+        "forza_totale_diga": {
+          "lunghezza_m": 150,
+          "calcolo": "4,414.5 kN/m × 150 m",
+          "risultato": "662,175 kN ≈ 662 MN"
+        },
+        "centro_pressione": {
+          "profondità_m": 20,
+          "formula": "2H/3 = 2 × 30 / 3 = 20 m sotto superficie"
+        }
+      },
+      "verifiche_stabilita": {
+        "momento_ribaltante": {
+          "formula": "M_ribaltante = F × (H/3)",
+          "calcolo": "662,175 kN × (30/3)",
+          "risultato": "6,621,750 kN·m"
+        },
+        "peso_diga": {
+          "volume_calcestruzzo_m3": 60000,
+          "peso_specifico_kN_m3": 24,
+          "peso_totale_kN": 1440000
+        },
+        "momento_stabilizzante": {
+          "formula": "M_stabilizzante = peso × (distanza_base/2)",
+          "calcolo": "1,440,000 kN × (15 m base/2)",
+          "risultato": "10,800,000 kN·m"
+        },
+        "coefficiente_sicurezza": {
+          "formula": "CS = M_stabilizzante / M_ribaltante",
+          "calcolo": "10,800,000 / 6,621,750",
+          "risultato": 1.63,
+          "nota": "Target minimo ≈ 1.5, quindi diga è stabile ✓"
+        }
+      }
+    },
+    {
+      "numero": 3,
+      "titolo": "Sfioratore di Diga (Spillway)",
+      "funzione": [
+        "Evacuare portate di piena eccedenti capacità invasi",
+        "Mantenere livello massimo di sicurezza",
+        "Evitare tracimazione incontrollata"
+      ],
+      "tipo": "Sfioratore a Stramazzo Libero",
+      "geometria": {
+        "lunghezza_cresta_m": 20,
+        "carico_idraulico_m": 1.5,
+        "descrizione": "altezza acqua sopra cresta"
+      },
+      "formula_portata": {
+        "formula": "Q = C × L × H^(3/2)",
+        "parametri": [
+          {"simbolo": "C", "valore": 1.84, "note": "coeff empirico, dipende geometria"},
+          {"simbolo": "L", "descrizione": "lunghezza cresta", "unita": "m"},
+          {"simbolo": "H", "descrizione": "carico idraulico", "unita": "m"}
+        ]
+      },
+      "calcolo": {
+        "formula": "Q = 1.84 × 20 × (1.5)^(3/2)",
+        "sviluppo": "1.84 × 20 × 1.837",
+        "risultato": 67.6,
+        "interpretazione": "Lo spillway evacua 67.6 m³/s con carico di 1.5 m"
+      },
+      "profilo_lama_cadente": {
+        "descrizione": "Forma tracciata per far aderire acqua alla superficie",
+        "obiettivo": "Evita cavitazione (vuoti pressione che causano danno)",
+        "metodo": "Profilo ottenuto da Bernoulli con accelerazione gravità"
+      }
+    },
+    {
+      "numero": 4,
+      "titolo": "Pompa Centrifuga per Irrigazione",
+      "applicazione": "Sistema Irrigazione Agricola",
+      "requisiti": {
+        "portata_L_min": 500,
+        "portata_m3_s": 0.0083,
+        "alzata_m": 50,
+        "tubo_aspirazione_m": 2,
+        "tubo_mandata_m": 200
+      },
+      "scelta_pompa": {
+        "curva_caratteristica_data": [
+          {"alzata_m": 60, "portata_L_min": 0},
+          {"alzata_m": 50, "portata_L_min": 5},
+          {"alzata_m": 35, "portata_L_min": 10},
+          {"alzata_m": 0, "portata_L_min": 20}
+        ]
+      },
+      "calcolo_perdite_carico": {
+        "in_aspirazione": {
+          "lunghezza_m": 2,
+          "diametro_m": 0.05,
+          "velocita_m_s": 4.24,
+          "reynolds": 212000,
+          "fattore_attrito": 0.018,
+          "perdita_m": 0.31
+        },
+        "in_mandata": {
+          "lunghezza_m": 200,
+          "diametro_m": 0.05,
+          "velocita_m_s": 4.24,
+          "fattore_attrito": 0.018,
+          "perdita_m": 31.4
+        },
+        "perdite_localizzate": {
+          "cause": "curve, valvole",
+          "coefficiente_K": 2.0,
+          "perdita_m": 2.0
+        },
+        "perdita_totale": {
+          "formula": "h_totale = h_asp + h_mand + h_L",
+          "calcolo": "0.31 + 31.4 + 2.0",
+          "risultato": 33.71
+        }
+      },
+      "punto_funzionamento": {
+        "curva_sistema": {
+          "formula": "H_richiesta = 50 + 33.71 × (Q/0.0083)²",
+          "nota": "Perdite variano con Q²"
+        },
+        "soluzione": {
+          "portata_L_min": 5,
+          "alzata_m": 50,
+          "potenza_assorbita_kW": 5.4,
+          "potenza_assorbita_HP": 7.3
+        }
+      }
+    }
+  ],
+  "riassunto_casi_studio": [
+    {
+      "caso": 1,
+      "tipo": "Acquedotto",
+      "portata": "3,125 m³/h",
+      "alzata": "2,100 m",
+      "componente_critico": "Perdite condotta (1,344 m)"
+    },
+    {
+      "caso": 2,
+      "tipo": "Diga",
+      "portata": "-",
+      "alzata": "-",
+      "componente_critico": "Spinta idrostatica (662 MN)"
+    },
+    {
+      "caso": 3,
+      "tipo": "Spillway",
+      "portata": "67.6 m³/s",
+      "alzata": "1.5 m carico",
+      "componente_critico": "Erosione cavitazione"
+    },
+    {
+      "caso": 4,
+      "tipo": "Irrigazione",
+      "portata": "5 L/min",
+      "alzata": "50 m",
+      "componente_critico": "Punto funzionamento pompa"
+    }
+  ],
+  "lezioni_apprese": [
+    "Perdite di carico sono SIGNIFICATIVE in sistemi reali (1,344 m in acquedotto!)",
+    "Pompe multiple necessarie quando distanze lunghe",
+    "Spinte idrostatiche crescono rapidamente con profondità (triangolare, non lineare)",
+    "Cavitazione è rischio reale (basse pressioni assolute)",
+    "Bernoulli + perdite è metodologia universale applicabile"
+  ],
+  "prossimo": "Esercizi e calcoli per ogni specialista"
+}

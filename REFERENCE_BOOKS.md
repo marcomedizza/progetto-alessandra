@@ -1,17 +1,30 @@
 # 📚 REFERENCE BOOKS — Progetto Alessandra
 
-## Per Elisa (Calcoli Strutturali & Fortran)
+## Per Alessia (Geotecnica)
 
-### **Fondazioni, Progetto e Analisi**
+### **Fondazioni, Progetto e Analisi** — lettura completa
 - **Autore**: Joseph E. Bowles
 - **Argomento**: Progetto e analisi di fondazioni, cedimenti, portanza
-- **Rilevanza**: 
-  - Calcoli di interazione terreno-struttura
-  - Modellazione di cedimenti diferenziali
-  - Analisi della portanza (bearing capacity)
-  - Fondamentale per calcoli Fortran di strutture con fondazioni
+- **Rilevanza**:
+  - Capacità portante delle fondazioni superficiali e profonde
+  - Cedimenti e cedimenti differenziali
+  - Spinta delle terre e opere di sostegno
+  - Interazione terreno-struttura (suolo alla Winkler, coefficiente di sottofondo)
+- **Stato**: assegnato il 17/10/2026, nessun rapporto di lettura
 
-**Nota**: Classico per solver strutturali con fondazioni. Utile per validare formule empiriche vs. FEM.
+### **Geotecnica** — cap. 8–11 (fondazioni, cedimenti, pali, spinta delle terre)
+- **Autore**: Renato Lancellotta
+- **Assegnato**: entro il 03/09/2026 (RIFERIMENTI_ALESSIA_GEOTECNICA.md)
+- **Stato**: nessun rapporto di lettura in archivio (atteso `Alessia_2026-09-03.json`)
+
+## Per Elisa (Calcoli Strutturali & Fortran)
+
+### **Fondazioni, Progetto e Analisi** — solo i capitoli sull'interazione terreno-struttura
+- **Autore**: Joseph E. Bowles
+- **Rilevanza**:
+  - Travi e platee su suolo elastico (modello di Winkler, coefficiente di sottofondo)
+  - Molle equivalenti per modellare le fondazioni nel solver Fortran
+  - Validazione delle formule empiriche rispetto al FEM
 
 ### **Metodi e Algoritmi per il Calcolo Numerico**
 - **Autore**: Giovanni Monegato
@@ -51,5 +64,5 @@
 
 ---
 
-_Aggiornato: 2026-08-15_
+_Aggiornato: 2026-10-17 (Bowles assegnato ad Alessia per intero, a Elisa per l'interazione terreno-struttura)_
 _Suggerimenti libri per team Alessandra_

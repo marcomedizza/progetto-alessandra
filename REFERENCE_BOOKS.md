@@ -2,6 +2,8 @@
 
 ## Per Alessia (Geotecnica)
 
+**Dove sono i testi**: `D:\IlMioDrive\progetto-alessandra\RIFERIMENTI\GEOTECNICA`. Alessia li richiede ad Agata.
+
 ### **Fondazioni, Progetto e Analisi** — lettura completa
 - **Autore**: Joseph E. Bowles
 - **Argomento**: Progetto e analisi di fondazioni, cedimenti, portanza

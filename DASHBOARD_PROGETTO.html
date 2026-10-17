@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Dashboard Progetto Alessandra</title>
+    <title>🚀 Cruscotto progetto Alessandra</title>
     <style>
         * {
             margin: 0;
@@ -555,6 +555,129 @@
             color: #666;
             margin-top: 5px;
         }
+
+        /* aggiunte aggiornamento 17/10/2026 */
+        .status-badge.alert {
+            background: #ef4444;
+        }
+
+        .alert-card {
+            background: #fee2e2;
+            border-left: 6px solid #ef4444;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-card strong {
+            color: #7f1d1d;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+
+        .alert-card p {
+            color: #7f1d1d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .stats-box.white {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 0;
+        }
+
+        .stats-note {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .status-unknown {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .milestone.late {
+            border-left-color: #ef4444;
+        }
+
+        .milestone.completed {
+            border-left-color: #10b981;
+        }
+
+        .milestone-note {
+            font-size: 12px;
+            color: #555;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .ms-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .ms-badge.late { background: #fee2e2; color: #7f1d1d; }
+        .ms-badge.completed { background: #d1fae5; color: #065f46; }
+        .ms-badge.pending { background: #fef3c7; color: #92400e; }
+
+        .phase-row {
+            margin-bottom: 20px;
+        }
+
+        .phase-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .phase-doc {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .progress-fill.done-calendar {
+            background: #9ca3af;
+        }
+
+        .check-warning {
+            margin-top: 8px;
+            padding: 8px;
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #92400e;
+        }
+
+        .seed-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 10px;
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: bold;
+        }
+
+        .data-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -562,55 +685,81 @@
         <header>
             <div>
                 <h1>🚀 Progetto Alessandra</h1>
-                <p style="color: #666; margin-top: 5px;">Dashboard Interattivo</p>
+                <p style="color: #666; margin-top: 5px;">Cruscotto interattivo · dati aggiornati al 17/10/2026</p>
             </div>
             <div class="header-info">
                 <div style="text-align: right;">
                     <div style="font-size: 12px; color: #666;">Oggi</div>
                     <div style="font-size: 18px; font-weight: bold;" id="today-date"></div>
                 </div>
-                <div class="status-badge">🟢 ACTIVE</div>
+                <div class="status-badge alert">🔴 DATI FERMI AL 31/08</div>
             </div>
         </header>
 
         <!-- NAVIGATION TABS -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('agents')">👩‍💼 Agenti</button>
-            <button class="tab-btn" onclick="switchTab('agent-roles')">👩‍💻 Chi Fa Cosa</button>
-            <button class="tab-btn" onclick="switchTab('research')">📚 Ricerche Online</button>
-            <button class="tab-btn" onclick="switchTab('notifications')">🔔 Notifiche</button>
-            <button class="tab-btn" onclick="switchTab('board')">📌 Bacheche</button>
-            <button class="tab-btn" onclick="switchTab('progress')">📈 Avanzamento</button>
-            <button class="tab-btn" onclick="switchTab('requests')">📝 Richieste</button>
-            <button class="tab-btn" onclick="switchTab('meetings')">🤝 Meeting</button>
-            <button class="tab-btn" onclick="switchTab('reference-books')">📚 Libri Riferimento</button>
+            <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Cruscotto</button>
+            <button class="tab-btn" data-tab="agents" onclick="switchTab('agents')">👩‍💼 Agenti</button>
+            <button class="tab-btn" data-tab="agent-roles" onclick="switchTab('agent-roles')">👩‍💻 Chi fa cosa</button>
+            <button class="tab-btn" data-tab="research" onclick="switchTab('research')">📚 Ricerche in rete</button>
+            <button class="tab-btn" data-tab="notifications" onclick="switchTab('notifications')">🔔 Notifiche</button>
+            <button class="tab-btn" data-tab="board" onclick="switchTab('board')">📌 Bacheche</button>
+            <button class="tab-btn" data-tab="progress" onclick="switchTab('progress')">📈 Avanzamento</button>
+            <button class="tab-btn" data-tab="requests" onclick="switchTab('requests')">📝 Richieste</button>
+            <button class="tab-btn" data-tab="meetings" onclick="switchTab('meetings')">🤝 Riunioni</button>
+            <button class="tab-btn" data-tab="reference-books" onclick="switchTab('reference-books')">📚 Libri di riferimento</button>
         </div>
 
         <!-- DASHBOARD TAB -->
         <div id="dashboard" class="tab-content active">
+            <div class="alert-card">
+                <strong>⛔ Nessun rapporto registrato dopo il 31/08/2026 (<span id="days-no-data">—</span> giorni)</strong>
+                <p>L'ultimo documento in archivio è AGATA_REPORT_20260831.json. Fase in corso e scadenze sono calcolate dal calendario del programma, non da dati misurati. Mancano: esito della fase 1 idraulica (5/09), rapporti settimanali della fase 2, casi studio della fase 3.</p>
+            </div>
+
             <div class="grid-3">
-                <div class="stats-box">
-                    <div class="stats-number" id="total-agents">21</div>
-                    <div class="stats-label">Agenti Totali</div>
+                <div class="stats-box white">
+                    <div class="stats-number" id="stat-phase">—</div>
+                    <div class="stats-label">Fase in corso (da calendario)</div>
+                    <div class="stats-note" id="stat-phase-note"></div>
                 </div>
-                <div class="stats-box">
-                    <div class="stats-number" id="active-tasks">0</div>
-                    <div class="stats-label">Task Attivi</div>
+                <div class="stats-box white">
+                    <div class="stats-number" id="stat-days-final">—</div>
+                    <div class="stats-label">Giorni alla valutazione finale</div>
+                    <div class="stats-note">sabato 24/10/2026</div>
                 </div>
-                <div class="stats-box">
-                    <div class="stats-number" id="completion-rate">0%</div>
-                    <div class="stats-label">Completamento</div>
+                <div class="stats-box white">
+                    <div class="stats-number" id="stat-late">—</div>
+                    <div class="stats-label">Traguardi scaduti non completati</div>
+                    <div class="stats-note">vedi scheda Avanzamento</div>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="stats-box white">
+                    <div class="stats-number" id="total-agents">—</div>
+                    <div class="stats-label">Agenti totali</div>
+                    <div class="stats-note" id="total-agents-note"></div>
+                </div>
+                <div class="stats-box white">
+                    <div class="stats-number">73%</div>
+                    <div class="stats-label">Agenti avviati alla lettura</div>
+                    <div class="stats-note">19/26 al 28/08 · ultimo rilievo</div>
+                </div>
+                <div class="stats-box white">
+                    <div class="stats-number" id="stat-project-day">—</div>
+                    <div class="stats-label">Giorno di progetto</div>
+                    <div class="stats-note">avvio 15/08/2026</div>
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="card">
-                    <h3>📅 Prossime Milestone</h3>
+                    <h3>📅 Prossimi traguardi</h3>
                     <div id="milestones-preview"></div>
                 </div>
                 <div class="card">
-                    <h3>🔔 Notifiche Recenti</h3>
+                    <h3>🔔 Notifiche recenti</h3>
                     <div id="notifications-preview"></div>
                 </div>
             </div>
@@ -620,14 +769,25 @@
         <div id="agents" class="tab-content">
             <div class="grid-2">
                 <div class="card">
-                    <h3>👩 Team Alessandra (Dev)</h3>
+                    <h3>👩 Team Alessandra (tech · resp. formazione Elisa)</h3>
                     <div id="team-ale"></div>
                 </div>
                 <div class="card">
-                    <h3>👩 Team Giorgia (Business)</h3>
+                    <h3>👩 Team Giorgia (business · resp. formazione Katia)</h3>
                     <div id="team-giorgia"></div>
                 </div>
             </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>🏗️ Team strutturale (resp. Roberta)</h3>
+                    <div id="team-strutturale"></div>
+                </div>
+                <div class="card">
+                    <h3>🛡️ Coordinamento e controllo qualità (resp. Sole)</h3>
+                    <div id="team-qa"></div>
+                </div>
+            </div>
+            <p class="data-note" style="color: white;">Stato individuale: nessun rapporto per agente dopo il 31/08, per questo è indicato «non rendicontato».</p>
         </div>
 
         <!-- CHI FA COSA TAB -->
@@ -636,58 +796,39 @@
                 <input type="text" id="search-agent" placeholder="🔍 Cerca agente..." style="max-width: 400px;">
             </div>
 
-            <div class="role-section-title">🏗️ Team Alessandra — Sviluppo Tecnico (16 agenti)</div>
+            <div class="role-section-title" style="color: white; border-bottom-color: white;" id="title-ale">🏗️ Team Alessandra — sviluppo tecnico</div>
             <div id="ale-roles"></div>
 
-            <div class="role-section-title">🎯 Team Giorgia — Business & Operations (5 agenti)</div>
+            <div class="role-section-title" style="color: white; border-bottom-color: white;" id="title-giorgia">🎯 Team Giorgia — business e operazioni</div>
             <div id="giorgia-roles"></div>
+
+            <div class="role-section-title" style="color: white; border-bottom-color: white;" id="title-strutturale">🏛️ Team strutturale</div>
+            <div id="strutturale-roles"></div>
+
+            <div class="role-section-title" style="color: white; border-bottom-color: white;" id="title-qa">🛡️ Coordinamento e controllo qualità</div>
+            <div id="qa-roles"></div>
         </div>
 
         <!-- RICERCHE ONLINE TAB -->
         <div id="research" class="tab-content">
             <div class="card">
-                <h3>📚 Aggiungi Ricerca Online</h3>
+                <h3>📚 Aggiungi ricerca in rete</h3>
                 <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <select id="research-agent">
-                        <option value="">🔸 Seleziona Agente...</option>
-                        <option value="--- TEAM ALESSANDRA ---" disabled>--- TEAM ALESSANDRA ---</option>
-                        <option value="Alessandra">Alessandra</option>
-                        <option value="Benedetta">Benedetta</option>
-                        <option value="Irene">Irene</option>
-                        <option value="Natalia">Natalia</option>
-                        <option value="Elisa">Elisa</option>
-                        <option value="Francesca">Francesca</option>
-                        <option value="Valentina">Valentina</option>
-                        <option value="Carla">Carla</option>
-                        <option value="Daniela">Daniela</option>
-                        <option value="Lucia">Lucia</option>
-                        <option value="Mariana">Mariana</option>
-                        <option value="Ottavia">Ottavia</option>
-                        <option value="Paola">Paola</option>
-                        <option value="Renata">Renata</option>
-                        <option value="Silvia">Silvia</option>
-                        <option value="Gabriella">Gabriella</option>
-                        <option value="--- TEAM GIORGIA ---" disabled>--- TEAM GIORGIA ---</option>
-                        <option value="Giorgia">Giorgia</option>
-                        <option value="Aurora">Aurora</option>
-                        <option value="Livia">Livia</option>
-                        <option value="Veronica">Veronica</option>
-                        <option value="Camilla">Camilla</option>
-                        <option value="Laura">Laura</option>
-                    </select>
+                    <select id="research-agent"></select>
 
-                    <input type="text" id="research-topic" placeholder="Argomento di ricerca (es. Pricing Models, CFD Trends)..." style="margin-top: 10px;">
+                    <input type="text" id="research-topic" placeholder="Argomento di ricerca (es. modelli di prezzo, tendenze CFD)..." style="margin-top: 10px;">
 
-                    <input type="url" id="research-source" placeholder="URL fonte (es. https://www.example.com/article)..." style="margin-top: 10px;">
+                    <input type="url" id="research-source" placeholder="Indirizzo della fonte (es. https://www.example.com/articolo)..." style="margin-top: 10px;">
 
-                    <textarea id="research-summary" placeholder="📝 Riassunto (max 300 battute): descrivi cosa hai trovato, i punti chiave, perché è rilevante..." style="min-height: 100px; margin-top: 10px;"></textarea>
+                    <textarea id="research-summary" placeholder="📝 Riassunto (max 300 battute): cosa hai trovato, punti chiave, perché è rilevante..." style="min-height: 100px; margin-top: 10px;"></textarea>
 
                     <div class="char-counter" id="research-char-count">0/300</div>
 
-                    <button onclick="submitResearch()">💾 Salva Ricerca</button>
+                    <button onclick="submitResearch()">💾 Salva ricerca</button>
                 </div>
 
-                <h3 style="margin-top: 25px;">🔍 Ricerche Salvate</h3>
+                <h3 style="margin-top: 25px;">🔍 Ricerche salvate</h3>
+                <p class="data-note" style="margin-top: 0; margin-bottom: 12px;">Caricati i 10 rapporti presenti in archivio (RICERCHE_ONLINE, 18–22/08). Calendario previsto: 19 giorni fino al 05/09; dal 23/08 nessun rapporto.</p>
                 <div style="margin-bottom: 15px;">
                     <input type="text" id="research-search" placeholder="🔎 Cerca ricerche..." style="max-width: 400px;">
                 </div>
@@ -698,8 +839,8 @@
         <!-- NOTIFICATIONS TAB -->
         <div id="notifications" class="tab-content">
             <div class="card">
-                <h3>🔔 Tutte le Notifiche</h3>
-                <button onclick="addNotification()" class="btn-small">+ Aggiungi Notifica</button>
+                <h3>🔔 Tutte le notifiche</h3>
+                <button onclick="addNotification()" class="btn-small">+ Aggiungi notifica</button>
                 <div id="all-notifications" style="margin-top: 15px;"></div>
             </div>
         </div>
@@ -708,15 +849,15 @@
         <div id="board" class="tab-content">
             <div class="grid-2">
                 <div class="card">
-                    <h3>📌 Bacheca Pubblica</h3>
-                    <textarea placeholder="Nuovo post pubblico..." id="public-post" style="min-height: 80px;"></textarea>
+                    <h3>📌 Bacheca pubblica</h3>
+                    <textarea placeholder="Nuovo messaggio pubblico..." id="public-post" style="min-height: 80px;"></textarea>
                     <button onclick="postPublic()">Pubblica</button>
                     <div id="public-board" style="margin-top: 15px;"></div>
                 </div>
                 <div class="card">
-                    <h3>🔐 Bacheca Privata</h3>
-                    <textarea placeholder="Nuovo post privato..." id="private-post" style="min-height: 80px;"></textarea>
-                    <button onclick="postPrivate()">Pubblica (Privato)</button>
+                    <h3>🔐 Bacheca privata</h3>
+                    <textarea placeholder="Nuovo messaggio privato..." id="private-post" style="min-height: 80px;"></textarea>
+                    <button onclick="postPrivate()">Pubblica (privato)</button>
                     <div id="private-board" style="margin-top: 15px;"></div>
                 </div>
             </div>
@@ -724,37 +865,22 @@
 
         <!-- PROGRESS TAB -->
         <div id="progress" class="tab-content">
+            <div class="card" style="margin-bottom: 20px;">
+                <h3>📈 Programma di formazione 26/08 → 24/10 (decisione del 26/08)</h3>
+                <div id="phases-learning"></div>
+                <p class="data-note">Barra = tempo trascorso dal calendario. Grigio: fase chiusa da calendario; viola: fase in corso. La barra non misura l'apprendimento.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <h3>🛠️ Sviluppo del programma di calcolo (piano iniziale)</h3>
+                <div id="phases-dev"></div>
+                <p class="data-note">In archivio esistono solo lo schema dati in bozza (SCHEMA_DATI_ALESSANDRA.json) e l'esempio di portale 2D. Nessun codice di interfaccia 3D, servizio FastAPI o solutore Fortran. Il piano non è stato rifatto dopo il cambio di indirizzo del 26/08.</p>
+            </div>
+
             <div class="card">
-                <h3>📈 Stato Avanzamento Progetto</h3>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 1: Planning & Spec (Week 1)</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 30%"></div>
-                    </div>
-                    <div style="font-size: 12px; color: #666;">30% - In Progress</div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 2: Core Dev (Week 2-4)</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <div style="font-size: 12px; color: #666;">0% - Non Iniziato</div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-weight: bold; margin-bottom: 8px;">Fase 3: Integration (Week 4-6)</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <div style="font-size: 12px; color: #666;">0% - Non Iniziato</div>
-                </div>
-
-                <h3 style="margin-top: 25px;">📋 Milestone</h3>
+                <h3>📋 Traguardi</h3>
                 <div id="milestones-full"></div>
-
-                <button onclick="addMilestone()" class="btn-small">+ Aggiungi Milestone</button>
+                <button onclick="addMilestone()" class="btn-small">+ Aggiungi traguardo</button>
             </div>
         </div>
 
@@ -762,32 +888,22 @@
         <div id="requests" class="tab-content">
             <div class="grid-2">
                 <div class="card">
-                    <h3>📝 Richieste Agenti</h3>
-                    <select id="agent-select">
-                        <option value="">Seleziona agente...</option>
-                        <option value="Alessandra">Alessandra (ALE)</option>
-                        <option value="Benedetta">Benedetta (BeneD)</option>
-                        <option value="Giorgia">Giorgia (GIO)</option>
-                        <option value="Aurora">Aurora</option>
-                        <option value="Livia">Livia</option>
-                        <option value="Veronica">Veronica (Vero)</option>
-                        <option value="Camilla">Camilla</option>
-                        <option value="Laura">Laura</option>
-                    </select>
+                    <h3>📝 Richieste agli agenti</h3>
+                    <select id="agent-select"></select>
                     <textarea placeholder="Descrivi la richiesta..." id="agent-request" style="min-height: 80px;"></textarea>
-                    <button onclick="submitAgentRequest()">Invia Richiesta</button>
+                    <button onclick="submitAgentRequest()">Invia richiesta</button>
                     <div id="agent-requests-list" style="margin-top: 15px;"></div>
                 </div>
 
                 <div class="card">
-                    <h3>💬 Le Tue Richieste</h3>
+                    <h3>💬 Le tue richieste</h3>
                     <select id="priority-select">
-                        <option value="normal">Priorità: Normale</option>
-                        <option value="high">Priorità: Alta</option>
-                        <option value="urgent">Priorità: Urgente</option>
+                        <option value="normal">Priorità: normale</option>
+                        <option value="high">Priorità: alta</option>
+                        <option value="urgent">Priorità: urgente</option>
                     </select>
                     <textarea placeholder="La tua richiesta..." id="my-request" style="min-height: 80px;"></textarea>
-                    <button onclick="submitMyRequest()">Invia la Mia Richiesta</button>
+                    <button onclick="submitMyRequest()">Invia la mia richiesta</button>
                     <div id="my-requests-list" style="margin-top: 15px;"></div>
                 </div>
             </div>
@@ -796,20 +912,22 @@
         <!-- MEETINGS TAB -->
         <div id="meetings" class="tab-content">
             <div class="card">
-                <h3>🤝 Resoconti Meeting</h3>
+                <h3>🤝 Resoconti riunioni</h3>
 
                 <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                     <input type="date" id="meeting-date" value="">
                     <select id="meeting-attendees">
                         <option value="">Seleziona partecipanti...</option>
-                        <option value="team-ale">Team Alessandra</option>
-                        <option value="team-giorgia">Team Giorgia</option>
-                        <option value="all">Tutti</option>
-                        <option value="ale-gio">Alessandra & Giorgia</option>
+                        <option value="Team Alessandra">Team Alessandra</option>
+                        <option value="Team Giorgia">Team Giorgia</option>
+                        <option value="Team strutturale">Team strutturale</option>
+                        <option value="Coordinamento (Alessandra, Sole, responsabili)">Coordinamento (Alessandra, Sole, responsabili)</option>
+                        <option value="Tutti">Tutti</option>
+                        <option value="Alessandra e Giorgia">Alessandra e Giorgia</option>
                     </select>
-                    <textarea placeholder="Resoconto meeting (max 300 battute)..." id="meeting-notes" style="min-height: 100px;"></textarea>
+                    <textarea placeholder="Resoconto riunione (max 300 battute)..." id="meeting-notes" style="min-height: 100px;"></textarea>
                     <div style="font-size: 12px; color: #666; margin-bottom: 10px;" id="char-count">0/300</div>
-                    <button onclick="submitMeetingReport()">Salva Resoconto</button>
+                    <button onclick="submitMeetingReport()">Salva resoconto</button>
                 </div>
 
                 <div id="meeting-reports"></div>
@@ -818,7 +936,7 @@
 
         <div id="reference-books" class="tab-content">
             <div class="card">
-                <h3>📚 Libri di Riferimento — Progetto Alessandra</h3>
+                <h3>📚 Libri di riferimento — progetto Alessandra</h3>
 
                 <div style="margin-bottom: 30px;">
                     <div style="font-size: 16px; font-weight: bold; color: #667eea; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">
@@ -903,233 +1021,452 @@
     </div>
 
     <script>
-        // Initialize Data
+        // ===== DATI AGGIORNATI AL 17/10/2026 =====
+        // Fonte: ramo claude/sviluppi-496gl0 (ultimo commit 31/08/2026)
+        const SEED_VERSION = '2026-10-17';
+        const PROJECT_START = '2026-08-15';
+        const LAST_DATA_DATE = '2026-08-31';
+        const FINAL_ASSESSMENT = '2026-10-24';
+
+        const learningPhases = [
+            { name: 'Fase 0 · avvio uniforme', start: '2026-08-26', end: '2026-08-29', doc: 'Documentata. 25/08 non conformità 24/24; al 28/08 avviati 19/26 (73%), obiettivo 50% superato. Strutturale 6/8 (75%), tech 8/12 (67%, sotto soglia 75%), business 5/6 (83%).', docStatus: 'ok' },
+            { name: 'Fase 1 · idraulica intensiva (Roberta)', start: '2026-08-30', end: '2026-09-05', doc: 'Materiali pronti al 31/08: 3 documenti, 25 esercizi, 4 casi studio (Belluzzi cap. 1–5). Nessun rapporto giornaliero, nessuna valutazione finale di Ginevra.', docStatus: 'missing' },
+            { name: 'Fase 2 · consolidamento', start: '2026-09-06', end: '2026-09-26', doc: 'Previsti rapporti settimanali (lunedì) di Roberta, Elisa, Katia. Nessuno in archivio.', docStatus: 'missing' },
+            { name: 'Fase 3 · applicazione', start: '2026-09-27', end: '2026-10-24', doc: 'Prevista definizione dei casi studio a fine settembre (Beatrice) e monitoraggio settimanale. Nessun documento in archivio.', docStatus: 'missing' }
+        ];
+
+        const devPhases = [
+            { name: 'Fase 1 · pianificazione e specifiche (sett. 1–2)', start: '2026-08-15', end: '2026-08-28', doc: 'Schema dati v2.0 in stato «DRAFT_v1» (18/08). Specifiche API e documento di architettura assenti.', pct: 30 },
+            { name: 'Fase 2 · sviluppo base (sett. 2–4)', start: '2026-08-22', end: '2026-09-11', doc: 'Nessun codice in archivio.', pct: 0 },
+            { name: 'Fase 3 · integrazione (sett. 4–6)', start: '2026-09-05', end: '2026-09-25', doc: 'Nessun codice in archivio.', pct: 0 },
+            { name: 'Fase 4 · collegamento ModeSt (sett. 6–8)', start: '2026-09-19', end: '2026-10-09', doc: 'Nessun codice in archivio.', pct: 0 }
+        ];
+
+        const SEED_MILESTONES = [
+            { title: 'Schema dati finalizzato', date: '2026-08-19', status: 'pending', note: 'Esiste solo la bozza v2.0 «DRAFT_v1» del 18/08 (Benedetta).' },
+            { title: 'Fase 0 formazione conclusa', date: '2026-08-29', status: 'completed', note: '73% agenti avviati al 28/08.' },
+            { title: 'Rilascio alfa (statica lineare + P-Delta, DXF)', date: '2026-09-02', status: 'pending', note: 'Nessun codice in archivio.' },
+            { title: 'Valutazione fase 1 idraulica (Ginevra)', date: '2026-09-05', status: 'pending', note: 'Esito non documentato.' },
+            { title: 'Rilascio beta (modale, esportazione ModeSt)', date: '2026-09-16', status: 'pending', note: 'Nessun codice in archivio.' },
+            { title: 'Casi studio fase 3 definiti (Beatrice)', date: '2026-09-30', status: 'pending', note: 'Nessun documento in archivio.' },
+            { title: 'Valutazione finale programma di formazione', date: '2026-10-24', status: 'pending', note: 'Criteri definiti (comprende, applica, insegna, produce); modalità di verifica non definita.' }
+        ];
+
+        const SEED_NOTIFICATIONS = [
+            { title: '⛔ Nessun rapporto dopo il 31/08', message: 'Mancano esito fase 1 idraulica, rapporti settimanali fase 2 e casi studio fase 3. Senza questi dati la valutazione del 24/10 non ha base.', priority: 'high', time: '17/10/2026' },
+            { title: 'Rilasci alfa e beta scaduti', message: 'Alfa (02/09) e beta (16/09) senza codice in archivio. Il piano di sviluppo va rifatto o sospeso formalmente.', priority: 'high', time: '17/10/2026' },
+            { title: 'Valutazione finale tra pochi giorni', message: 'Sabato 24/10 chiude la fase 3. Sole deve definire come si verifica il risultato.', priority: 'medium', time: '17/10/2026' },
+            { title: 'Incongruenze nell\'elenco agenti', message: '24 agenti nei mandati, 26 nel resoconto del 28/08. Il team business ha due composizioni diverse (Aurora, Livia… oppure Katia, Nina, Elena…), con Paola e Valentina presenti in due gruppi.', priority: 'medium', time: '17/10/2026' },
+            { title: 'Rapporto conversione JSON del 31/08 incoerente', message: 'Lo stato dice «prova fallita, manca la chiave API», il rapporto di Agata «successo». Allegati 2,3 MB nelle email, 18,5 KB nel catalogo.', priority: 'medium', time: '17/10/2026' },
+            { title: 'Giorni della settimana errati nei documenti', message: '«Lunedì 30 agosto» è domenica, «venerdì 5 settembre» è sabato, «lunedì 1 settembre» è martedì.', priority: 'low', time: '17/10/2026' },
+            { title: 'Blocco invio GitHub risolto', message: 'L\'errore 403 del 21/08 è superato: i commit sono sul repository.', priority: 'low', time: '17/10/2026' }
+        ];
+
+        const SEED_RESEARCH = [
+            { agent: 'Aurora', topic: 'Modelli di prezzo SaaS, pagamenti', source: 'https://www.stripe.com/docs', date: '18/08/2026', summary: 'Modelli per postazione, per progetto o a consumo. Stripe e Paddle gestiscono l\'IVA UE. Proposta: visualizzatore gratuito, funzioni professionali a pagamento. Alcune fonti indicate non esistono (saasstr.com).' },
+            { agent: 'Benedetta', topic: 'Schema dati, standard FEM, JSON', source: 'https://json-schema.org/', date: '18/08/2026', summary: 'Validazione con jsonschema in Python; IFC 4 descrive geometria e carichi strutturali. Formato ModeSt proprietario. Proposta: validazione nello strato schema, importazione IFC dopo l\'alfa.' },
+            { agent: 'Irene', topic: 'Three.js, WebGL, interfaccia CAD', source: 'https://threejs.org/', date: '19/08/2026', summary: 'Three.js con controlli orbitali, selezione multipla e livelli di dettaglio regge grandi modelli a 60 fps. Proposta: Three.js come base della vista 3D.' },
+            { agent: 'Livia', topic: 'Posta, assistenza clienti', source: 'https://www.helpscout.com/', date: '19/08/2026', summary: 'Help Scout o Zendesk con server UE per il GDPR; Sendgrid per le email transazionali. Obiettivo risposta entro 2 ore.' },
+            { agent: 'Natalia', topic: 'FastAPI, integrazione Fortran', source: 'https://fastapi.tiangolo.com/', date: '20/08/2026', summary: 'Chiamata al solutore tramite ctypes su libreria compilata, più rapida di un processo separato. Solutore in contenitore Docker distinto dal servizio Python.' },
+            { agent: 'Veronica', topic: 'NTC 2018, licenze, GDPR', source: 'https://gdpr-info.eu/', date: '20/08/2026', summary: 'Proposta doppia licenza e informativa GDPR prima dell\'alfa. ⚠️ Errata l\'affermazione che le NTC 2018 richiedano un\'approvazione «CSM» del programma: il § 10.2 chiede documentazione e controllo di affidabilità da parte del progettista.' },
+            { agent: 'Camilla', topic: 'Mercato e concorrenti', source: 'https://www.buildingsmart.org/', date: '21/08/2026', summary: 'Concorrenti: Tekla, Revit, ModeSt dominante in Italia. Proposta: posizionamento BIM aperto sul mercato UE. Dati di crescita del mercato senza fonte verificabile.' },
+            { agent: 'Elisa', topic: 'P-Delta, analisi non lineare, LAPACK', source: 'https://www.netlib.org/lapack/', date: '21/08/2026', summary: 'LAPACK (licenza BSD) e iterazione di Newton-Raphson per il P-Delta. ⚠️ DGEEVX è un risolutore di autovalori, non una routine P-Delta: per il sistema lineare a ogni passo servono DGESV/DGESVX o DPOSV.' },
+            { agent: 'Francesca', topic: 'OpenFOAM, CFD, ModeSt', source: 'https://www.openfoam.com/', date: '22/08/2026', summary: 'Flusso CFD: geometria → mesh (Gmsh, Salome) → solutore → ParaView. ⚠️ ModeSt è un programma di calcolo strutturale agli elementi finiti, non un solutore RANS per fluidi: l\'informazione va corretta.' },
+            { agent: 'Laura', topic: 'Strumenti di gestione progetto, indicatori', source: 'https://docs.github.com/en/issues', date: '22/08/2026', summary: 'GitHub Projects per il lavoro tecnico, registro rischi con revisione settimanale e matrice 3×3 probabilità × impatto.' }
+        ];
+
+        const SEED_MY_REQUESTS = [
+            { text: 'Roberta, Elisa, Katia: consegnare i rapporti settimanali dal 06/09 al 12/10, o dichiararne l\'assenza.', priority: 'urgent', time: '17/10/2026' },
+            { text: 'Roberta, Ginevra: esito della fase 1 idraulica (valutazione del 05/09).', priority: 'urgent', time: '17/10/2026' },
+            { text: 'Responsabili dei gruppi: elenco dei casi studio della fase 3 e degli elaborati prodotti.', priority: 'high', time: '17/10/2026' },
+            { text: 'Alessandra, Benedetta: decidere se riprendere il piano di sviluppo (alfa e beta scaduti) e con quali date.', priority: 'high', time: '17/10/2026' },
+            { text: 'Sole: definire le modalità di verifica della valutazione finale del 24/10.', priority: 'high', time: '17/10/2026' },
+            { text: 'Fissare un elenco unico degli agenti (24 o 26) e la composizione definitiva del team business.', priority: 'normal', time: '17/10/2026' }
+        ];
+
+        const SEED_MEETINGS = [
+            { date: '2026-08-26', attendees: 'Alessandra, Sole, Ginevra, Raffaella, Agata', notes: 'Approvato il programma di formazione 26/08–24/10 con priorità idraulica. Briefing dei responsabili: Roberta 10:00, Elisa 10:30, Katia 11:00. Coordinamento settimanale il lunedì alle 11:00.', time: 'da archivio' },
+            { date: '2026-08-28', attendees: 'Resoconto di Alessandra', notes: 'Avviati 19/26 (73%): strutturale 6/8, tech 8/12, business 5/6. Accesso alle risorse 24/24. Belluzzi pronto per il 30/08. Elisa deve contattare i 4 agenti tech non avviati.', time: 'da archivio' },
+            { date: '2026-08-31', attendees: 'Agata, Roberta, specialisti idraulica', notes: 'Pronti e catalogati 3 documenti di idraulica (concetti, casi studio, esercizi). Automazione RIFERIMENTI configurata, prova automatica fallita per chiave API mancante. Ultimo documento in archivio.', time: 'da archivio' }
+        ];
+
         const agentDescriptions = {
             'Alessandra': {
-                title: 'Project Lead',
+                title: 'Responsabile di progetto',
                 team: 'Dev',
                 emoji: '👑',
-                description: 'Coordinamento generale del progetto. Gestisce timeline, milestone, comunicazione tra team. Approva decisioni architetturali critiche. Punto di contatto per executive decisions.',
-                skills: ['Leadership', 'Coordinamento', 'Architettura', 'Project Planning', 'Risk Management']
+                description: 'Coordinamento generale del progetto. Gestisce tempi, traguardi e comunicazione tra i gruppi. Approva le decisioni architetturali critiche. Dal 26/08 guida il programma di formazione e il coordinamento del lunedì alle 11:00.',
+                skills: ['Coordinamento', 'Architettura', 'Pianificazione', 'Gestione rischi']
             },
             'Benedetta': {
-                title: 'Tech Lead Architettura',
+                title: 'Responsabile architettura',
                 team: 'Dev',
                 emoji: '🏛️',
-                description: 'Disegna architettura complessiva del sistema. Definisce schema dati JSON/binario, API contracts, dipendenze tra componenti. Critica per Week 1 (schema dati).',
-                skills: ['Architettura', 'Database Design', 'API Design', 'Schema Validation', 'System Design']
+                description: 'Architettura complessiva del sistema. Schema dati JSON/binario, contratti API, dipendenze tra componenti. Schema dati v2.0 in bozza dal 18/08.',
+                skills: ['Architettura', 'Basi dati', 'Progetto API', 'Validazione schema']
             },
             'Irene': {
-                title: 'Tech Lead Frontend 3D',
+                title: 'Responsabile interfaccia 3D',
                 team: 'Dev',
                 emoji: '🎨',
-                description: 'Core visualizzazione CAD 3D con Three.js/WebGL. Gestisce viewport, viste multiple (Top/Front/Right/ISO), pan/zoom/rotate, gizmo transform, layers. Interfaccia AutoCAD-like.',
-                skills: ['Three.js', 'WebGL', 'GLSL', 'React', 'UI/UX', '3D Graphics', 'Electron']
+                description: 'Visualizzazione CAD 3D con Three.js/WebGL: viste multiple (alto, fronte, destra, assonometria), traslazione, zoom, rotazione, livelli.',
+                skills: ['Three.js', 'WebGL', 'React', 'Grafica 3D', 'Electron']
             },
             'Natalia': {
-                title: 'Tech Lead Backend',
+                title: 'Responsabile servizi (backend)',
                 team: 'Dev',
                 emoji: '⚙️',
-                description: 'Backend FastAPI orchestration. Gestisce routing API, file I/O, launcher processi Fortran, data conversion pipeline. Ponte tra frontend e solver.',
-                skills: ['FastAPI', 'Python', 'REST API', 'Database', 'File Management', 'Process Management']
+                description: 'Orchestrazione con FastAPI: instradamento API, lettura e scrittura file, avvio dei processi Fortran, conversione dati. Ponte tra interfaccia e solutore.',
+                skills: ['FastAPI', 'Python', 'API REST', 'Gestione processi']
             },
             'Elisa': {
-                title: 'Tech Lead Fortran Solver',
+                title: 'Responsabile solutore Fortran · responsabile formazione tech',
                 team: 'Dev',
                 emoji: '🧮',
-                description: 'Estensioni solver Fortran: P-Delta, nonlinearità, dinamica modale. Implementa algoritmi strutturali, analisi frequenziale, calcoli complessi. Core tecnico.',
-                skills: ['Fortran 2008', 'LAPACK', 'Numerical Methods', 'Structural Analysis', 'Algorithm Design', 'Linear Algebra']
+                description: 'Estensioni del solutore Fortran: P-Delta, non linearità, dinamica modale. Dal 26/08 responsabile della formazione dei 12 agenti tech, con rapporto settimanale ad Alessandra.',
+                skills: ['Fortran 2008', 'LAPACK', 'Metodi numerici', 'Analisi strutturale']
             },
             'Francesca': {
-                title: 'Tech Lead Ricerca',
+                title: 'Responsabile ricerca',
                 team: 'Dev',
                 emoji: '🔬',
-                description: 'Ricerca integrazioni: OpenFOAM (CFD), formati FEM (SAF/IFC), standard tecnici. Documenta API, workflow, best practices. ponte verso ecosistema esterno.',
-                skills: ['CFD', 'OpenFOAM', 'FEM Standards', 'IFC/SAF', 'Technical Research', 'Documentation']
+                description: 'Ricerca sulle integrazioni: OpenFOAM (CFD), formati FEM (SAF/IFC), norme tecniche. Documenta API e flussi di lavoro.',
+                skills: ['CFD', 'OpenFOAM', 'IFC/SAF', 'Documentazione']
             },
             'Valentina': {
-                title: 'Tech Lead QA',
+                title: 'Responsabile qualità tech',
                 team: 'Dev',
                 emoji: '🧪',
-                description: 'Quality assurance completo. Test integrazione, regressione calcoli Fortran, performance benchmark. Quality gates prima di release. Validazione end-to-end.',
-                skills: ['pytest', 'Test Automation', 'Performance Testing', 'Regression Testing', 'CI/CD', 'Metrics']
+                description: 'Prove di integrazione, regressione dei calcoli Fortran, prestazioni. Controlli di qualità prima dei rilasci.',
+                skills: ['pytest', 'Prove automatiche', 'Prove di regressione', 'Integrazione continua']
             },
             'Carla': {
-                title: 'Bridge ModeSt',
+                title: 'Collegamento ModeSt',
                 team: 'Dev',
                 emoji: '🌉',
-                description: 'Integrazione bidirezionale con ModeSt. Mapping formati, export/import, interfaccia dati. Consente scambio dati tra CAD visualizzatore e ModeSt.',
-                skills: ['Format Conversion', 'Data Mapping', 'ModeSt Integration', 'File Parsing', 'Interface Design']
+                description: 'Scambio dati con ModeSt: corrispondenza dei formati, esportazione e importazione.',
+                skills: ['Conversione formati', 'Mappatura dati', 'ModeSt']
             },
             'Daniela': {
                 title: 'Ricerca ModeSt',
                 team: 'Dev',
                 emoji: '🔍',
-                description: 'Reverse engineering ModeSt (se docs non disponibili). Analizza formato proprietario, mapping dati, API exposure. Supporta Carla su integration.',
-                skills: ['Reverse Engineering', 'Format Analysis', 'Documentation', 'Technical Investigation', 'Data Analysis']
+                description: 'Analisi del formato proprietario ModeSt e delle API disponibili. Supporta Carla.',
+                skills: ['Analisi formati', 'Documentazione', 'Indagine tecnica']
             },
             'Lucia': {
-                title: 'UI Geometry Editor',
+                title: 'Editor geometria',
                 team: 'Dev',
                 emoji: '✏️',
-                description: 'Editor grafico geometria e proprietà elementi. Property panel per sezioni, materiali, vincoli, carichi. Template libreria (trave, solaio, travetto). UX geometry input.',
-                skills: ['React', 'UI/UX', 'Component Design', 'Form Handling', 'Template System', 'Property Management']
+                description: 'Editor grafico di geometria e proprietà: sezioni, materiali, vincoli, carichi. Libreria modelli (trave, solaio, travetto).',
+                skills: ['React', 'Interfaccia', 'Gestione proprietà', 'Modelli']
             },
             'Mariana': {
-                title: 'Results Visualizer 3D',
+                title: 'Visualizzazione risultati 3D',
                 team: 'Dev',
                 emoji: '📊',
-                description: 'Post-processing visualizzazione risultati in 3D. Diagrammi momento/taglio, deformate, mappe colore, animazioni. Rende risultati calcoli visivamente.',
-                skills: ['Three.js', 'Data Visualization', 'Animation', '3D Rendering', 'Colormap Design', 'Results Post-processing']
-            },
-            'Natalia': {
-                title: 'Tech Lead Backend',
-                team: 'Dev',
-                emoji: '⚙️',
-                description: 'Backend FastAPI orchestration. Gestisce routing API, file I/O, launcher processi Fortran, data conversion pipeline. Ponte tra frontend e solver.',
-                skills: ['FastAPI', 'Python', 'REST API', 'Database', 'File Management', 'Process Management']
+                description: 'Post-elaborazione in 3D: diagrammi di momento e taglio, deformate, mappe di colore, animazioni.',
+                skills: ['Three.js', 'Visualizzazione dati', 'Post-elaborazione']
             },
             'Ottavia': {
-                title: 'Fortran Wrapper & Build',
+                title: 'Compilazione Fortran e pacchetti',
                 team: 'Dev',
                 emoji: '📦',
-                description: 'Wrapping Fortran: compilazione gfortran, esecuzione, packaging. Setup toolchain build. Deployment eseguibile. Integrazione Python-Fortran.',
-                skills: ['gfortran', 'Build Systems', 'CMake/Makefile', 'ctypes/f2py', 'Packaging', 'CI/CD Setup']
+                description: 'Compilazione gfortran, esecuzione, pacchetti di distribuzione. Integrazione Python-Fortran.',
+                skills: ['gfortran', 'CMake/Makefile', 'ctypes/f2py', 'Distribuzione']
             },
             'Paola': {
-                title: 'Data Converter',
+                title: 'Conversione dati',
                 team: 'Dev',
                 emoji: '🔄',
-                description: 'Converter formati universale. DXF↔JSON, JSON↔Fortran ASCII, ASCII↔Fortran binario. Validazione dati. Pipeline conversione dati.',
-                skills: ['Format Parsing', 'Data Validation', 'Pydantic', 'File I/O', 'Schema Mapping', 'Error Handling']
+                description: 'Conversione DXF↔JSON, JSON↔Fortran ASCII, ASCII↔binario, con validazione dei dati.',
+                skills: ['Lettura formati', 'Validazione dati', 'Pydantic']
             },
             'Renata': {
-                title: 'Workflow Validator',
+                title: 'Validazione flussi',
                 team: 'Dev',
                 emoji: '✓',
-                description: 'Validazione workflow end-to-end. Test scenari realistici, checklist release. Assicura qualità prima di deployment.',
-                skills: ['Integration Testing', 'Scenario Planning', 'Quality Assurance', 'Documentation', 'User Acceptance Testing']
+                description: 'Validazione del flusso completo con scenari realistici e liste di controllo per il rilascio.',
+                skills: ['Prove di integrazione', 'Collaudo']
             },
             'Silvia': {
-                title: 'Regression Lab',
+                title: 'Laboratorio di regressione',
                 team: 'Dev',
                 emoji: '🔬',
-                description: 'Suite test regressione calcoli Fortran. Confronto risultati, performance benchmark. Verifica stabilità solver dopo modifiche.',
-                skills: ['Test Automation', 'Performance Profiling', 'Data Comparison', 'Numerical Analysis', 'Benchmark Tools']
+                description: 'Prove di regressione dei calcoli Fortran, confronto dei risultati, prestazioni.',
+                skills: ['Prove automatiche', 'Confronto dati', 'Analisi numerica']
             },
             'Gabriella': {
-                title: 'FEM Standards',
+                title: 'Norme FEM',
                 team: 'Dev',
                 emoji: '📋',
-                description: 'Analisi formati FEM standard: SAF, IFC, XML. Parsing/writing questi formati. Conversioni tra standard. Interoperabilità.',
-                skills: ['IFC/IFCOpenShell', 'SAF Format', 'XML Parsing', 'CAD Standards', 'Format Documentation', 'Interoperability']
+                description: 'Formati FEM standard (SAF, IFC, XML): lettura, scrittura, conversione, interoperabilità.',
+                skills: ['IFC', 'SAF', 'XML', 'Interoperabilità']
             },
             'Giorgia': {
-                title: 'Business Lead',
+                title: 'Responsabile business',
                 team: 'Business',
                 emoji: '💼',
-                description: 'Gestione operativa business. Coordinamento offerte, pagamenti, compliance. Comunicazione quotidiana con Alessandra (da Week 3). Reporting business.',
-                skills: ['Business Strategy', 'Operations', 'Stakeholder Management', 'Coordination', 'Reporting', 'Risk Management']
+                description: 'Gestione operativa: offerte, pagamenti, conformità. Comunicazione con Alessandra e rendicontazione business.',
+                skills: ['Strategia', 'Operazioni', 'Coordinamento', 'Rendicontazione']
+            },
+            'Katia': {
+                title: 'Responsabile formazione business · marketing e ricerche di mercato',
+                team: 'Business',
+                emoji: '📣',
+                description: 'Dal 26/08 responsabile della formazione dei 6 agenti business, con rapporto settimanale ad Alessandra. Ricerche di mercato e marketing.',
+                skills: ['Ricerche di mercato', 'Marketing', 'Coordinamento']
             },
             'Aurora': {
-                title: 'Offerte & Fatturazione',
+                title: 'Offerte e fatturazione',
                 team: 'Business',
                 emoji: '💰',
-                description: 'Preparazione offerte commerciali. Gestione note pagamento, fatturazione, tracciamento incassi. Pricing models. Reporting ricavi.',
-                skills: ['Pricing Strategy', 'Invoice Management', 'Sales', 'Accounting', 'Customer Communication', 'Revenue Tracking']
+                description: 'Offerte commerciali, note di pagamento, fatturazione, incassi, modelli di prezzo.',
+                skills: ['Prezzi', 'Fatturazione', 'Contabilità']
             },
             'Livia': {
-                title: 'Email & Comunicazioni',
+                title: 'Posta e comunicazioni',
                 team: 'Business',
                 emoji: '📧',
-                description: 'Gestione posta elettronica ufficiale. Comunicazioni clienti, newsletter, coordinamento interno. Social media presence. Customer support.',
-                skills: ['Email Management', 'Customer Communication', 'Marketing', 'Social Media', 'Content Writing', 'Brand Management']
+                description: 'Posta ufficiale, comunicazioni con i clienti, assistenza.',
+                skills: ['Posta', 'Comunicazione', 'Assistenza clienti']
             },
             'Veronica': {
-                title: 'Normativa & Compliance',
+                title: 'Normativa e conformità',
                 team: 'Business',
                 emoji: '📋',
-                description: 'Monitoraggio aggiornamenti normativi (NTC, Eurocode, GPL). Compliance licenze software. GDPR privacy. Documentazione conformità.',
-                skills: ['Regulatory Knowledge', 'Compliance', 'License Management', 'Privacy/GDPR', 'Risk Assessment', 'Documentation']
+                description: 'Aggiornamenti normativi (NTC, Eurocodici), licenze software, GDPR, documentazione di conformità.',
+                skills: ['Normativa', 'Licenze', 'GDPR']
             },
             'Camilla': {
-                title: 'News & Intelligence',
+                title: 'Notizie e mercato',
                 team: 'Business',
                 emoji: '📰',
-                description: 'Ricerca online notizie di interesse. Market intelligence, competitor monitoring, tech trends. Weekly news digest. Trend analysis.',
-                skills: ['Research', 'Market Analysis', 'Competitive Intelligence', 'Content Curation', 'Trend Analysis', 'Communication']
+                description: 'Notizie di settore, concorrenti, tendenze tecnologiche, sintesi settimanale.',
+                skills: ['Ricerca', 'Analisi di mercato', 'Tendenze']
             },
             'Laura': {
-                title: 'Progress Monitor',
+                title: 'Controllo avanzamento',
                 team: 'Business',
                 emoji: '📊',
-                description: 'Monitoraggio andamento lavoro team Alessandra. Tracking milestone, risk identification, reporting progress. Dashboard metrics. Alert blocchi.',
-                skills: ['Project Management', 'Metrics & KPIs', 'Risk Management', 'Reporting', 'Dashboard Tools', 'Analysis']
+                description: 'Monitoraggio dell\'avanzamento del Team Alessandra: traguardi, rischi, rendicontazione, segnalazione blocchi.',
+                skills: ['Gestione progetto', 'Indicatori', 'Gestione rischi']
+            },
+            'Agata': {
+                title: 'Biblioteca e infrastruttura',
+                team: 'Business',
+                emoji: '📚',
+                description: 'Coordina biblioteca e risorse: verifica accessi, cataloga e distribuisce i materiali (RIFERIMENTI). Autrice dell\'ultimo rapporto in archivio (31/08).',
+                skills: ['Bibliografia', 'Catalogazione', 'Distribuzione risorse']
+            },
+            'Roberta': {
+                title: 'Responsabile team strutturale · cemento armato',
+                team: 'Strutturale',
+                emoji: '🏗️',
+                description: 'Guida gli 8 agenti strutturali e la fase 1 di idraulica intensiva. Controllo settimanale (giovedì) e rapporto ad Alessandra il lunedì.',
+                skills: ['Cemento armato', 'Coordinamento', 'Idraulica (fase 1)']
+            },
+            'Beatrice': {
+                title: 'Scienza delle costruzioni · supporto teorico',
+                team: 'Strutturale',
+                emoji: '📐',
+                description: 'Risposte teoriche agli agenti entro 2 ore. Prepara i casi studio della fase 3 e valuta l\'apprendimento finale.',
+                skills: ['Scienza delle costruzioni', 'Cerchi di Mohr', 'Didattica']
+            },
+            'Martina': {
+                title: 'Strutture in acciaio',
+                team: 'Strutturale',
+                emoji: '🔩',
+                description: 'Studio delle strutture in acciaio (riferimento Timoshenko).',
+                skills: ['Acciaio', 'Instabilità']
+            },
+            'Sofia': {
+                title: 'Strutture in alluminio',
+                team: 'Strutturale',
+                emoji: '🪟',
+                description: 'Studio delle strutture in alluminio.',
+                skills: ['Alluminio']
+            },
+            'Giulia': {
+                title: 'Legno e fibre',
+                team: 'Strutturale',
+                emoji: '🌲',
+                description: 'Studio delle strutture in legno e dei rinforzi in fibra.',
+                skills: ['Legno', 'FRP']
+            },
+            'Alessia': {
+                title: 'Geotecnica',
+                team: 'Strutturale',
+                emoji: '⛰️',
+                description: 'Geotecnica e fondazioni (riferimento Terzaghi).',
+                skills: ['Geotecnica', 'Fondazioni']
+            },
+            'Chiara': {
+                title: 'Muratura',
+                team: 'Strutturale',
+                emoji: '🧱',
+                description: 'Studio delle strutture in muratura.',
+                skills: ['Muratura']
+            },
+            'Ilaria': {
+                title: 'Muratura armata',
+                team: 'Strutturale',
+                emoji: '🧱',
+                description: 'Studio della muratura armata.',
+                skills: ['Muratura armata']
+            },
+            'Sole': {
+                title: 'Direttrice controllo qualità',
+                team: 'QA',
+                emoji: '🛡️',
+                description: 'Supervisione del controllo qualità tra i gruppi; riceve le segnalazioni critiche. Ha approvato il programma di formazione il 26/08.',
+                skills: ['Controllo qualità', 'Segnalazioni', 'Decisioni']
+            },
+            'Ginevra': {
+                title: 'Verifica team strutturale',
+                team: 'QA',
+                emoji: '✅',
+                description: 'Supporto alla fase 1 di idraulica e valutazione finale degli specialisti. Controllo settimanale del team strutturale.',
+                skills: ['Verifica', 'Valutazione']
+            },
+            'Raffaella': {
+                title: 'Conformità business e tech',
+                team: 'QA',
+                emoji: '📑',
+                description: 'Controlli del mercoledì e del venerdì sui gruppi tech e business. Controlla il lavoro di Agata sulla biblioteca.',
+                skills: ['Conformità', 'Monitoraggio']
+            },
+            'Marisa': {
+                title: 'Qualità tech',
+                team: 'QA',
+                emoji: '🧾',
+                description: 'Controllo qualità del Team Alessandra (12 agenti tech).',
+                skills: ['Revisione codice', 'Controllo qualità']
+            },
+            'Vittoria': {
+                title: 'Prove e validazione',
+                team: 'QA',
+                emoji: '🧪',
+                description: 'Prove funzionali e validazione tra i gruppi.',
+                skills: ['Prove funzionali', 'Validazione']
             }
         };
 
         const appData = {
             agents: {
                 ale: [
-                    { name: 'Alessandra', role: 'Project Lead', status: 'active', team: 'Dev' },
-                    { name: 'Benedetta', role: 'Tech Lead Architettura', status: 'active', team: 'Dev' },
-                    { name: 'Irene', role: 'Tech Lead Frontend', status: 'active', team: 'Dev' },
-                    { name: 'Natalia', role: 'Tech Lead Backend', status: 'active', team: 'Dev' },
-                    { name: 'Elisa', role: 'Tech Lead Fortran', status: 'active', team: 'Dev' },
-                    { name: 'Francesca', role: 'Tech Lead Ricerca', status: 'active', team: 'Dev' },
-                    { name: 'Valentina', role: 'Tech Lead QA', status: 'active', team: 'Dev' },
-                    { name: 'Carla', role: 'Bridge ModeSt', status: 'pending', team: 'Dev' },
-                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'pending', team: 'Dev' },
-                    { name: 'Lucia', role: 'UI Editor', status: 'pending', team: 'Dev' },
-                    { name: 'Mariana', role: 'Results Viz', status: 'pending', team: 'Dev' },
-                    { name: 'Ottavia', role: 'Fortran Wrapper', status: 'pending', team: 'Dev' },
-                    { name: 'Paola', role: 'Data Converter', status: 'pending', team: 'Dev' },
-                    { name: 'Renata', role: 'Workflow Validator', status: 'pending', team: 'Dev' },
-                    { name: 'Silvia', role: 'Regression Lab', status: 'pending', team: 'Dev' },
-                    { name: 'Gabriella', role: 'FEM Standards', status: 'pending', team: 'Dev' }
+                    { name: 'Alessandra', role: 'Responsabile di progetto', status: 'active', team: 'Dev' },
+                    { name: 'Benedetta', role: 'Architettura', status: 'unknown', team: 'Dev' },
+                    { name: 'Irene', role: 'Interfaccia 3D', status: 'unknown', team: 'Dev' },
+                    { name: 'Natalia', role: 'Servizi (backend)', status: 'unknown', team: 'Dev' },
+                    { name: 'Elisa', role: 'Solutore Fortran · resp. formazione tech', status: 'unknown', team: 'Dev' },
+                    { name: 'Francesca', role: 'Ricerca', status: 'unknown', team: 'Dev' },
+                    { name: 'Valentina', role: 'Qualità tech', status: 'unknown', team: 'Dev' },
+                    { name: 'Carla', role: 'Collegamento ModeSt', status: 'unknown', team: 'Dev' },
+                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'unknown', team: 'Dev' },
+                    { name: 'Lucia', role: 'Editor geometria', status: 'unknown', team: 'Dev' },
+                    { name: 'Mariana', role: 'Visualizzazione risultati', status: 'unknown', team: 'Dev' },
+                    { name: 'Ottavia', role: 'Compilazione Fortran', status: 'unknown', team: 'Dev' },
+                    { name: 'Paola', role: 'Conversione dati', status: 'unknown', team: 'Dev' },
+                    { name: 'Renata', role: 'Validazione flussi', status: 'pending', team: 'Dev' },
+                    { name: 'Silvia', role: 'Laboratorio di regressione', status: 'pending', team: 'Dev' },
+                    { name: 'Gabriella', role: 'Norme FEM', status: 'pending', team: 'Dev' }
                 ],
                 giorgia: [
-                    { name: 'Giorgia', role: 'Business Lead', status: 'active', team: 'Business' },
-                    { name: 'Aurora', role: 'Offerte & Fatturazione', status: 'active', team: 'Business' },
-                    { name: 'Livia', role: 'Email & Comunicazioni', status: 'active', team: 'Business' },
-                    { name: 'Veronica', role: 'Normativa & Compliance', status: 'active', team: 'Business' },
-                    { name: 'Camilla', role: 'News & Intelligence', status: 'active', team: 'Business' },
-                    { name: 'Laura', role: 'Progress Monitor', status: 'active', team: 'Business' }
+                    { name: 'Giorgia', role: 'Responsabile business', status: 'unknown', team: 'Business' },
+                    { name: 'Katia', role: 'Resp. formazione business', status: 'unknown', team: 'Business' },
+                    { name: 'Aurora', role: 'Offerte e fatturazione', status: 'unknown', team: 'Business' },
+                    { name: 'Livia', role: 'Posta e comunicazioni', status: 'unknown', team: 'Business' },
+                    { name: 'Veronica', role: 'Normativa e conformità', status: 'unknown', team: 'Business' },
+                    { name: 'Camilla', role: 'Notizie e mercato', status: 'unknown', team: 'Business' },
+                    { name: 'Laura', role: 'Controllo avanzamento', status: 'unknown', team: 'Business' },
+                    { name: 'Agata', role: 'Biblioteca e infrastruttura', status: 'unknown', team: 'Business' }
+                ],
+                strutturale: [
+                    { name: 'Roberta', role: 'Responsabile · cemento armato', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Beatrice', role: 'Scienza delle costruzioni', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Martina', role: 'Acciaio', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Sofia', role: 'Alluminio', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Giulia', role: 'Legno e fibre', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Alessia', role: 'Geotecnica', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Chiara', role: 'Muratura', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Ilaria', role: 'Muratura armata', status: 'unknown', team: 'Strutturale' }
+                ],
+                qa: [
+                    { name: 'Sole', role: 'Direttrice controllo qualità', status: 'unknown', team: 'QA' },
+                    { name: 'Ginevra', role: 'Verifica strutturale', status: 'unknown', team: 'QA' },
+                    { name: 'Raffaella', role: 'Conformità business e tech', status: 'unknown', team: 'QA' },
+                    { name: 'Marisa', role: 'Qualità tech', status: 'unknown', team: 'QA' },
+                    { name: 'Vittoria', role: 'Prove e validazione', status: 'unknown', team: 'QA' }
                 ]
             },
             notifications: [],
             publicBoard: [],
             privateBoard: [],
-            milestones: [
-                { title: 'Schema Dati Finalizzato', date: '2026-08-19', status: 'pending' },
-                { title: 'Alpha Release', date: '2026-09-02', status: 'pending' },
-                { title: 'Beta Release', date: '2026-09-16', status: 'pending' }
-            ],
+            milestones: SEED_MILESTONES.map(m => Object.assign({}, m)),
             agentRequests: [],
             myRequests: [],
             meetingReports: [],
             onlineResearch: []
         };
 
+        const OLD_DEFAULT_MILESTONES = ['Schema Dati Finalizzato', 'Alpha Release', 'Beta Release'];
+
+        function withSeed(seed, userItems) {
+            const own = (userItems || []).filter(x => !x.seed);
+            return seed.map(x => Object.assign({ seed: true }, x)).concat(own);
+        }
+
         // Load data from localStorage
         function loadData() {
-            const stored = localStorage.getItem('appData');
-            if (stored) {
-                const loaded = JSON.parse(stored);
-                appData.notifications = loaded.notifications || [];
-                appData.publicBoard = loaded.publicBoard || [];
-                appData.privateBoard = loaded.privateBoard || [];
-                appData.milestones = loaded.milestones || appData.milestones;
+            let loaded = null;
+            try {
+                const stored = localStorage.getItem('appData');
+                if (stored) loaded = JSON.parse(stored);
+            } catch (e) { loaded = null; }
+
+            if (loaded) {
+                appData.publicBoard = (loaded.publicBoard || []).map(normalizePost);
+                appData.privateBoard = (loaded.privateBoard || []).map(normalizePost);
                 appData.agentRequests = loaded.agentRequests || [];
-                appData.myRequests = loaded.myRequests || [];
-                appData.meetingReports = loaded.meetingReports || [];
-                appData.onlineResearch = loaded.onlineResearch || [];
+                if (loaded.seedVersion === SEED_VERSION) {
+                    appData.notifications = loaded.notifications || [];
+                    appData.milestones = loaded.milestones || appData.milestones;
+                    appData.myRequests = loaded.myRequests || [];
+                    appData.meetingReports = loaded.meetingReports || [];
+                    appData.onlineResearch = loaded.onlineResearch || [];
+                } else {
+                    // dati salvati con la versione precedente: si conservano quelli inseriti a mano
+                    const ownMilestones = (loaded.milestones || []).filter(m => !m.seed && OLD_DEFAULT_MILESTONES.indexOf(m.title) === -1);
+                    appData.milestones = withSeed(SEED_MILESTONES, ownMilestones);
+                    appData.notifications = withSeed(SEED_NOTIFICATIONS, loaded.notifications);
+                    appData.myRequests = withSeed(SEED_MY_REQUESTS, loaded.myRequests);
+                    appData.meetingReports = withSeed(SEED_MEETINGS, loaded.meetingReports);
+                    appData.onlineResearch = withSeed(SEED_RESEARCH, loaded.onlineResearch);
+                }
+            } else {
+                appData.milestones = withSeed(SEED_MILESTONES, []);
+                appData.notifications = withSeed(SEED_NOTIFICATIONS, []);
+                appData.myRequests = withSeed(SEED_MY_REQUESTS, []);
+                appData.meetingReports = withSeed(SEED_MEETINGS, []);
+                appData.onlineResearch = withSeed(SEED_RESEARCH, []);
             }
+        }
+
+        // I messaggi salvati dalla versione precedente usavano content/timestamp
+        function normalizePost(p) {
+            return {
+                author: p.author || 'Amministratore',
+                text: p.text || p.content || '',
+                time: p.time || p.timestamp || ''
+            };
         }
 
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('appData', JSON.stringify(appData));
+            try {
+                localStorage.setItem('appData', JSON.stringify(Object.assign({ seedVersion: SEED_VERSION }, appData, { agents: undefined })));
+            } catch (e) { /* archivio del navigatore non disponibile */ }
         }
 
         // Tab Switching
@@ -1137,35 +1474,95 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+            if (btn) btn.classList.add('active');
             render();
         }
 
-        // Render Functions
-        function renderAgents() {
-            let html = '';
-            appData.agents.ale.forEach(agent => {
-                html += `
-                    <div class="agent-item">
-                        <div class="agent-name">👩 ${agent.name}</div>
-                        <div class="agent-role">${agent.role}</div>
-                        <span class="agent-status status-${agent.status}">${agent.status === 'active' ? '🟢 Attivo' : '🟡 In Attesa'}</span>
-                    </div>
-                `;
-            });
-            document.getElementById('team-ale').innerHTML = html;
+        // ===== Date =====
+        function parseDay(s) {
+            const p = s.split('-').map(Number);
+            return new Date(p[0], p[1] - 1, p[2]);
+        }
 
-            html = '';
-            appData.agents.giorgia.forEach(agent => {
-                html += `
+        function todayDay() {
+            const n = new Date();
+            return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+        }
+
+        function daysBetween(a, b) {
+            return Math.round((b - a) / 86400000);
+        }
+
+        function fmt(s) {
+            const d = parseDay(s);
+            return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function milestoneState(m) {
+            if (m.status === 'completed') return 'completed';
+            return parseDay(m.date) < todayDay() ? 'late' : 'pending';
+        }
+
+        function allAgents() {
+            const a = appData.agents;
+            return a.ale.concat(a.giorgia, a.strutturale, a.qa);
+        }
+
+        // Render Functions
+        function renderStats() {
+            const t = todayDay();
+            document.getElementById('days-no-data').textContent = daysBetween(parseDay(LAST_DATA_DATE), t);
+            document.getElementById('stat-project-day').textContent = daysBetween(parseDay(PROJECT_START), t) + 1;
+
+            const toFinal = daysBetween(t, parseDay(FINAL_ASSESSMENT));
+            document.getElementById('stat-days-final').textContent = toFinal >= 0 ? toFinal : 'chiusa';
+
+            let phaseTxt = 'concluso', phaseNote = 'programma chiuso il 24/10';
+            learningPhases.forEach((p, i) => {
+                const s = parseDay(p.start), e = parseDay(p.end);
+                if (t >= s && t <= e) {
+                    phaseTxt = 'F' + i + ' · ' + (daysBetween(s, t) + 1) + '/' + (daysBetween(s, e) + 1);
+                    phaseNote = p.name.split('·')[1].trim() + ', ' + fmt(p.start).slice(0, 5) + ' → ' + fmt(p.end).slice(0, 5);
+                }
+            });
+            if (t < parseDay(learningPhases[0].start)) { phaseTxt = '—'; phaseNote = 'programma non iniziato'; }
+            document.getElementById('stat-phase').textContent = phaseTxt;
+            document.getElementById('stat-phase-note').textContent = phaseNote;
+
+            document.getElementById('stat-late').textContent = appData.milestones.filter(m => milestoneState(m) === 'late').length;
+
+            const a = appData.agents;
+            document.getElementById('total-agents').textContent = allAgents().length;
+            document.getElementById('total-agents-note').textContent =
+                'tech ' + a.ale.length + ' · business ' + a.giorgia.length + ' · strutturale ' + a.strutturale.length + ' · qualità ' + a.qa.length;
+        }
+
+        function statusLabel(s) {
+            if (s === 'active') return '🟢 Attivo';
+            if (s === 'pending') return '🟡 In attesa';
+            return '⚪ Non rendicontato dal 31/08';
+        }
+
+        function statusClass(s) {
+            return s === 'active' ? 'status-active' : (s === 'pending' ? 'status-pending' : 'status-unknown');
+        }
+
+        function agentList(list) {
+            return list.map(agent => `
                     <div class="agent-item">
                         <div class="agent-name">👩 ${agent.name}</div>
                         <div class="agent-role">${agent.role}</div>
-                        <span class="agent-status status-${agent.status}">${agent.status === 'active' ? '🟢 Attivo' : '🟡 In Attesa'}</span>
+                        <span class="agent-status ${statusClass(agent.status)}">${statusLabel(agent.status)}</span>
                     </div>
-                `;
-            });
-            document.getElementById('team-giorgia').innerHTML = html;
+                `).join('');
+        }
+
+        function renderAgents() {
+            document.getElementById('team-ale').innerHTML = agentList(appData.agents.ale);
+            document.getElementById('team-giorgia').innerHTML = agentList(appData.agents.giorgia);
+            document.getElementById('team-strutturale').innerHTML = agentList(appData.agents.strutturale);
+            document.getElementById('team-qa').innerHTML = agentList(appData.agents.qa);
         }
 
         function renderNotifications() {
@@ -1174,7 +1571,7 @@
                 html += `
                     <div class="notification ${notif.priority}">
                         <div>
-                            <div style="font-weight: bold;">${notif.title}</div>
+                            <div style="font-weight: bold;">${notif.title}${notif.seed ? '<span class="seed-tag">aggiornamento 17/10</span>' : ''}</div>
                             <div style="font-size: 14px; color: #555; margin-top: 5px;">${notif.message}</div>
                             <div class="notification-time">${notif.time}</div>
                         </div>
@@ -1182,13 +1579,13 @@
                     </div>
                 `;
             });
-            document.getElementById('all-notifications').innerHTML = html;
+            document.getElementById('all-notifications').innerHTML = html || '<p style="color: #999;">Nessuna notifica</p>';
 
-            if (appData.notifications.length > 0) {
-                document.getElementById('notifications-preview').innerHTML = appData.notifications.slice(-2).map(n =>
-                    `<div class="notification ${n.priority}" style="margin-bottom: 10px;"><strong>${n.title}</strong><div style="font-size: 12px; margin-top: 5px;">${n.message}</div></div>`
-                ).join('');
-            }
+            const order = { high: 0, medium: 1, low: 2 };
+            const top = appData.notifications.slice().sort((a, b) => (order[a.priority] ?? 3) - (order[b.priority] ?? 3)).slice(0, 3);
+            document.getElementById('notifications-preview').innerHTML = top.length ? top.map(n =>
+                `<div class="notification ${n.priority}" style="margin-bottom: 10px;"><div><strong>${n.title}</strong><div style="font-size: 12px; margin-top: 5px;">${n.message}</div></div></div>`
+            ).join('') : '<p style="color: #999;">Nessuna notifica</p>';
         }
 
         function renderBoard() {
@@ -1200,12 +1597,12 @@
                             <span><strong>${post.author}</strong> <span class="badge">Pubblica</span></span>
                             <span class="board-time">${post.time}</span>
                         </div>
-                        <div style="margin: 10px 0;">${post.text}</div>
+                        <div style="margin: 10px 0; white-space: pre-line;">${post.text}</div>
                         <button class="btn-small" onclick="removePublicPost(${appData.publicBoard.length - 1 - idx})">Rimuovi</button>
                     </div>
                 `;
             });
-            document.getElementById('public-board').innerHTML = publicHtml || '<p style="color: #999;">Nessun post ancora</p>';
+            document.getElementById('public-board').innerHTML = publicHtml || '<p style="color: #999;">Nessun messaggio</p>';
 
             let privateHtml = '';
             appData.privateBoard.slice().reverse().forEach((post, idx) => {
@@ -1215,31 +1612,85 @@
                             <span><strong>${post.author}</strong> <span class="badge private">Privata</span></span>
                             <span class="board-time">${post.time}</span>
                         </div>
-                        <div style="margin: 10px 0;">${post.text}</div>
+                        <div style="margin: 10px 0; white-space: pre-line;">${post.text}</div>
                         <button class="btn-small" onclick="removePrivatePost(${appData.privateBoard.length - 1 - idx})">Rimuovi</button>
                     </div>
                 `;
             });
-            document.getElementById('private-board').innerHTML = privateHtml || '<p style="color: #999;">Nessun post ancora</p>';
+            document.getElementById('private-board').innerHTML = privateHtml || '<p style="color: #999;">Nessun messaggio</p>';
+        }
+
+        function milestoneBadge(st) {
+            if (st === 'completed') return '<span class="ms-badge completed">completato</span>';
+            if (st === 'late') return '<span class="ms-badge late">scaduto</span>';
+            return '<span class="ms-badge pending">da fare</span>';
         }
 
         function renderMilestones() {
             let html = '';
             appData.milestones.forEach((m, idx) => {
+                const st = milestoneState(m);
                 html += `
-                    <div class="milestone ${m.status}">
-                        <div class="milestone-title">✓ ${m.title}</div>
-                        <div class="milestone-date">📅 ${m.date}</div>
+                    <div class="milestone ${st === 'pending' ? 'pending' : st}">
+                        <div class="milestone-title">${m.title}${milestoneBadge(st)}</div>
+                        <div class="milestone-date">📅 ${fmt(m.date)}</div>
+                        ${m.note ? `<div class="milestone-note">${m.note}</div>` : ''}
                         <div style="margin-top: 8px;">
-                            <button class="btn-small" onclick="toggleMilestone(${idx})">${m.status === 'completed' ? 'Riporta In Progress' : 'Segna Completato'}</button>
+                            <button class="btn-small" onclick="toggleMilestone(${idx})">${m.status === 'completed' ? 'Riporta in corso' : 'Segna completato'}</button>
                         </div>
                     </div>
                 `;
             });
             document.getElementById('milestones-full').innerHTML = html;
-            document.getElementById('milestones-preview').innerHTML = appData.milestones.slice(0, 2).map(m =>
-                `<div class="milestone ${m.status}" style="margin-bottom: 10px;"><div class="milestone-title">${m.title}</div><div class="milestone-date">${m.date}</div></div>`
-            ).join('');
+
+            // anteprima: scaduti non completati e prossimi, in ordine di data
+            const t = todayDay();
+            const open = appData.milestones.filter(m => m.status !== 'completed').sort((a, b) => parseDay(a.date) - parseDay(b.date));
+            const next = open.filter(m => parseDay(m.date) >= t).slice(0, 2);
+            const late = open.filter(m => parseDay(m.date) < t);
+            const preview = next.concat(late.slice(-2));
+            document.getElementById('milestones-preview').innerHTML = preview.map(m => {
+                const st = milestoneState(m);
+                return `<div class="milestone ${st === 'pending' ? 'pending' : st}" style="margin-bottom: 10px;"><div class="milestone-title">${m.title}${milestoneBadge(st)}</div><div class="milestone-date">${fmt(m.date)}</div></div>`;
+            }).join('') || '<p style="color: #999;">Nessun traguardo aperto</p>';
+        }
+
+        function phaseRows(phases, withPct) {
+            const t = todayDay();
+            return phases.map(p => {
+                const s = parseDay(p.start), e = parseDay(p.end);
+                const total = daysBetween(s, e) + 1;
+                let elapsed = Math.min(Math.max(daysBetween(s, t) + 1, 0), total);
+                const pctTime = Math.round(elapsed / total * 100);
+                const isNow = t >= s && t <= e;
+                const isPast = t > e;
+                let state;
+                if (withPct) {
+                    state = p.pct + '% realizzato · ' + (isPast ? 'scaduta' : (isNow ? 'in corso' : 'da iniziare'));
+                } else {
+                    state = isPast ? 'chiusa da calendario' : (isNow ? 'in corso · giorno ' + elapsed + '/' + total : 'da iniziare');
+                }
+                const width = withPct ? p.pct : pctTime;
+                const cls = withPct ? '' : (isPast ? 'done-calendar' : '');
+                const warn = !withPct && p.docStatus === 'missing' && (isPast || isNow)
+                    ? '<div class="check-warning">⚠️ Esito non documentato in archivio</div>' : '';
+                const lateWarn = withPct && isPast && p.pct < 100
+                    ? '<div class="check-warning">⚠️ Scadenza superata il ' + fmt(p.end) + '</div>' : '';
+                return `
+                    <div class="phase-row">
+                        <div class="phase-head"><span>${p.name}</span><span style="font-weight: normal; font-size: 12px; color: #666;">${fmt(p.start).slice(0, 5)} → ${fmt(p.end).slice(0, 5)}</span></div>
+                        <div class="progress-bar"><div class="progress-fill ${cls}" style="width: ${width}%"></div></div>
+                        <div style="font-size: 12px; color: #666; margin-bottom: 4px;">${state}</div>
+                        <div class="phase-doc">${p.doc}</div>
+                        ${warn}${lateWarn}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderProgress() {
+            document.getElementById('phases-learning').innerHTML = phaseRows(learningPhases, false);
+            document.getElementById('phases-dev').innerHTML = phaseRows(devPhases, true);
         }
 
         function renderRequests() {
@@ -1247,7 +1698,7 @@
             appData.agentRequests.slice().reverse().forEach((req, idx) => {
                 agentHtml += `
                     <div class="request-item ${req.priority === 'urgent' ? 'urgent' : ''}">
-                        <div><strong>${req.agent}</strong> <div class="request-priority">${req.priority.toUpperCase()}</div></div>
+                        <div><strong>${req.agent}</strong> <div class="request-priority">${priorityLabel(req.priority)}</div></div>
                         <div style="margin: 10px 0;">${req.text}</div>
                         <div style="font-size: 12px; color: #666;">${req.time}</div>
                         <button class="btn-small" onclick="removeAgentRequest(${appData.agentRequests.length - 1 - idx})">Rimuovi</button>
@@ -1260,7 +1711,7 @@
             appData.myRequests.slice().reverse().forEach((req, idx) => {
                 myHtml += `
                     <div class="request-item ${req.priority === 'urgent' ? 'urgent' : ''}">
-                        <div><strong>Tu</strong> <div class="request-priority">${req.priority.toUpperCase()}</div></div>
+                        <div><strong>Tu</strong>${req.seed ? '<span class="seed-tag">aggiornamento 17/10</span>' : ''} <div class="request-priority">${priorityLabel(req.priority)}</div></div>
                         <div style="margin: 10px 0;">${req.text}</div>
                         <div style="font-size: 12px; color: #666;">${req.time}</div>
                         <button class="btn-small" onclick="removeMyRequest(${appData.myRequests.length - 1 - idx})">Rimuovi</button>
@@ -1270,12 +1721,17 @@
             document.getElementById('my-requests-list').innerHTML = myHtml || '<p style="color: #999;">Nessuna richiesta</p>';
         }
 
+        function priorityLabel(p) {
+            return { normal: 'NORMALE', high: 'ALTA', urgent: 'URGENTE' }[p] || String(p).toUpperCase();
+        }
+
         function renderMeetings() {
             let html = '';
             appData.meetingReports.slice().reverse().forEach((report, idx) => {
+                const d = /^\d{4}-\d{2}-\d{2}$/.test(report.date) ? fmt(report.date) : report.date;
                 html += `
                     <div class="meeting-report">
-                        <div class="meeting-date">📅 ${report.date} - ${report.attendees}</div>
+                        <div class="meeting-date">📅 ${d} - ${report.attendees}</div>
                         <div class="meeting-notes">${report.notes}</div>
                         <div style="font-size: 11px; color: #666; margin-top: 8px;">${report.time}</div>
                         <button class="btn-small" onclick="removeMeetingReport(${appData.meetingReports.length - 1 - idx})">Rimuovi</button>
@@ -1285,44 +1741,36 @@
             document.getElementById('meeting-reports').innerHTML = html || '<p style="color: #999;">Nessun resoconto</p>';
         }
 
+        function roleCards(list, searchTerm, cls) {
+            return list.filter(agent => {
+                const desc = agentDescriptions[agent.name] || { description: '' };
+                return agent.name.toLowerCase().includes(searchTerm) || desc.description.toLowerCase().includes(searchTerm);
+            }).map(agent => {
+                const desc = agentDescriptions[agent.name] || { emoji: '👩', title: agent.role, description: '', skills: [] };
+                return `
+                        <div class="role-card ${cls}">
+                            <div class="role-name">${desc.emoji} ${agent.name}</div>
+                            <div class="role-title">${desc.title}</div>
+                            <div class="role-description">${desc.description}</div>
+                            <div class="role-skills">
+                                ${desc.skills.map(skill => `<span class="skill-tag ${cls}">${skill}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+        }
+
         function renderAgentRoles() {
             const searchTerm = document.getElementById('search-agent').value.toLowerCase();
-
-            let aleHtml = '';
-            appData.agents.ale.forEach(agent => {
-                if (agent.name.toLowerCase().includes(searchTerm) || agentDescriptions[agent.name].description.toLowerCase().includes(searchTerm)) {
-                    const desc = agentDescriptions[agent.name];
-                    aleHtml += `
-                        <div class="role-card">
-                            <div class="role-name">${desc.emoji} ${agent.name}</div>
-                            <div class="role-title">${desc.title} — ${agent.role}</div>
-                            <div class="role-description">${desc.description}</div>
-                            <div class="role-skills">
-                                ${desc.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            document.getElementById('ale-roles').innerHTML = aleHtml;
-
-            let giorgiaHtml = '';
-            appData.agents.giorgia.forEach(agent => {
-                if (agent.name.toLowerCase().includes(searchTerm) || agentDescriptions[agent.name].description.toLowerCase().includes(searchTerm)) {
-                    const desc = agentDescriptions[agent.name];
-                    giorgiaHtml += `
-                        <div class="role-card business">
-                            <div class="role-name">${desc.emoji} ${agent.name}</div>
-                            <div class="role-title">${desc.title} — ${agent.role}</div>
-                            <div class="role-description">${desc.description}</div>
-                            <div class="role-skills">
-                                ${desc.skills.map(skill => `<span class="skill-tag business">${skill}</span>`).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            document.getElementById('giorgia-roles').innerHTML = giorgiaHtml;
+            const a = appData.agents;
+            document.getElementById('ale-roles').innerHTML = roleCards(a.ale, searchTerm, '');
+            document.getElementById('giorgia-roles').innerHTML = roleCards(a.giorgia, searchTerm, 'business');
+            document.getElementById('strutturale-roles').innerHTML = roleCards(a.strutturale, searchTerm, '');
+            document.getElementById('qa-roles').innerHTML = roleCards(a.qa, searchTerm, 'business');
+            document.getElementById('title-ale').textContent = '🏗️ Team Alessandra — sviluppo tecnico (' + a.ale.length + ' agenti)';
+            document.getElementById('title-giorgia').textContent = '🎯 Team Giorgia — business e operazioni (' + a.giorgia.length + ' agenti)';
+            document.getElementById('title-strutturale').textContent = '🏛️ Team strutturale (' + a.strutturale.length + ' agenti)';
+            document.getElementById('title-qa').textContent = '🛡️ Coordinamento e controllo qualità (' + a.qa.length + ' persone)';
         }
 
         function renderResearch() {
@@ -1336,10 +1784,11 @@
             );
 
             if (filtered.length === 0) {
-                html = '<p style="color: #999;">Nessuna ricerca salvata ancora</p>';
+                html = '<p style="color: #999;">Nessuna ricerca salvata</p>';
             } else {
-                filtered.slice().reverse().forEach((research, idx) => {
-                    const isExternal = !research.source.includes('it') && research.source.includes('http');
+                filtered.slice().reverse().forEach(research => {
+                    const isExternal = !/\.it(\/|$)/.test(research.source);
+                    const hasWarning = research.summary.indexOf('⚠️') !== -1;
                     html += `
                         <div class="research-item ${isExternal ? 'external' : ''}">
                             <div class="research-header">
@@ -1347,12 +1796,13 @@
                                 <span class="research-topic ${isExternal ? 'external' : ''}">${research.topic}</span>
                             </div>
                             <div class="research-source">
-                                🔗 Fonte: <a href="${research.source}" target="_blank">${research.source}</a>
+                                🔗 Fonte: <a href="${research.source}" target="_blank" rel="noopener">${research.source}</a>
                                 ${isExternal ? '<span class="source-indicator" style="margin-left: 10px;">🌍 INTERNAZIONALE</span>' : ''}
                             </div>
                             <div class="research-summary">${research.summary}</div>
+                            ${hasWarning ? '<div class="check-warning">Contiene un\'informazione tecnica errata: non usarla senza verifica.</div>' : ''}
                             <div class="research-meta">
-                                <span>📅 ${research.date}</span>
+                                <span>📅 ${research.date}${research.seed ? ' · da archivio RICERCHE_ONLINE' : ''}</span>
                                 <button class="btn-small" onclick="removeResearch(${appData.onlineResearch.indexOf(research)})">🗑️ Rimuovi</button>
                             </div>
                         </div>
@@ -1363,13 +1813,28 @@
             document.getElementById('research-list').innerHTML = html;
         }
 
+        function fillAgentSelects() {
+            const a = appData.agents;
+            const groups = [
+                ['TEAM ALESSANDRA', a.ale], ['TEAM GIORGIA', a.giorgia],
+                ['TEAM STRUTTURALE', a.strutturale], ['COORDINAMENTO E QUALITÀ', a.qa]
+            ];
+            const opts = groups.map(g =>
+                `<option disabled>--- ${g[0]} ---</option>` + g[1].map(x => `<option value="${x.name}">${x.name}</option>`).join('')
+            ).join('');
+            document.getElementById('research-agent').innerHTML = '<option value="">🔸 Seleziona agente...</option>' + opts;
+            document.getElementById('agent-select').innerHTML = '<option value="">Seleziona agente...</option>' + opts;
+        }
+
         function render() {
+            renderStats();
             renderAgents();
             renderAgentRoles();
             renderResearch();
             renderNotifications();
             renderBoard();
             renderMilestones();
+            renderProgress();
             renderRequests();
             renderMeetings();
         }
@@ -1396,7 +1861,7 @@
                     title,
                     message,
                     priority,
-                    time: getTime()
+                    time: getDate() + ' ' + getTime()
                 });
                 saveData();
                 render();
@@ -1413,9 +1878,9 @@
             const text = document.getElementById('public-post').value;
             if (text.trim()) {
                 appData.publicBoard.push({
-                    author: 'Marco (User)',
+                    author: 'Marco',
                     text,
-                    time: getTime()
+                    time: getDate() + ' ' + getTime()
                 });
                 document.getElementById('public-post').value = '';
                 saveData();
@@ -1427,9 +1892,9 @@
             const text = document.getElementById('private-post').value;
             if (text.trim()) {
                 appData.privateBoard.push({
-                    author: 'Marco (User)',
+                    author: 'Marco',
                     text,
-                    time: getTime()
+                    time: getDate() + ' ' + getTime()
                 });
                 document.getElementById('private-post').value = '';
                 saveData();
@@ -1456,12 +1921,14 @@
         }
 
         function addMilestone() {
-            const title = prompt('Titolo Milestone:');
-            const date = prompt('Data (YYYY-MM-DD):');
-            if (title && date) {
+            const title = prompt('Titolo traguardo:');
+            const date = prompt('Data (AAAA-MM-GG):');
+            if (title && date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
                 appData.milestones.push({ title, date, status: 'pending' });
                 saveData();
                 render();
+            } else if (title && date) {
+                alert('Data non valida: usa il formato AAAA-MM-GG');
             }
         }
 
@@ -1474,7 +1941,7 @@
                     agent,
                     text,
                     priority: 'normal',
-                    time: getTime()
+                    time: getDate() + ' ' + getTime()
                 });
                 document.getElementById('agent-request').value = '';
                 document.getElementById('agent-select').value = '';
@@ -1497,7 +1964,7 @@
                 appData.myRequests.push({
                     text,
                     priority,
-                    time: getTime()
+                    time: getDate() + ' ' + getTime()
                 });
                 document.getElementById('my-request').value = '';
                 saveData();
@@ -1545,7 +2012,7 @@
             const summary = document.getElementById('research-summary').value;
 
             if (!agent || !topic || !source || !summary) {
-                alert('Compila tutti i campi (Agente, Argomento, Fonte, Riassunto)');
+                alert('Compila tutti i campi (agente, argomento, fonte, riassunto)');
                 return;
             }
 
@@ -1580,22 +2047,23 @@
             render();
         }
 
-        // Char counter for meeting notes
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('today-date').textContent = getDate();
             loadData();
+            fillAgentSelects();
 
-            // Initialize Books Reference Notice
+            // Avviso libri di riferimento in bacheca pubblica
             const hasBookNotice = appData.publicBoard.some(post =>
-                post.content && post.content.includes('Libri di Riferimento - Richieste specifiche')
+                post.text && post.text.includes('Libri di riferimento - richieste specifiche')
             );
             if (!hasBookNotice && appData.publicBoard.length === 0) {
                 appData.publicBoard.push({
-                    content: '📚 Libri di Riferimento - Richieste specifiche degli agenti\n\nNel tab "📚 Libri Riferimento" trovate i libri consigliati per il progetto:\n\n🏛️ GEOTECNICA: Bowles - Fondazioni, Progetto e Analisi\n💧 IDRAULICA/CFD: Brebbia - FEM Fluid Flow, Computational Hydraulics\n🔢 CALCOLO NUMERICO: Monegato - Metodi Numerici (2 libri)\n\nSe avete RICHIESTE SPECIFICHE per altri libri, risorse online, o varianti, scrivetele qui sotto. L\'admin le inserirà nel dashboard.',
-                    timestamp: new Date().toLocaleString('it-IT')
+                    author: 'Amministratore',
+                    text: '📚 Libri di riferimento - richieste specifiche degli agenti\n\nNella scheda «📚 Libri di riferimento» trovate i libri consigliati per il progetto:\n\n🏛️ GEOTECNICA: Bowles - Fondazioni, progetto e analisi\n💧 IDRAULICA/CFD: Brebbia - FEM per fluidi, idraulica computazionale\n🔢 CALCOLO NUMERICO: Monegato - Metodi numerici (2 libri)\n\nRichieste specifiche di altri libri o risorse: scrivetele qui sotto.',
+                    time: getDate()
                 });
-                saveData();
             }
+            saveData();
 
             render();
 

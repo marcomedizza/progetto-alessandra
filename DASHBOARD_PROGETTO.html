@@ -692,7 +692,7 @@
                     <div style="font-size: 12px; color: #666;">Oggi</div>
                     <div style="font-size: 18px; font-weight: bold;" id="today-date"></div>
                 </div>
-                <div class="status-badge alert">🔴 DATI FERMI AL 31/08</div>
+                <div class="status-badge">🟢 COMPITI ASSEGNATI 23/10</div>
             </div>
         </header>
 
@@ -787,7 +787,7 @@
                     <div id="team-qa"></div>
                 </div>
             </div>
-            <p class="data-note" style="color: white;">Stato individuale: nessun rapporto per agente dopo il 31/08, per questo è indicato «non rendicontato».</p>
+            <p class="data-note" style="color: white;">Tutti attivi dal 23/10 con i compiti di ASSEGNAZIONE_COMPITI_2026-10-23.md. Ultimo rapporto per agente: 31/08.</p>
         </div>
 
         <!-- CHI FA COSA TAB -->
@@ -1023,7 +1023,7 @@
     <script>
         // ===== DATI AGGIORNATI AL 17/10/2026 =====
         // Fonte: ramo claude/sviluppi-496gl0 (ultimo commit 31/08/2026)
-        const SEED_VERSION = '2026-10-23c';
+        const SEED_VERSION = '2026-10-23d';
         const PROJECT_START = '2026-08-15';
         const LAST_DATA_DATE = '2026-08-31';
         const FINAL_ASSESSMENT = '2026-10-24';
@@ -1049,10 +1049,15 @@
             { title: 'Valutazione fase 1 idraulica (Ginevra)', date: '2026-09-05', status: 'pending', note: 'Esito non documentato.' },
             { title: 'Rilascio beta (modale, esportazione ModeSt)', date: '2026-09-16', status: 'pending', note: 'Nessun codice in archivio.' },
             { title: 'Casi studio fase 3 definiti (Beatrice)', date: '2026-09-30', status: 'pending', note: 'Nessun documento in archivio.' },
-            { title: 'Valutazione finale programma di formazione', date: '2026-10-24', status: 'pending', note: 'Criteri definiti (comprende, applica, insegna, produce); modalità di verifica non definita.' }
+            { title: 'Valutazione finale programma di formazione', date: '2026-10-24', status: 'completed', note: 'Sostituita dall\'assegnazione compiti del 23/10: diventa la prima revisione del 30/10.' },
+            { title: 'RIFERIMENTI riordinata; NTC, Circolare e manuali EnergyPlus scaricati (Agata)', date: '2026-10-27', status: 'pending', note: 'Verifica: Raffaella.' },
+            { title: 'Primo rapporto di tutti; schema dati v1.0; casi di prova', date: '2026-10-30', status: 'pending', note: 'Verifica: Sole. Schema: Benedetta. Casi di prova: Valentina.' },
+            { title: 'Prototipo minimo: portale 2D JSON → Fortran → risultati → vista 3D', date: '2026-11-06', status: 'pending', note: 'Verifica: Alessandra, Valentina.' },
+            { title: 'Revisione: prototipo sui casi di prova, sintesi di studio', date: '2026-11-13', status: 'pending', note: 'Verifica: Marco.' }
         ];
 
         const SEED_NOTIFICATIONS = [
+            { title: '🟢 Compiti assegnati a tutti dal 23/10 ore 12:00', message: 'Vedi ASSEGNAZIONE_COMPITI_2026-10-23.md. Rapporto obbligatorio ogni venerdì entro le 17:00. Il team tech riprende lo sviluppo: prototipo minimo entro il 06/11.', priority: 'high', time: '23/10/2026' },
             { title: '⛔ Nessun rapporto dopo il 31/08', message: 'Mancano esito fase 1 idraulica, rapporti settimanali fase 2 e casi studio fase 3. Senza questi dati la valutazione del 24/10 non ha base.', priority: 'high', time: '17/10/2026' },
             { title: 'Rilasci alfa e beta scaduti', message: 'Alfa (02/09) e beta (16/09) senza codice in archivio. Il piano di sviluppo va rifatto o sospeso formalmente.', priority: 'high', time: '17/10/2026' },
             { title: 'Valutazione finale tra pochi giorni', message: 'Sabato 24/10 chiude la fase 3. Sole deve definire come si verifica il risultato.', priority: 'medium', time: '17/10/2026' },
@@ -1362,48 +1367,48 @@
             agents: {
                 ale: [
                     { name: 'Alessandra', role: 'Responsabile di progetto', status: 'active', team: 'Dev' },
-                    { name: 'Benedetta', role: 'Architettura', status: 'unknown', team: 'Dev' },
-                    { name: 'Irene', role: 'Interfaccia 3D', status: 'unknown', team: 'Dev' },
-                    { name: 'Natalia', role: 'Servizi (backend)', status: 'unknown', team: 'Dev' },
-                    { name: 'Elisa', role: 'Solutore Fortran · resp. formazione tech', status: 'unknown', team: 'Dev' },
-                    { name: 'Francesca', role: 'Ricerca', status: 'unknown', team: 'Dev' },
-                    { name: 'Valentina', role: 'Qualità tech', status: 'unknown', team: 'Dev' },
-                    { name: 'Carla', role: 'Collegamento ModeSt', status: 'unknown', team: 'Dev' },
-                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'unknown', team: 'Dev' },
-                    { name: 'Lucia', role: 'Editor geometria', status: 'unknown', team: 'Dev' },
-                    { name: 'Mariana', role: 'Visualizzazione risultati', status: 'unknown', team: 'Dev' },
-                    { name: 'Ottavia', role: 'Compilazione Fortran', status: 'unknown', team: 'Dev' },
-                    { name: 'Paola', role: 'Conversione dati', status: 'unknown', team: 'Dev' },
-                    { name: 'Renata', role: 'Validazione flussi', status: 'pending', team: 'Dev' },
-                    { name: 'Silvia', role: 'Laboratorio di regressione', status: 'pending', team: 'Dev' },
+                    { name: 'Benedetta', role: 'Architettura', status: 'active', team: 'Dev' },
+                    { name: 'Irene', role: 'Interfaccia 3D', status: 'active', team: 'Dev' },
+                    { name: 'Natalia', role: 'Servizi (backend)', status: 'active', team: 'Dev' },
+                    { name: 'Elisa', role: 'Solutore Fortran · resp. formazione tech', status: 'active', team: 'Dev' },
+                    { name: 'Francesca', role: 'Ricerca', status: 'active', team: 'Dev' },
+                    { name: 'Valentina', role: 'Qualità tech', status: 'active', team: 'Dev' },
+                    { name: 'Carla', role: 'Collegamento ModeSt', status: 'active', team: 'Dev' },
+                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'active', team: 'Dev' },
+                    { name: 'Lucia', role: 'Editor geometria', status: 'active', team: 'Dev' },
+                    { name: 'Mariana', role: 'Visualizzazione risultati', status: 'active', team: 'Dev' },
+                    { name: 'Ottavia', role: 'Compilazione Fortran', status: 'active', team: 'Dev' },
+                    { name: 'Paola', role: 'Conversione dati', status: 'active', team: 'Dev' },
+                    { name: 'Renata', role: 'Validazione flussi', status: 'active', team: 'Dev' },
+                    { name: 'Silvia', role: 'Laboratorio di regressione', status: 'active', team: 'Dev' },
                     { name: 'Gabriella', role: 'Energetica (dal 23/10)', status: 'active', team: 'Dev' }
                 ],
                 giorgia: [
-                    { name: 'Giorgia', role: 'Responsabile business', status: 'unknown', team: 'Business' },
-                    { name: 'Katia', role: 'Resp. formazione business', status: 'unknown', team: 'Business' },
-                    { name: 'Aurora', role: 'Offerte e fatturazione', status: 'unknown', team: 'Business' },
-                    { name: 'Livia', role: 'Posta e comunicazioni', status: 'unknown', team: 'Business' },
-                    { name: 'Veronica', role: 'Normativa e conformità', status: 'unknown', team: 'Business' },
-                    { name: 'Camilla', role: 'Notizie e mercato', status: 'unknown', team: 'Business' },
-                    { name: 'Laura', role: 'Controllo avanzamento', status: 'unknown', team: 'Business' },
-                    { name: 'Agata', role: 'Biblioteca e infrastruttura', status: 'unknown', team: 'Business' }
+                    { name: 'Giorgia', role: 'Responsabile business', status: 'active', team: 'Business' },
+                    { name: 'Katia', role: 'Resp. formazione business', status: 'active', team: 'Business' },
+                    { name: 'Aurora', role: 'Offerte e fatturazione', status: 'active', team: 'Business' },
+                    { name: 'Livia', role: 'Posta e comunicazioni', status: 'active', team: 'Business' },
+                    { name: 'Veronica', role: 'Normativa e conformità', status: 'active', team: 'Business' },
+                    { name: 'Camilla', role: 'Notizie e mercato', status: 'active', team: 'Business' },
+                    { name: 'Laura', role: 'Controllo avanzamento', status: 'active', team: 'Business' },
+                    { name: 'Agata', role: 'Biblioteca e infrastruttura', status: 'active', team: 'Business' }
                 ],
                 strutturale: [
-                    { name: 'Roberta', role: 'Responsabile · cemento armato', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Beatrice', role: 'Scienza delle costruzioni', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Martina', role: 'Acciaio', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Sofia', role: 'Alluminio', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Giulia', role: 'Legno e fibre', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Alessia', role: 'Geotecnica', status: 'unknown', team: 'Strutturale' },
-                    { name: 'Chiara', role: 'Muratura', status: 'unknown', team: 'Strutturale' },
+                    { name: 'Roberta', role: 'Responsabile · cemento armato', status: 'active', team: 'Strutturale' },
+                    { name: 'Beatrice', role: 'Scienza delle costruzioni', status: 'active', team: 'Strutturale' },
+                    { name: 'Martina', role: 'Acciaio', status: 'active', team: 'Strutturale' },
+                    { name: 'Sofia', role: 'Alluminio', status: 'active', team: 'Strutturale' },
+                    { name: 'Giulia', role: 'Legno e fibre', status: 'active', team: 'Strutturale' },
+                    { name: 'Alessia', role: 'Geotecnica', status: 'active', team: 'Strutturale' },
+                    { name: 'Chiara', role: 'Muratura', status: 'active', team: 'Strutturale' },
                     { name: 'Ilaria', role: 'Prefabbricati (dal 23/10)', status: 'active', team: 'Strutturale' }
                 ],
                 qa: [
-                    { name: 'Sole', role: 'Direttrice controllo qualità', status: 'unknown', team: 'QA' },
-                    { name: 'Ginevra', role: 'Verifica strutturale', status: 'unknown', team: 'QA' },
-                    { name: 'Raffaella', role: 'Conformità business e tech', status: 'unknown', team: 'QA' },
-                    { name: 'Marisa', role: 'Qualità tech', status: 'unknown', team: 'QA' },
-                    { name: 'Vittoria', role: 'Prove e validazione', status: 'unknown', team: 'QA' }
+                    { name: 'Sole', role: 'Direttrice controllo qualità', status: 'active', team: 'QA' },
+                    { name: 'Ginevra', role: 'Verifica strutturale', status: 'active', team: 'QA' },
+                    { name: 'Raffaella', role: 'Conformità business e tech', status: 'active', team: 'QA' },
+                    { name: 'Marisa', role: 'Qualità tech', status: 'active', team: 'QA' },
+                    { name: 'Vittoria', role: 'Prove e validazione', status: 'active', team: 'QA' }
                 ]
             },
             notifications: [],

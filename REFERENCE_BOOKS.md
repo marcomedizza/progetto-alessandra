@@ -13,11 +13,13 @@
   - Spinta delle terre e opere di sostegno
   - Interazione terreno-struttura (suolo alla Winkler, coefficiente di sottofondo)
 - **Stato**: assegnato il 17/10/2026, nessun rapporto di lettura
+- **Disponibilità (23/10)**: presente in edizione inglese, `RIFERIMENTI/GEOTECNICA/bowles-foundation-analysis-and-design.pdf`
 
 ### **Geotecnica** — cap. 8–11 (fondazioni, cedimenti, pali, spinta delle terre)
 - **Autore**: Renato Lancellotta
 - **Assegnato**: entro il 03/09/2026 (RIFERIMENTI_ALESSIA_GEOTECNICA.md)
 - **Stato**: nessun rapporto di lettura in archivio (atteso `Alessia_2026-09-03.json`)
+- **Disponibilità (23/10)**: da verificare, forse `_05libro.pdf` o `_08libro.pdf` in `RIFERIMENTI/GEOTECNICA` (vedi `RIFERIMENTI_INVENTARIO_2026-10-23.md`)
 
 ## Per Elisa (Calcoli Strutturali & Fortran)
 

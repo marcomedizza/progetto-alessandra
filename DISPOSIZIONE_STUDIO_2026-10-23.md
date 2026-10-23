@@ -13,7 +13,7 @@
 | Elisa | Solutore Fortran | Bowles, capitoli sull'interazione terreno-struttura; `CALCOLO AUTOMATICO/_09libro.pdf` | `_09libro` da identificare (Monegato?) |
 | Francesca | Idraulica e CFD | `IDRAULICA/Finite element techniques for fluid flow.pdf`, quaderni 1–5, `acqua.pdf`, `aria.pdf` | Manca «Computational Hydraulics» |
 | Ilaria | **Prefabbricati** (nuovo incarico) | `STRUTTURE/PREFABBRICATI/Di Prisco Marco/` (dispense), `PREFABBRICATE 2/` (solai alveolari, elementi di copertura, travi), `TECNICA/` | Vedi sotto |
-| Gabriella | **Energetica** (nuovo incarico) | `ENERGETICA/` Olgyay, «Design with Climate» | Vedi sotto |
+| Gabriella | **Energetica** (nuovo incarico) | `ENERGETICA/` Olgyay, «Design with Climate»; manuali EnergyPlus da scaricare | Vedi sotto |
 
 ## Restano senza materiale di studio
 
@@ -52,4 +52,15 @@
 - **Studio**: Olgyay, «Design with Climate. Bioclimatic Approach to Architectural Regionalism» (1963, nuova ed. 2015). Punti chiave: diagramma bioclimatico, controllo solare e ombreggiamento, orientamento, forma dell'edificio in funzione del clima.
 - **Copia del testo**: il PDF in cartella proviene da un sito di distribuzione non autorizzata (z-library). Per l'uso nel progetto va procurata una copia regolare.
 - **Materiale da riordinare**: gli script `test1`–`test4` e i documenti `CHECKLIST_AVVIO_WEEK1.md` e `PROCEDURA_TEST_VALIDATION.md` in `ENERGETICA` sono prove di accoppiamento termico/OpenFOAM, non testi: Gabriella ne verifica l'origine con Francesca.
+- **Ruolo di Olgyay**: concetti di base (clima, comfort, strategie bioclimatiche). Non è un testo di calcolo.
+- **EnergyPlus — manuali da assimilare** (documentazione ufficiale gratuita, da scaricare dal sito energyplus.net nella sezione documentazione, nella versione corrispondente al programma installato; Agata li salva in `RIFERIMENTI/ENERGETICA/EnergyPlus/`):
+  1. *EnergyPlus Essentials* e *Getting Started*: struttura del programma, flusso input → simulazione → output
+  2. *Engineering Reference*: metodo del bilancio termico, conduzione con funzioni di trasferimento, radiazione solare, ventilazione e infiltrazioni. È il collegamento tra i concetti di Olgyay e il calcolo
+  3. *Input Output Reference*: da usare come riferimento, partendo da parametri di simulazione, località e file climatici, materiali e costruzioni, zone termiche, carichi interni, impianti ideali
+  4. *Output Details and Examples*, *Auxiliary Programs* (convertitore dei dati climatici, ExpandObjects), *Tips and Tricks*
+  5. Manuali da sviluppatore:
+     - *Interface Developer's Guide*: formati di input IDF ed epJSON. Priorità alta: è la via con cui il nostro programma genera i modelli energetici, e epJSON va confrontato con lo schema dati di Benedetta
+     - API Python di EnergyPlus e *External Interfaces Application Guide* (co-simulazione FMI): base per gli script di accoppiamento in `ENERGETICA` (`test4_weak_coupling.py`)
+     - *Module Developer's Guide*: struttura del codice sorgente C++, solo se si dovranno sviluppare moduli
+  6. Guide applicative (*Application Guide for EMS*, *Plant Application Guide*): dopo i punti precedenti, se servono controlli o impianti dettagliati
 - **Mancano** testi sulla normativa energetica italiana (UNI/TS 11300, D.M. 26/06/2015 requisiti minimi): da procurare se la parte energetica deve arrivare al calcolo di legge.

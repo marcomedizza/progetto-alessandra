@@ -678,6 +678,166 @@
             margin-top: 10px;
             line-height: 1.5;
         }
+
+        /* rapporti, verifiche e assegnazioni (archivio condiviso) */
+        .toast {
+            position: fixed;
+            right: max(16px, env(safe-area-inset-right, 0px));
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            background: #1f2937;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 50;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filters select {
+            width: auto;
+            min-width: 160px;
+            margin-bottom: 0;
+        }
+
+        .report {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .report.revisionato {
+            border-left-color: #10b981;
+        }
+
+        .report-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .report-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .report-text {
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 14px;
+            color: #333;
+            overflow-wrap: anywhere;
+        }
+
+        .report-original {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .report-original summary {
+            cursor: pointer;
+        }
+
+        .report-note {
+            margin-top: 8px;
+            padding: 8px;
+            background: #eef2ff;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #3730a3;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .pill.da-revisionare { background: #fef3c7; color: #92400e; }
+        .pill.revisionato { background: #d1fae5; color: #065f46; }
+        .pill.lungo { background: #fee2e2; color: #7f1d1d; }
+
+        .btn-revisione {
+            margin-top: 10px;
+            letter-spacing: 0.05em;
+        }
+
+        .revision-box {
+            margin-top: 10px;
+        }
+
+        .revision-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .char-counter.over {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .db-status {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .inline-form {
+            display: grid;
+            grid-template-columns: 2fr 3fr 1fr auto;
+            gap: 10px;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .inline-form input, .inline-form select {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .inline-form { grid-template-columns: 1fr; }
+        }
+
+        .assign-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .assign-table th {
+            text-align: left;
+            color: #666;
+            font-size: 12px;
+            padding: 6px 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .assign-table td {
+            padding: 8px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
@@ -751,6 +911,12 @@
                     <div class="stats-label">Giorno di progetto</div>
                     <div class="stats-note">avvio 15/08/2026</div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <h3>🗓️ Assegnazioni di oggi</h3>
+                <p class="db-status" id="assegnazioni-status">Generate ogni mattina in automatico dall'assegnazione del ciclo.</p>
+                <div class="table-scroll" id="assegnazioni-list"></div>
             </div>
 
             <div class="grid-2">
@@ -840,13 +1006,50 @@
         <div id="notifications" class="tab-content">
             <div class="card">
                 <h3>🔔 Tutte le notifiche</h3>
-                <button onclick="addNotification()" class="btn-small">+ Aggiungi notifica</button>
+                <div class="inline-form">
+                    <input type="text" id="notif-title" placeholder="Titolo" aria-label="Titolo notifica">
+                    <input type="text" id="notif-message" placeholder="Messaggio" aria-label="Messaggio">
+                    <select id="notif-priority" aria-label="Priorità">
+                        <option value="low">Bassa</option>
+                        <option value="medium" selected>Media</option>
+                        <option value="high">Alta</option>
+                    </select>
+                    <button onclick="addNotification()" class="btn-small">+ Aggiungi notifica</button>
+                </div>
                 <div id="all-notifications" style="margin-top: 15px;"></div>
             </div>
         </div>
 
         <!-- BOARD TAB -->
         <div id="board" class="tab-content">
+            <div class="card" style="margin-bottom: 20px;">
+                <h3>📋 Rapporti settimanali degli agenti</h3>
+                <p class="db-status" id="db-status-rapporti">Consegna ogni domenica entro le 19:00, massimo 500 battute per agente. Il pulsante COMMENTA apre lo spazio per il suo commento; il testo dell'agente si può anche correggere.</p>
+                <div class="filters">
+                    <select id="filtro-settimana" aria-label="Settimana"></select>
+                    <select id="filtro-team" aria-label="Team">
+                        <option value="">Tutti i team</option>
+                        <option value="Alessandra">Team Alessandra</option>
+                        <option value="Giorgia">Team Giorgia</option>
+                        <option value="Strutturale">Team strutturale</option>
+                        <option value="Qualità">Controllo qualità</option>
+                    </select>
+                    <select id="filtro-stato" aria-label="Stato">
+                        <option value="">Tutti gli stati</option>
+                        <option value="da_revisionare">Da commentare</option>
+                        <option value="revisionato">Commentati</option>
+                    </select>
+                </div>
+                <div id="report-summary" class="db-status"></div>
+                <div id="report-list"></div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <h3>✅ Verifiche giornaliere dei responsabili</h3>
+                <p class="db-status">Alessandra (tech e strutturale) e Giorgia (business), ogni giorno.</p>
+                <div id="verifiche-list"></div>
+            </div>
+
             <div class="grid-2">
                 <div class="card">
                     <h3>📌 Bacheca pubblica</h3>
@@ -880,7 +1083,11 @@
             <div class="card">
                 <h3>📋 Traguardi</h3>
                 <div id="milestones-full"></div>
-                <button onclick="addMilestone()" class="btn-small">+ Aggiungi traguardo</button>
+                <div class="inline-form" style="grid-template-columns: 3fr 1fr auto;">
+                    <input type="text" id="ms-title" placeholder="Titolo traguardo" aria-label="Titolo traguardo">
+                    <input type="date" id="ms-date" aria-label="Data traguardo">
+                    <button onclick="addMilestone()" class="btn-small">+ Aggiungi traguardo</button>
+                </div>
             </div>
         </div>
 
@@ -1837,6 +2044,267 @@
             document.getElementById('agent-select').innerHTML = '<option value="">Seleziona agente...</option>' + opts;
         }
 
+        // ===== Avvisi in pagina (il visualizzatore non mostra alert) =====
+        let toastTimer = null;
+        function avviso(msg) {
+            let el = document.getElementById('toast');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'toast';
+                el.className = 'toast';
+                el.setAttribute('role', 'status');
+                document.body.appendChild(el);
+            }
+            el.textContent = msg;
+            el.hidden = false;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { el.hidden = true; }, 3500);
+        }
+
+        function esc(v) {
+            return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // ===== Archivio condiviso: rapporti, verifiche, assegnazioni =====
+        // Collezioni:
+        //   rapporti/<domenica AAAA-MM-GG>_<Agente>   {agente, team, settimana, testo, consegnato_il, stato, commento, revisione (testo corretto), revisionato_il}
+        //   verifiche/<AAAA-MM-GG>_<Responsabile>      {data, responsabile, team, testo, ritardi:[...]}
+        //   assegnazioni/<AAAA-MM-GG>_<Agente>         {data, agente, team, obiettivo, rif}
+        const MAX_BATTUTE = 500;
+        const store = { db: null, canWrite: false, rapporti: [], verifiche: [], assegnazioni: [], stato: 'attesa' };
+        const revisioniAperte = {};
+
+        function todayIso() {
+            const t = todayDay();
+            return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+        }
+
+        async function initArchivio() {
+            if (!window.claude || typeof window.claude.use !== 'function') {
+                store.stato = 'assente';
+                renderArchivio();
+                return;
+            }
+            const db = await window.claude.use('db');
+            if (!db) { store.stato = 'assente'; renderArchivio(); return; }
+            store.db = db;
+            store.stato = 'pronto';
+            const user = await window.claude.use('user');
+            if (user) {
+                const canEdit = await Promise.resolve(user.canEdit ? user.canEdit() : false).catch(() => false);
+                const isOwner = await Promise.resolve(user.isOwner ? user.isOwner() : false).catch(() => false);
+                store.canWrite = !!(canEdit || isOwner);
+            }
+            const onErr = () => { store.stato = 'errore'; renderArchivio(); };
+            db.collection('rapporti').orderBy('settimana', 'desc').limit(1000).onSnapshot(snap => {
+                store.rapporti = snap.docs.map(d => Object.assign({ _id: d.id }, d.data()));
+                fillWeekFilter();
+                renderArchivio();
+            }, onErr);
+            db.collection('verifiche').orderBy('data', 'desc').limit(60).onSnapshot(snap => {
+                store.verifiche = snap.docs.map(d => Object.assign({ _id: d.id }, d.data()));
+                renderArchivio();
+            }, onErr);
+            db.collection('assegnazioni').orderBy('data', 'desc').limit(200).onSnapshot(snap => {
+                store.assegnazioni = snap.docs.map(d => Object.assign({ _id: d.id }, d.data()));
+                renderArchivio();
+            }, onErr);
+            renderArchivio();
+        }
+
+        function fillWeekFilter() {
+            const sel = document.getElementById('filtro-settimana');
+            const current = sel.value;
+            const weeks = [...new Set(store.rapporti.map(r => r.settimana).filter(Boolean))].sort().reverse();
+            sel.innerHTML = '<option value="">Tutte le settimane</option>' +
+                weeks.map(w => `<option value="${esc(w)}">Settimana con consegna ${esc(fmt(w))}</option>`).join('');
+            if (current && weeks.indexOf(current) !== -1) sel.value = current;
+            else if (!current && weeks.length) sel.value = weeks[0];
+        }
+
+        function renderArchivio() {
+            renderRapporti();
+            renderVerifiche();
+            renderAssegnazioni();
+        }
+
+        function archivioAssente(el, cosa) {
+            if (store.stato === 'assente') {
+                el.innerHTML = `<p style="color: #999;">${cosa} si vedono solo nella versione pubblicata del cruscotto su claude.ai, non nel file aperto dal computer.</p>`;
+                return true;
+            }
+            if (store.stato === 'attesa') {
+                el.innerHTML = '<p style="color: #999;">Collegamento all\'archivio in corso...</p>';
+                return true;
+            }
+            if (store.stato === 'errore') {
+                el.innerHTML = '<p style="color: #b91c1c;">Archivio non raggiungibile. Ricarica la pagina.</p>';
+                return true;
+            }
+            return false;
+        }
+
+        function renderRapporti() {
+            const el = document.getElementById('report-list');
+            const sum = document.getElementById('report-summary');
+            if (!el) return;
+            if (archivioAssente(el, 'I rapporti degli agenti')) { sum.textContent = ''; return; }
+            const w = document.getElementById('filtro-settimana').value;
+            const t = document.getElementById('filtro-team').value;
+            const st = document.getElementById('filtro-stato').value;
+            const list = store.rapporti
+                .filter(r => (!w || r.settimana === w) && (!t || r.team === t) && (!st || (r.stato || 'da_revisionare') === st))
+                .sort((a, b) => String(a.team).localeCompare(String(b.team)) || String(a.agente).localeCompare(String(b.agente)));
+            const daRev = list.filter(r => (r.stato || 'da_revisionare') !== 'revisionato').length;
+            sum.textContent = list.length ? `${list.length} rapporti mostrati · ${daRev} da commentare · ${list.length - daRev} commentati` : '';
+            if (!list.length) {
+                el.innerHTML = '<p style="color: #999;">Nessun rapporto per questa selezione. I rapporti arrivano ogni domenica entro le 19:00.</p>';
+                return;
+            }
+            el.innerHTML = list.map(r => {
+                const rev = (r.stato || 'da_revisionare') === 'revisionato';
+                const testo = rev && r.revisione ? r.revisione : (r.testo || '');
+                const lungo = String(r.testo || '').length > MAX_BATTUTE;
+                const open = revisioniAperte[r._id];
+                return `
+                    <div class="report ${rev ? 'revisionato' : ''}" id="rep-${esc(r._id)}">
+                        <div class="report-head">
+                            <strong>👩 ${esc(r.agente)} <span class="report-meta">· ${esc(r.team || '')}</span></strong>
+                            <span>
+                                ${lungo ? `<span class="pill lungo">${String(r.testo).length}/${MAX_BATTUTE} battute</span>` : ''}
+                                <span class="pill ${rev ? 'revisionato' : 'da-revisionare'}">${rev ? 'Commentato' : 'Da commentare'}</span>
+                            </span>
+                        </div>
+                        <div class="report-meta" style="margin-bottom: 8px;">Settimana con consegna ${esc(r.settimana ? fmt(r.settimana) : '—')} · consegnato ${esc(r.consegnato_il || '—')}${rev && r.revisionato_il ? ' · commentato ' + esc(r.revisionato_il) : ''}</div>
+                        <div class="report-text">${esc(testo)}</div>
+                        ${rev && r.revisione && r.revisione !== r.testo ? `<details class="report-original"><summary>Testo originale dell'agente (prima della correzione)</summary><div class="report-text">${esc(r.testo)}</div></details>` : ''}
+                        ${r.commento ? `<div class="report-note"><strong>Commento di Marco:</strong> ${esc(r.commento)}</div>` : ''}
+                        ${open ? revisionBox(r) : (store.canWrite ? `<button class="btn-small btn-revisione" onclick="apriRevisione('${esc(r._id)}')">${rev ? 'MODIFICA COMMENTO' : 'COMMENTA'}</button>` : '')}
+                    </div>`;
+            }).join('');
+            Object.keys(revisioniAperte).forEach(id => {
+                const ta = document.getElementById('rev-text-' + id);
+                if (ta && revisioniAperte[id].draft != null) { ta.value = revisioniAperte[id].draft; updateRevCount(id); }
+                const nt = document.getElementById('rev-note-' + id);
+                if (nt && revisioniAperte[id].note != null) nt.value = revisioniAperte[id].note;
+            });
+        }
+
+        function revisionBox(r) {
+            const id = esc(r._id);
+            return `
+                <div class="revision-box">
+                    <label for="rev-note-${id}" class="report-meta">Commento per l'agente</label>
+                    <textarea id="rev-note-${id}" style="min-height: 80px;" oninput="onRevInput('${id}')"></textarea>
+                    <details>
+                        <summary class="report-meta" style="cursor: pointer; margin-bottom: 6px;">Correggi anche il testo del rapporto (facoltativo)</summary>
+                        <textarea id="rev-text-${id}" style="min-height: 110px;" oninput="onRevInput('${id}')"></textarea>
+                        <div class="char-counter" id="rev-count-${id}"></div>
+                    </details>
+                    <div class="revision-actions">
+                        <button class="btn-small" onclick="salvaRevisione('${id}')">Salva commento</button>
+                        <button class="btn-small btn-secondary" onclick="chiudiRevisione('${id}')">Annulla</button>
+                    </div>
+                </div>`;
+        }
+
+        function apriRevisione(id) {
+            const r = store.rapporti.find(x => x._id === id);
+            if (!r) return;
+            revisioniAperte[id] = { draft: r.revisione || r.testo || '', note: r.commento || '' };
+            renderRapporti();
+            const nt = document.getElementById('rev-note-' + id);
+            if (nt) nt.focus();
+        }
+
+        function onRevInput(id) {
+            const ta = document.getElementById('rev-text-' + id);
+            const nt = document.getElementById('rev-note-' + id);
+            if (!revisioniAperte[id]) return;
+            revisioniAperte[id].draft = ta ? ta.value : '';
+            revisioniAperte[id].note = nt ? nt.value : '';
+            updateRevCount(id);
+        }
+
+        function updateRevCount(id) {
+            const ta = document.getElementById('rev-text-' + id);
+            const c = document.getElementById('rev-count-' + id);
+            if (!ta || !c) return;
+            c.textContent = ta.value.length + '/' + MAX_BATTUTE;
+            c.classList.toggle('over', ta.value.length > MAX_BATTUTE);
+        }
+
+        function chiudiRevisione(id) {
+            delete revisioniAperte[id];
+            renderRapporti();
+        }
+
+        async function salvaRevisione(id) {
+            const st = revisioniAperte[id];
+            if (!st || !store.db) return;
+            const testo = (st.draft || '').trim();
+            const commento = (st.note || '').trim();
+            if (!commento && !testo) { avviso('Scrivi un commento'); return; }
+            if (testo.length > MAX_BATTUTE) { avviso('Il testo supera ' + MAX_BATTUTE + ' battute'); return; }
+            const r = store.rapporti.find(x => x._id === id) || {};
+            try {
+                await store.db.doc('rapporti/' + id).update({
+                    revisione: testo && testo !== r.testo ? testo : '',
+                    commento: commento,
+                    stato: 'revisionato',
+                    revisionato_il: getDate() + ' ' + getTime()
+                });
+                delete revisioniAperte[id];
+                avviso('Commento salvato');
+                renderRapporti();
+            } catch (e) {
+                avviso(e && e.code === 'invalid_argument' ? 'Non hai i permessi per commentare questo rapporto' : 'Commento non salvato: riprova');
+            }
+        }
+
+        function renderVerifiche() {
+            const el = document.getElementById('verifiche-list');
+            if (!el) return;
+            if (archivioAssente(el, 'Le verifiche giornaliere')) return;
+            if (!store.verifiche.length) {
+                el.innerHTML = '<p style="color: #999;">Nessuna verifica ancora. Alessandra e Giorgia la consegnano ogni giorno.</p>';
+                return;
+            }
+            el.innerHTML = store.verifiche.slice(0, 14).map(v => `
+                <div class="report revisionato" style="border-left-color: #667eea;">
+                    <div class="report-head">
+                        <strong>${esc(v.responsabile)} <span class="report-meta">· ${esc(v.team || '')}</span></strong>
+                        <span class="report-meta">${esc(v.data ? fmt(v.data) : '')}</span>
+                    </div>
+                    <div class="report-text">${esc(v.testo)}</div>
+                    ${Array.isArray(v.ritardi) && v.ritardi.length ? `<div class="report-note" style="background: #fee2e2; color: #7f1d1d;"><strong>In ritardo:</strong> ${v.ritardi.map(esc).join(', ')}</div>` : ''}
+                </div>`).join('');
+        }
+
+        function renderAssegnazioni() {
+            const el = document.getElementById('assegnazioni-list');
+            const stEl = document.getElementById('assegnazioni-status');
+            if (!el) return;
+            if (archivioAssente(el, 'Le assegnazioni del giorno')) return;
+            const oggi = todayIso();
+            let list = store.assegnazioni.filter(a => a.data === oggi);
+            let label = 'oggi';
+            if (!list.length && store.assegnazioni.length) {
+                const ultima = store.assegnazioni[0].data;
+                list = store.assegnazioni.filter(a => a.data === ultima);
+                label = 'del ' + fmt(ultima) + ' (oggi non ancora generate)';
+            }
+            stEl.textContent = list.length ? `${list.length} assegnazioni ${label}. Generate ogni mattina in automatico dall'assegnazione del ciclo.` : 'Generate ogni mattina in automatico dall\'assegnazione del ciclo.';
+            if (!list.length) {
+                el.innerHTML = '<p style="color: #999;">Nessuna assegnazione ancora. La prima viene generata dalla procedura automatica del mattino.</p>';
+                return;
+            }
+            list.sort((a, b) => String(a.team).localeCompare(String(b.team)) || String(a.agente).localeCompare(String(b.agente)));
+            el.innerHTML = `<table class="assign-table"><thead><tr><th>Agente</th><th>Team</th><th>Obiettivo del giorno</th></tr></thead><tbody>` +
+                list.map(a => `<tr><td><strong>${esc(a.agente)}</strong></td><td>${esc(a.team || '')}</td><td>${esc(a.obiettivo)}</td></tr>`).join('') +
+                '</tbody></table>';
+        }
+
         function render() {
             renderStats();
             renderAgents();
@@ -1863,9 +2331,12 @@
 
         // Actions
         function addNotification() {
-            const title = prompt('Titolo notifica:');
-            const message = prompt('Messaggio:');
-            const priority = prompt('Priorità (low/medium/high):', 'medium');
+            const title = document.getElementById('notif-title').value.trim();
+            const message = document.getElementById('notif-message').value.trim();
+            const priority = document.getElementById('notif-priority').value;
+            if (!title || !message) { avviso('Scrivi titolo e messaggio della notifica'); return; }
+            document.getElementById('notif-title').value = '';
+            document.getElementById('notif-message').value = '';
 
             if (title && message) {
                 appData.notifications.push({
@@ -1932,14 +2403,17 @@
         }
 
         function addMilestone() {
-            const title = prompt('Titolo traguardo:');
-            const date = prompt('Data (AAAA-MM-GG):');
+            const title = document.getElementById('ms-title').value.trim();
+            const date = document.getElementById('ms-date').value;
+            if (!title || !date) { avviso('Scrivi titolo e data del traguardo'); return; }
+            document.getElementById('ms-title').value = '';
+            document.getElementById('ms-date').value = '';
             if (title && date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
                 appData.milestones.push({ title, date, status: 'pending' });
                 saveData();
                 render();
             } else if (title && date) {
-                alert('Data non valida: usa il formato AAAA-MM-GG');
+                avviso('Data non valida: usa il formato AAAA-MM-GG');
             }
         }
 
@@ -2006,7 +2480,7 @@
                 saveData();
                 render();
             } else if (notes.length > 300) {
-                alert('Massimo 300 caratteri!');
+                avviso('Massimo 300 caratteri!');
             }
         }
 
@@ -2023,12 +2497,12 @@
             const summary = document.getElementById('research-summary').value;
 
             if (!agent || !topic || !source || !summary) {
-                alert('Compila tutti i campi (agente, argomento, fonte, riassunto)');
+                avviso('Compila tutti i campi (agente, argomento, fonte, riassunto)');
                 return;
             }
 
             if (summary.length > 300) {
-                alert('Il riassunto non può superare 300 battute');
+                avviso('Il riassunto non può superare 300 battute');
                 return;
             }
 
@@ -2098,6 +2572,13 @@
                     document.getElementById('research-char-count').textContent = this.value.length + '/300';
                 });
             }
+
+            ['filtro-settimana', 'filtro-team', 'filtro-stato'].forEach(id => {
+                const f = document.getElementById(id);
+                if (f) f.addEventListener('change', renderRapporti);
+            });
+            renderArchivio();
+            initArchivio();
 
             const researchSearchEl = document.getElementById('research-search');
             if (researchSearchEl) {

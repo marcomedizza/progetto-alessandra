@@ -2,7 +2,7 @@
 
 ## Per Alessia (Geotecnica)
 
-**Dove sono i testi**: `D:\IlMioDrive\progetto-alessandra\RIFERIMENTI\GEOTECNICA`. Alessia li richiede ad Agata.
+**Dove sono i testi**: Google Drive, `Il mio Drive/progetto-alessandra/RIFERIMENTI/GEOTECNICA` ([cartella](https://drive.google.com/drive/folders/1rH5BM0U6ex9cL2HkPr1JD3Nz1PZt-4O6), creata il 23/10/2026 con l'elenco dei testi). Copia locale: `D:\IlMioDrive\progetto-alessandra\RIFERIMENTI\GEOTECNICA`, non sincronizzata al 23/10. Alessia li richiede ad Agata.
 
 ### **Fondazioni, Progetto e Analisi** — lettura completa
 - **Autore**: Joseph E. Bowles

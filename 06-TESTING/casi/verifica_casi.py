@@ -4,10 +4,12 @@
 2. Risolve ogni modello con il risolutore di riferimento 06-TESTING/riferimento/telaio2d.py.
 3. Confronta i risultati con i valori attesi di C*.atteso.json (tolleranza relativa 0,5 %).
 
-Uso:  python3 verifica_casi.py            → esito su terminale, codice di uscita 0 se tutto passa
-      python3 verifica_casi.py --scrivi   → salva anche i risultati del riferimento in C*.riferimento.json
+Uso:  python3 verifica_casi.py              → risolutore di riferimento Python
+      python3 verifica_casi.py --fortran    → solutore Fortran tramite il convertitore (03-BACKEND/converter)
+      python3 verifica_casi.py --scrivi     → salva anche i risultati del riferimento in C*.riferimento.json
 
-Lo stesso confronto si usa per il solutore Fortran: basta sostituire la funzione `risultati`.
+Con --fortran confronta anche, nodo per nodo e asta per asta, i risultati
+completi del Fortran con quelli del riferimento (tolleranza 1e-6 relativa).
 """
 
 import glob
@@ -83,8 +85,31 @@ LETTURE = {
 }
 
 
+FORTRAN = "--fortran" in sys.argv
+if FORTRAN:
+    sys.path.insert(0, os.path.join(RADICE, "03-BACKEND", "converter"))
+    import converti  # noqa: E402
+
+
 def risultati(modello, caso):
+    if FORTRAN:
+        return converti.risultati(modello, caso)
     return telaio2d.analizza(modello, caso)
+
+
+def confronto_completo(a, b):
+    """Differenze tra due blocchi risultati (Fortran e riferimento). Restituisce il numero di scostamenti."""
+    n = 0
+    def vicino(p, q):
+        return abs(p - q) <= 1e-6 * max(1.0, abs(p), abs(q))
+    for x, y in zip(a["spostamenti"], b["spostamenti"]):
+        n += sum(not vicino(x[k], y[k]) for k in ("ux", "uy", "rz"))
+    for x, y in zip(a["reazioni"], b["reazioni"]):
+        n += sum(not vicino(x[k], y[k]) for k in ("Rx", "Ry", "Mz"))
+    for x, y in zip(a["sollecitazioni"], b["sollecitazioni"]):
+        for k in ("N", "V", "M"):
+            n += sum(not vicino(p, q) for p, q in zip(x[k], y[k]))
+    return n
 
 
 def main():
@@ -105,7 +130,7 @@ def main():
         with open(f, encoding="utf-8") as fh:
             modello = json.load(fh)
         cid = modello["progetto"]["id"]
-        print(f"\n== {cid}: {modello['progetto']['nome']}")
+        print(f"\n== {cid}: {modello['progetto']['nome']}" + (" [Fortran]" if FORTRAN else ""))
         if validatore:
             errs = sorted(validatore.iter_errors(modello), key=str)
             for e in errs:
@@ -116,7 +141,11 @@ def main():
         with open(f.replace(".json", ".atteso.json"), encoding="utf-8") as fh:
             atteso = json.load(fh)
         r = risultati(modello, atteso["caso"])
-        if scrivi:
+        if FORTRAN:
+            diff = confronto_completo(r, telaio2d.analizza(modello, atteso["caso"]))
+            errori += diff
+            print(f"  {'✓' if diff == 0 else '✗'} confronto completo Fortran / riferimento: {diff} scostamenti")
+        if scrivi and not FORTRAN:
             with open(f.replace(".json", ".riferimento.json"), "w", encoding="utf-8") as fh:
                 json.dump(r, fh, indent=2, ensure_ascii=False)
                 fh.write("\n")

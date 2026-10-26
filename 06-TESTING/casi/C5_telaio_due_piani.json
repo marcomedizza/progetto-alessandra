@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C5",
+    "nome": "Telaio a due piani",
+    "descrizione": "Una campata L = 6 m, due piani h = 3.5 m. Colonne HE 200 A, travi IPE 300. q = 25 kN/m sulle travi, H = 10 kN al primo piano e 15 kN al secondo.",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-26",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 0,
+      "y": 3.5
+    },
+    {
+      "id": 4,
+      "x": 6,
+      "y": 3.5
+    },
+    {
+      "id": 5,
+      "x": 0,
+      "y": 7
+    },
+    {
+      "id": 6,
+      "x": 6,
+      "y": 7
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    },
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 3,
+      "nodo_i": 3,
+      "nodo_j": 5,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 4,
+      "nodo_i": 4,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 5,
+      "nodo_i": 3,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    },
+    {
+      "id": 6,
+      "nodo_i": 5,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 2,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "C",
+      "nome": "Verticali + orizzontali",
+      "categoria": "altro",
+      "carichi_nodali": [
+        {
+          "nodo": 3,
+          "Fx": 10
+        },
+        {
+          "nodo": 5,
+          "Fx": 15
+        }
+      ],
+      "carichi_aste": [
+        {
+          "asta": 5,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25
+        },
+        {
+          "asta": 6,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  }
+}

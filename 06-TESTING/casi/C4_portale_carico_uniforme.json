@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C4",
+    "nome": "Portale incastrato, carico uniforme sul traverso",
+    "descrizione": "Colonne HE 200 A h = 4 m, traverso IPE 300 L = 6 m, q = 30 kN/m verso il basso. Deformabilità assiale trascurata.",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-26",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "nome": "base sinistra",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 0,
+      "y": 4
+    },
+    {
+      "id": 3,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "id": 4,
+      "nome": "base destra",
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    },
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nome": "colonna sinistra",
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 2,
+      "nome": "traverso",
+      "nodo_i": 2,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    },
+    {
+      "id": 3,
+      "nome": "colonna destra",
+      "nodo_i": 4,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 4,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "G",
+      "nome": "Carico uniforme",
+      "categoria": "G2",
+      "carichi_aste": [
+        {
+          "asta": 2,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -30.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": false,
+    "punti_diagramma": 11
+  }
+}

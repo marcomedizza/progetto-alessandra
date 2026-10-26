@@ -1,0 +1,48 @@
+{
+  "caso": "H",
+  "formule": {
+    "rapporto di rigidezza": "k = (Ib/L)/(Ic/h)",
+    "momento al piede": "Mb = (Hh/2)(3k+1)/(6k+1)",
+    "momento in testa": "Mt = (Hh/2)·3k/(6k+1)",
+    "taglio per colonna": "V = H/2 (colonne uguali)",
+    "nota": "formule con aste assialmente indeformabili; il modello imposta deformabilita_assiale = false"
+  },
+  "k": 1.508847959552185,
+  "valori": [
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 4",
+      "valore": -10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 21.98943851708158,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "Mz nodo 4 (reazione)",
+      "valore": 21.98943851708158,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=0",
+      "valore": 21.98943851708158,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=h",
+      "valore": 18.010561482918416,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "Ry nodo 1 + Ry nodo 4",
+      "valore": 0.0,
+      "unita": "kN"
+    }
+  ]
+}

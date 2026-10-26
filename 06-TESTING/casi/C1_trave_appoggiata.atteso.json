@@ -1,0 +1,41 @@
+{
+  "caso": "Q",
+  "formule": {
+    "reazioni": "R = qL/2",
+    "momento in mezzeria": "M = qL²/8",
+    "freccia in mezzeria": "f = 5qL⁴/(384EI)",
+    "rotazione agli appoggi": "θ = qL³/(24EI)"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 30.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 3",
+      "valore": 30.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=3 (mezzeria)",
+      "valore": 45.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.009616699719619776,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 1",
+      "valore": -0.0051289065171305475,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "V asta 1 x=0",
+      "valore": 30.0,
+      "unita": "kN"
+    }
+  ]
+}

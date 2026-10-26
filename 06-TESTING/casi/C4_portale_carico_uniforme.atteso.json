@@ -1,0 +1,43 @@
+{
+  "caso": "G",
+  "formule": {
+    "momento d'angolo": "Mc = (qL²/12)·2/(k+2), k = (Ib/L)/(Ic/h)",
+    "momento al piede": "Mb = Mc/2 (trasmissione 1/2, nodi senza traslazione per simmetria)",
+    "momento in mezzeria del traverso": "Mm = qL²/8 − Mc",
+    "spinta orizzontale al piede": "H = (Mc + Mb)/h",
+    "nota": "metodo delle rotazioni, aste assialmente indeformabili"
+  },
+  "k": 1.508847959552185,
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 90.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 4",
+      "valore": 90.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|Rx| nodo 1",
+      "valore": 19.237083161794978,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|M| asta 2 x=0 (angolo)",
+      "valore": 51.29888843145327,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=L/2 (mezzeria)",
+      "valore": 83.70111156854674,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|Mz| nodo 1 (reazione)",
+      "valore": 25.649444215726636,
+      "unita": "kNm"
+    }
+  ]
+}

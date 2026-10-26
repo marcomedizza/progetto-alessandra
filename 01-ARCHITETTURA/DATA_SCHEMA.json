@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/marcomedizza/progetto-alessandra/01-ARCHITETTURA/DATA_SCHEMA.json",
+  "title": "Modello strutturale — progetto Alessandra",
+  "description": "Schema dati v1.0 per telai piani (analisi statica lineare). Unità coerenti fisse: lunghezze in m, forze in kN, moduli elastici in kN/m², momenti in kNm. Riferimento globale: X verso destra, Y verso l'alto, rotazioni positive antiorarie.",
+  "type": "object",
+  "required": ["schema_version", "progetto", "nodi", "materiali", "sezioni", "aste", "vincoli", "casi_di_carico"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "progetto": {
+      "type": "object",
+      "required": ["id", "nome", "tipo_modello", "unita"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "nome": { "type": "string", "minLength": 1 },
+        "descrizione": { "type": "string" },
+        "autore": { "type": "string" },
+        "data": { "type": "string", "format": "date" },
+        "tipo_modello": { "const": "telaio_piano" },
+        "unita": {
+          "type": "object",
+          "required": ["lunghezza", "forza"],
+          "additionalProperties": false,
+          "properties": {
+            "lunghezza": { "const": "m" },
+            "forza": { "const": "kN" }
+          }
+        }
+      }
+    },
+    "nodi": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "x", "y"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_intero" },
+          "nome": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" }
+        }
+      }
+    },
+    "materiali": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "nome", "E"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_testo" },
+          "nome": { "type": "string" },
+          "tipo": { "enum": ["acciaio", "calcestruzzo", "legno", "alluminio", "muratura", "altro"] },
+          "E": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo elastico [kN/m²]. Acciaio: 2.10e8" },
+          "G": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo di taglio [kN/m²] (riservato, non usato nella v1.0)" },
+          "peso_specifico": { "type": "number", "minimum": 0, "description": "[kN/m³]" }
+        }
+      }
+    },
+    "sezioni": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "nome", "A", "I"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_testo" },
+          "nome": { "type": "string" },
+          "A": { "type": "number", "exclusiveMinimum": 0, "description": "Area [m²]" },
+          "I": { "type": "number", "exclusiveMinimum": 0, "description": "Momento d'inerzia per flessione nel piano del telaio [m⁴]" },
+          "W": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo di resistenza elastico [m³] (per le tensioni, facoltativo)" },
+          "fonte": { "type": "string", "description": "Origine dei valori (sagomario, calcolo)" }
+        }
+      }
+    },
+    "aste": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "nodo_i", "nodo_j", "materiale", "sezione"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_intero" },
+          "nome": { "type": "string" },
+          "nodo_i": { "$ref": "#/$defs/id_intero" },
+          "nodo_j": { "$ref": "#/$defs/id_intero" },
+          "materiale": { "$ref": "#/$defs/id_testo" },
+          "sezione": { "$ref": "#/$defs/id_testo" },
+          "svincoli": {
+            "type": "object",
+            "description": "Cerniere interne alle estremità (rotazione svincolata)",
+            "additionalProperties": false,
+            "properties": {
+              "rz_i": { "type": "boolean", "default": false },
+              "rz_j": { "type": "boolean", "default": false }
+            }
+          }
+        }
+      }
+    },
+    "vincoli": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["nodo"],
+        "additionalProperties": false,
+        "properties": {
+          "nodo": { "$ref": "#/$defs/id_intero" },
+          "ux": { "type": "boolean", "default": false, "description": "true = spostamento X impedito" },
+          "uy": { "type": "boolean", "default": false },
+          "rz": { "type": "boolean", "default": false },
+          "molle": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kx": { "type": "number", "minimum": 0, "description": "[kN/m]" },
+              "ky": { "type": "number", "minimum": 0, "description": "[kN/m]" },
+              "kr": { "type": "number", "minimum": 0, "description": "[kNm/rad]" }
+            }
+          }
+        }
+      }
+    },
+    "casi_di_carico": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "nome"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_testo" },
+          "nome": { "type": "string" },
+          "categoria": { "enum": ["G1", "G2", "Q", "vento", "neve", "sisma", "temperatura", "altro"], "description": "Categoria di azione secondo NTC 2018 §2.5" },
+          "peso_proprio": { "type": "boolean", "default": false },
+          "carichi_nodali": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["nodo"],
+              "additionalProperties": false,
+              "properties": {
+                "nodo": { "$ref": "#/$defs/id_intero" },
+                "Fx": { "type": "number", "default": 0, "description": "[kN]" },
+                "Fy": { "type": "number", "default": 0, "description": "[kN]" },
+                "Mz": { "type": "number", "default": 0, "description": "[kNm], positivo antiorario" }
+              }
+            }
+          },
+          "carichi_aste": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": ["asta", "tipo", "direzione", "q"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "asta": { "$ref": "#/$defs/id_intero" },
+                    "tipo": { "const": "distribuito_uniforme" },
+                    "direzione": { "enum": ["globale_x", "globale_y", "locale_y"] },
+                    "q": { "type": "number", "description": "[kN/m] per unità di lunghezza dell'asta; segno secondo l'asse indicato" }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": ["asta", "tipo", "direzione", "P", "a"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "asta": { "$ref": "#/$defs/id_intero" },
+                    "tipo": { "const": "concentrato" },
+                    "direzione": { "enum": ["globale_x", "globale_y", "locale_y"] },
+                    "P": { "type": "number", "description": "[kN]" },
+                    "a": { "type": "number", "minimum": 0, "description": "Distanza dal nodo_i [m]" }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "combinazioni": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "nome", "coefficienti"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id_testo" },
+          "nome": { "type": "string" },
+          "tipo": { "enum": ["SLU", "SLE_rara", "SLE_frequente", "SLE_quasi_permanente", "sismica"] },
+          "coefficienti": {
+            "type": "object",
+            "description": "Caso di carico → coefficiente (es. {\"G1\": 1.3, \"Q\": 1.5})",
+            "additionalProperties": { "type": "number" }
+          }
+        }
+      }
+    },
+    "analisi": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "enum": ["statica_lineare"], "default": "statica_lineare" },
+        "deformabilita_assiale": { "type": "boolean", "default": true },
+        "punti_diagramma": { "type": "integer", "minimum": 2, "maximum": 101, "default": 11, "description": "Punti per asta in cui il solutore restituisce N, V, M" }
+      }
+    },
+    "risultati": {
+      "type": "array",
+      "description": "Scritti dal solutore, uno per caso o combinazione",
+      "items": {
+        "type": "object",
+        "required": ["caso", "spostamenti", "reazioni", "sollecitazioni"],
+        "additionalProperties": false,
+        "properties": {
+          "caso": { "$ref": "#/$defs/id_testo" },
+          "solutore": { "type": "string" },
+          "spostamenti": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["nodo", "ux", "uy", "rz"],
+              "additionalProperties": false,
+              "properties": {
+                "nodo": { "$ref": "#/$defs/id_intero" },
+                "ux": { "type": "number", "description": "[m]" },
+                "uy": { "type": "number", "description": "[m]" },
+                "rz": { "type": "number", "description": "[rad]" }
+              }
+            }
+          },
+          "reazioni": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["nodo", "Rx", "Ry", "Mz"],
+              "additionalProperties": false,
+              "properties": {
+                "nodo": { "$ref": "#/$defs/id_intero" },
+                "Rx": { "type": "number" },
+                "Ry": { "type": "number" },
+                "Mz": { "type": "number" }
+              }
+            }
+          },
+          "sollecitazioni": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["asta", "x", "N", "V", "M"],
+              "additionalProperties": false,
+              "properties": {
+                "asta": { "$ref": "#/$defs/id_intero" },
+                "x": { "type": "array", "items": { "type": "number" }, "description": "Ascisse locali dal nodo_i [m]" },
+                "N": { "type": "array", "items": { "type": "number" }, "description": "[kN], positivo di trazione" },
+                "V": { "type": "array", "items": { "type": "number" }, "description": "[kN], V = dM/dx" },
+                "M": { "type": "array", "items": { "type": "number" }, "description": "[kNm], positivo se tende le fibre dal lato −y locale" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id_intero": { "type": "integer", "minimum": 1 },
+    "id_testo": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" }
+  }
+}

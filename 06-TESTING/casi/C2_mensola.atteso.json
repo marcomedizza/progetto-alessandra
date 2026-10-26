@@ -1,0 +1,36 @@
+{
+  "caso": "Q",
+  "formule": {
+    "reazione verticale": "R = P",
+    "momento d'incastro": "M = −PL (tende le fibre superiori)",
+    "freccia": "f = PL³/(3EI)",
+    "rotazione": "θ = PL²/(2EI)"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 30.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": -30.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.011608110199659497,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 2",
+      "valore": -0.005804055099829748,
+      "unita": "rad"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "caso": "C",
+  "formule": {
+    "equilibrio verticale": "Ry1 + Ry2 = 2·q·L",
+    "equilibrio orizzontale": "Rx1 + Rx2 = −(H1 + H2)",
+    "equilibrio alla rotazione attorno al nodo 1": "Mz1 + Mz2 + Ry2·L − H1·3.5 − H2·7 − 2·qL·L/2 = 0",
+    "nota": "per la ripartizione interna non esiste formula chiusa semplice: valori numerici dal risolutore di riferimento, da confermare con un programma commerciale"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1 + Ry nodo 2",
+      "valore": 300,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1 + Rx nodo 2",
+      "valore": -25.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "momento risultante attorno al nodo 1",
+      "valore": 0.0,
+      "unita": "kNm"
+    }
+  ]
+}

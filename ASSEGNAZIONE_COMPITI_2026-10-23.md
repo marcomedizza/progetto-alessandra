@@ -79,3 +79,10 @@ Obiettivo: il prototipo minimo di mercoledì 28/10, sul portale 2D di `ESEMPIO_P
 | Raffaella | Verifica del team business e del lavoro di Agata | ogni giorno |
 | Marisa | Revisione del codice del team tech prima dell'inserimento nel repository | continua |
 | Vittoria | Esecuzione delle prove di Valentina e Silvia sul prototipo | dal 28/10 |
+
+## Stato al 26/10/2026
+
+- **Schema dati v1.0**: consegnato in `01-ARCHITETTURA/DATA_SCHEMA.json`, con le spiegazioni in `SCHEMA_DATI_v1.0.md`. Benedetta ne cura le estensioni (v1.1).
+- **Casi di prova**: consegnati in `06-TESTING/casi/` (C1–C5) con il risolutore di riferimento `06-TESTING/riferimento/telaio2d.py`; tutti i controlli superati. Valentina prepara i casi successivi (cerniere interne, carichi concentrati, molle). I valori attesi vanno controllati da Marco.
+- **Esecuzione giornaliera**: dal 27/10 una procedura automatica alle 07:55 svolge gli obiettivi del giorno, partendo dal percorso critico del prototipo (convertitore, solutore Fortran, servizi, vista 3D).
+- **Studio**: i PDF in `RIFERIMENTI` non sono leggibili dalle procedure automatiche (accesso a Google Drive limitato). Finché l'accesso non è completo, lo studio dei testi non può essere svolto.

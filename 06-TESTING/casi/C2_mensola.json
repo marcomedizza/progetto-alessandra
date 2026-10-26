@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C2",
+    "nome": "Mensola, carico in punta",
+    "descrizione": "HE 200 A, L = 3 m, P = 10 kN verso il basso all'estremo libero.",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-26",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 3,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Forza in punta",
+      "categoria": "Q",
+      "carichi_nodali": [
+        {
+          "nodo": 2,
+          "Fy": -10.0
+        }
+      ]
+    }
+  ]
+}

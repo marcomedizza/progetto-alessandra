@@ -82,6 +82,16 @@ LETTURE = {
         "Ry nodo 1 + Ry nodo 2": SOMMA(R(1, "Ry"), R(2, "Ry")),
         "Rx nodo 1 + Rx nodo 2": SOMMA(R(1, "Rx"), R(2, "Rx")),
         "momento risultante attorno al nodo 1": momento_c5},
+    "C6": {
+        "Ry nodo 3": R(3, "Ry"), "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"),
+        "M asta 1 x=0": S(1, "M", 0.0), "M asta 1 x=4 (cerniera)": S(1, "M", 4.0),
+        "M asta 2 x=1 (mezzeria tratto appoggiato)": S(2, "M", 1.0)},
+    "C7": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
+        "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},
+    "C8": {
+        "Ry nodo 2 (molla)": R(2, "Ry"), "uy nodo 2": U(2, "uy"), "Ry nodo 1": R(1, "Ry"),
+        "M asta 1 x=3 (mezzeria)": S(1, "M", 3.0)},
 }
 
 

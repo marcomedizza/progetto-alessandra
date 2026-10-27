@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C8",
+    "nome": "Trave appoggiata con molla in mezzeria",
+    "descrizione": "IPE 300, L = 6 m, q = 10 kN/m; in mezzeria molla verticale ky = 1000 kN/m.",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-26",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true
+    },
+    {
+      "nodo": 2,
+      "molle": {
+        "ky": 1000.0
+      }
+    },
+    {
+      "nodo": 3,
+      "uy": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Carico uniforme",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -10.0
+        },
+        {
+          "asta": 2,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -10.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 3
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "caso": "Q",
+  "formule": {
+    "freccia senza molla": "δ0 = 5qL⁴/(384EI)",
+    "forza nella molla": "Rs = δ0 / (1/k + L³/(48EI))",
+    "freccia in mezzeria": "δ = Rs/k",
+    "reazioni agli appoggi": "R = (qL − Rs)/2",
+    "momento in mezzeria": "M = qL²/8 − Rs·L/4"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 2 (molla)",
+      "valore": 7.653894301420562,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.007653894301420562,
+      "unita": "m"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 26.173052849289718,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=3 (mezzeria)",
+      "valore": 33.519158547869154,
+      "unita": "kNm"
+    }
+  ]
+}

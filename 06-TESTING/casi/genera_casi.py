@@ -188,9 +188,94 @@ def c5():
     return m, atteso
 
 
+def trave(id_, nome, descr, nodi, aste, vincoli, caso, punti):
+    m = base(id_, nome, descr)
+    m.update({"nodi": nodi, "sezioni": [IPE300], "aste": aste, "vincoli": vincoli, "casi_di_carico": [caso],
+              "analisi": {"tipo": "statica_lineare", "deformabilita_assiale": True, "punti_diagramma": punti}})
+    return m
+
+
+def c6():
+    q = 10.0
+    m = trave("C6", "Trave Gerber, carico uniforme",
+              "IPE 300: incastro in x = 0, cerniera interna in x = 4 m, appoggio scorrevole in x = 6 m; q = 10 kN/m su tutta la lunghezza.",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+               {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 3, "uy": True}],
+              {"id": "Q", "nome": "Carico uniforme", "categoria": "Q", "carichi_aste": [
+                  {"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
+                  {"asta": 2, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 5)
+    Rs = q * 2 / 2               # tratto appoggiato 4–6: reazione e forza trasmessa alla cerniera
+    atteso = {"caso": "Q", "formule": {
+        "tratto appoggiato (2 m)": "R3 = q·2/2; forza in cerniera = q·2/2; M max = q·2²/8 in x = 5",
+        "mensola (4 m) con carico in punta dalla cerniera": "R1 = q·4 + Rs; M1 = −(q·4²/2 + Rs·4)",
+        "cerniera": "M = 0 in x = 4"},
+        "valori": [
+            {"grandezza": "Ry nodo 3", "valore": Rs, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": q * 4 + Rs, "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": q * 4 ** 2 / 2 + Rs * 4, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=0", "valore": -(q * 4 ** 2 / 2 + Rs * 4), "unita": "kNm"},
+            {"grandezza": "M asta 1 x=4 (cerniera)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 2 x=1 (mezzeria tratto appoggiato)", "valore": q * 2 ** 2 / 8, "unita": "kNm"}]}
+    return m, atteso
+
+
+def c7():
+    P, L, a = 20.0, 6.0, 2.0
+    b = L - a
+    EI = E_ACC * IPE300["I"]
+    m = trave("C7", "Trave appoggiata, carico concentrato fuori mezzeria",
+              "IPE 300, L = 6 m, P = 20 kN verso il basso a 2 m dall'appoggio sinistro, applicato sull'asta.",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+              {"id": "P", "nome": "Forza concentrata", "categoria": "Q", "carichi_aste": [
+                  {"asta": 1, "tipo": "concentrato", "direzione": "globale_y", "P": -P, "a": a}]}, 4)
+    atteso = {"caso": "P", "formule": {
+        "reazioni": "R1 = P·b/L, R2 = P·a/L", "momento sotto il carico": "M = P·a·b/L",
+        "rotazioni agli appoggi": "θ1 = P·a·b·(L+b)/(6EIL), θ2 = P·a·b·(L+a)/(6EIL)"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": P * b / L, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": P * a / L, "unita": "kN"},
+            {"grandezza": "M asta 1 x=2 (sotto il carico)", "valore": P * a * b / L, "unita": "kNm"},
+            {"grandezza": "rz nodo 1", "valore": -P * a * b * (L + b) / (6 * EI * L), "unita": "rad"},
+            {"grandezza": "rz nodo 2", "valore": P * a * b * (L + a) / (6 * EI * L), "unita": "rad"}]}
+    return m, atteso
+
+
+def c8():
+    q, L, k = 10.0, 6.0, 1000.0
+    EI = E_ACC * IPE300["I"]
+    m = trave("C8", "Trave appoggiata con molla in mezzeria",
+              "IPE 300, L = 6 m, q = 10 kN/m; in mezzeria molla verticale ky = 1000 kN/m.",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 3, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+               {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "molle": {"ky": k}}, {"nodo": 3, "uy": True}],
+              {"id": "Q", "nome": "Carico uniforme", "categoria": "Q", "carichi_aste": [
+                  {"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
+                  {"asta": 2, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 3)
+    d0 = 5 * q * L ** 4 / (384 * EI)                   # freccia senza molla
+    Rs = d0 / (1 / k + L ** 3 / (48 * EI))             # congruenza in mezzeria
+    atteso = {"caso": "Q", "formule": {
+        "freccia senza molla": "δ0 = 5qL⁴/(384EI)",
+        "forza nella molla": "Rs = δ0 / (1/k + L³/(48EI))",
+        "freccia in mezzeria": "δ = Rs/k",
+        "reazioni agli appoggi": "R = (qL − Rs)/2",
+        "momento in mezzeria": "M = qL²/8 − Rs·L/4"},
+        "valori": [
+            {"grandezza": "Ry nodo 2 (molla)", "valore": Rs, "unita": "kN"},
+            {"grandezza": "uy nodo 2", "valore": -Rs / k, "unita": "m"},
+            {"grandezza": "Ry nodo 1", "valore": (q * L - Rs) / 2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=3 (mezzeria)", "valore": q * L ** 2 / 8 - Rs * L / 4, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
-                    ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5)):
+                    ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
+                    ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

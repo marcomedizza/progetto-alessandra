@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "ESEMPIO_PORTALE_2D",
+    "nome": "Portale 2D di esempio",
+    "descrizione": "Esempio di riferimento dello schema v1.0: portale incastrato, colonne HE 200 A h = 4 m, traverso IPE 300 L = 6 m. Due casi di carico (permanente portato sul traverso e vento) e una combinazione SLU. Sostituisce la bozza di agosto.",
+    "autore": "Benedetta (architettura)",
+    "data": "2026-10-27",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "nome": "base sinistra",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 0,
+      "y": 4
+    },
+    {
+      "id": 3,
+      "x": 6,
+      "y": 4
+    },
+    {
+      "id": 4,
+      "nome": "base destra",
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    },
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nome": "colonna sinistra",
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 2,
+      "nome": "traverso",
+      "nodo_i": 2,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    },
+    {
+      "id": 3,
+      "nome": "colonna destra",
+      "nodo_i": 4,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 4,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "G2",
+      "nome": "Permanenti portati sul traverso",
+      "categoria": "G2",
+      "peso_proprio": true,
+      "carichi_aste": [
+        {
+          "asta": 2,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -30.0
+        }
+      ]
+    },
+    {
+      "id": "W",
+      "nome": "Vento da sinistra",
+      "categoria": "vento",
+      "carichi_nodali": [
+        {
+          "nodo": 2,
+          "Fx": 20.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  },
+  "combinazioni": [
+    {
+      "id": "SLU1",
+      "nome": "SLU: 1,3·G2 + 1,5·W",
+      "tipo": "SLU",
+      "coefficienti": {
+        "G2": 1.3,
+        "W": 1.5
+      }
+    }
+  ]
+}

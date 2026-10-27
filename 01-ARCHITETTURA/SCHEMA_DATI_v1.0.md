@@ -36,6 +36,19 @@
 
 I cinque modelli in `06-TESTING/casi/` sono validi secondo questo schema. Il portale del prototipo è `C4_portale_carico_uniforme.json`.
 
-## Prossime estensioni (v1.1 e oltre)
+## Esempio di riferimento
 
-Combinazioni con coefficienti da NTC, P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.
+`ESEMPIO_PORTALE_2D.json` (27/10/2026): portale incastrato con due casi di carico (G2 sul traverso con peso proprio, vento) e una combinazione SLU 1,3·G2 + 1,5·W. Sostituisce l'esempio della bozza di agosto ed è valido secondo lo schema.
+
+## Bozza v1.1 (Benedetta, 27/10/2026)
+
+Cerniere interne, carichi concentrati sulle aste e molle sono già nella v1.0 e sono coperti dai casi C6, C7 e C8. La v1.1 riguarda quindi:
+
+1. **Combinazioni**: già descritte nello schema ma non ancora calcolate dal solutore. Proposta: il servizio sovrappone i risultati dei casi con i coefficienti della combinazione (analisi lineare), senza modificare il Fortran.
+2. **Carichi distribuiti parziali e trapezi**: `q_i`, `q_j`, `a`, `b` sul tratto.
+3. **Distorsioni termiche**: ΔT uniforme e a farfalla sull'asta, coerenti con la categoria «temperatura».
+4. **Cedimenti vincolari** impressi.
+
+## Prossime estensioni (v2)
+
+P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.

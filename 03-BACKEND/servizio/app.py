@@ -9,8 +9,10 @@ Interfaccia:
     GET  /api/salute              → stato del servizio e del solutore
     GET  /api/casi                → elenco dei casi di prova disponibili
     GET  /api/casi/{nome}         → modello del caso (JSON, schema v1.0)
+    GET  /api/esempio             → esempio di riferimento 01-ARCHITETTURA/ESEMPIO_PORTALE_2D.json
     POST /api/valida              → controllo del modello con lo schema
     POST /api/calcola?caso=ID     → valida, calcola con il solutore Fortran, restituisce i risultati
+    POST /api/calcola?combinazione=ID → risultati della combinazione (sovrapposizione lineare dei casi)
 """
 
 import glob
@@ -107,6 +109,12 @@ def caso(nome: str):
         return json.load(fh)
 
 
+@app.get("/api/esempio")
+def esempio():
+    with open(os.path.join(RADICE, "01-ARCHITETTURA", "ESEMPIO_PORTALE_2D.json"), encoding="utf-8") as fh:
+        return json.load(fh)
+
+
 @app.post("/api/valida")
 def valida(modello: dict):
     e = errori_schema(modello)
@@ -115,21 +123,29 @@ def valida(modello: dict):
 
 
 @app.post("/api/calcola")
-def calcola(modello: dict, caso: str | None = None):
+def calcola(modello: dict, caso: str | None = None, combinazione: str | None = None):
     e = errori_schema(modello)
     c = [] if e else errori_coerenza(modello)
     if e or c:
         raise HTTPException(422, {"schema": e, "coerenza": c})
     casi = [x["id"] for x in modello["casi_di_carico"]]
-    scelti = [caso] if caso else casi
-    for s in scelti:
-        if s not in casi:
-            raise HTTPException(422, f"caso di carico {s} non definito")
     try:
+        if combinazione:
+            comb = next((x for x in modello.get("combinazioni", []) if x["id"] == combinazione), None)
+            if comb is None:
+                raise HTTPException(422, f"combinazione {combinazione} non definita")
+            mancanti = [k for k in comb["coefficienti"] if k not in casi]
+            if mancanti:
+                raise HTTPException(422, f"la combinazione cita casi inesistenti: {', '.join(mancanti)}")
+            return {"risultati": [converti.combina(modello, combinazione)]}
+        scelti = [caso] if caso else casi
+        for s in scelti:
+            if s not in casi:
+                raise HTTPException(422, f"caso di carico {s} non definito")
         return {"risultati": [converti.risultati(modello, s) for s in scelti]}
     except FileNotFoundError as ex:
         raise HTTPException(503, str(ex))
-    except RuntimeError as ex:
+    except (RuntimeError, TimeoutError) as ex:
         raise HTTPException(422, f"solutore: {ex}")
 
 

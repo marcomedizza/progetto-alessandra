@@ -66,6 +66,19 @@ def test_struttura_labile():
     assert r.status_code == 422 and "singolare" in json.dumps(r.json())
 
 
+def test_combinazione_lineare():
+    import json, os
+    with open(os.path.join(servizio.RADICE, "01-ARCHITETTURA", "ESEMPIO_PORTALE_2D.json"), encoding="utf-8") as fh:
+        m = json.load(fh)
+    g = client.post("/api/calcola?caso=G2", json=m).json()["risultati"][0]
+    w = client.post("/api/calcola?caso=W", json=m).json()["risultati"][0]
+    c = client.post("/api/calcola?combinazione=SLU1", json=m).json()["risultati"][0]
+    for rg, rw, rc in zip(g["reazioni"], w["reazioni"], c["reazioni"]):
+        for k in ("Rx", "Ry", "Mz"):
+            assert abs(rc[k] - (1.3 * rg[k] + 1.5 * rw[k])) < 1e-9
+    assert client.post("/api/calcola?combinazione=XX", json=m).status_code == 422
+
+
 def test_frontend():
     assert client.get("/app/").status_code == 200
 

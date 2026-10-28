@@ -14,12 +14,11 @@ Il solutore deve essere compilato con 04-FORTRAN-SOLVER/build.sh.
 import json
 import math
 import os
-import subprocess
 import sys
-import tempfile
 
 RADICE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-SOLUTORE = os.environ.get("TELAIO2D_BIN", os.path.join(RADICE, "04-FORTRAN-SOLVER", "bin", "telaio2d"))
+sys.path.insert(0, os.path.join(RADICE, "04-FORTRAN-SOLVER"))
+from esegui import SOLUTORE, esegui  # noqa: E402  (modulo di Ottavia)
 
 
 def _geometria(modello):
@@ -138,17 +137,7 @@ def diagrammi(f, carichi, L, npt):
 
 
 def risultati(modello, caso_id):
-    if not os.path.exists(SOLUTORE):
-        raise FileNotFoundError(f"solutore non compilato: {SOLUTORE} (eseguire 04-FORTRAN-SOLVER/build.sh)")
-    with tempfile.TemporaryDirectory() as d:
-        fin, fout = os.path.join(d, "input.txt"), os.path.join(d, "output.txt")
-        with open(fin, "w") as fh:
-            fh.write(scrivi_input(modello, caso_id))
-        esito = subprocess.run([SOLUTORE, fin, fout], capture_output=True, text=True)
-        if esito.returncode != 0:
-            raise RuntimeError(esito.stderr.strip() or "errore del solutore")
-        with open(fout) as fh:
-            grezzo = leggi_output(fh.read())
+    grezzo = leggi_output(esegui(scrivi_input(modello, caso_id)))
     caso = next(c for c in modello["casi_di_carico"] if c["id"] == caso_id)
     cl = carichi_locali(modello, caso)
     geo = _geometria(modello)
@@ -161,6 +150,34 @@ def risultati(modello, caso_id):
             "reazioni": grezzo["reazioni"], "sollecitazioni": soll}
 
 
+def combina(modello, comb_id):
+    """Risultati di una combinazione per sovrapposizione lineare dei casi (schema v1.1, Benedetta/Natalia).
+    Valida solo per analisi statica lineare."""
+    comb = next(c for c in modello.get("combinazioni", []) if c["id"] == comb_id)
+    parti = [(risultati(modello, cid), f) for cid, f in comb["coefficienti"].items()]
+    base = parti[0][0]
+
+    def somma(chiave, campi, ident):
+        out = []
+        for i, el in enumerate(base[chiave]):
+            r = {ident: el[ident]}
+            for k in campi:
+                if isinstance(el[k], list):
+                    r[k] = [sum(f * p[chiave][i][k][j] for p, f in parti) for j in range(len(el[k]))]
+                else:
+                    r[k] = sum(f * p[chiave][i][k] for p, f in parti)
+            out.append(r)
+        return out
+
+    sol = somma("sollecitazioni", ("N", "V", "M"), "asta")
+    for s, b in zip(sol, base["sollecitazioni"]):
+        s["x"] = b["x"]
+    return {"caso": comb_id, "solutore": base["solutore"] + " (combinazione lineare)",
+            "spostamenti": somma("spostamenti", ("ux", "uy", "rz"), "nodo"),
+            "reazioni": somma("reazioni", ("Rx", "Ry", "Mz"), "nodo"),
+            "sollecitazioni": [{"asta": s["asta"], "x": s["x"], "N": s["N"], "V": s["V"], "M": s["M"]} for s in sol]}
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(__doc__)
@@ -169,3 +186,4 @@ if __name__ == "__main__":
         mod = json.load(fh)
     casi = [sys.argv[2]] if len(sys.argv) > 2 else [c["id"] for c in mod["casi_di_carico"]]
     print(json.dumps([risultati(mod, c) for c in casi], indent=2, ensure_ascii=False))
+

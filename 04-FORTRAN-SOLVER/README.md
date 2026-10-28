@@ -5,7 +5,9 @@ Telai piani, statica lineare, metodo degli spostamenti (Elisa, compilazione Otta
 - Sorgente: `src/telaio2d.f90` (Fortran 2008, nessuna libreria esterna)
 - Compilazione: `./build.sh` (richiede gfortran) → `bin/telaio2d`
 - Uso: `bin/telaio2d input.txt output.txt`; il formato dei file è descritto in testa al sorgente
+- Chiamata da Python: `esegui.py` (Ottavia), con tempo massimo di calcolo e messaggi d'errore puliti
 - Ingresso e uscita sono gestiti dal convertitore `03-BACKEND/converter/converti.py`
+- Controlli in lettura (28/10): carichi su aste inesistenti, identificativi duplicati di nodi e aste
 
 Gestisce: aste inclinate, cerniere interne, vincoli e molle, carichi nodali, carichi d'asta uniformi e concentrati, peso proprio (tramite convertitore), deformabilità assiale escludibile.
 

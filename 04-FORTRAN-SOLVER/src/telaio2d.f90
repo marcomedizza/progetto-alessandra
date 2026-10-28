@@ -90,6 +90,17 @@ program telaio2d
    end do
    close(u_in)
 
+   ! controlli di coerenza dei riferimenti (revisione di Marisa, 28/10)
+   do k = 1, nca
+      if (count(eid == cae(k)) /= 1) call errore('carico su un''asta inesistente')
+   end do
+   do k = 1, ne
+      if (count(eid == eid(k)) /= 1) call errore('identificativi delle aste duplicati')
+   end do
+   do k = 1, nn
+      if (count(nid == nid(k)) /= 1) call errore('identificativi dei nodi duplicati')
+   end do
+
    ! ---------------------------------------------------------------- assemblaggio
    ndof = 3*nn
    allocate(Kt(ndof,ndof), Kv(ndof,ndof), Fv(ndof), Uv(ndof), Rku(ndof))

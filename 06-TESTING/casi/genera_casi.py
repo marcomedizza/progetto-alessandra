@@ -272,10 +272,48 @@ def c8():
     return m, atteso
 
 
+def c9():
+    H, h, L, k = 20.0, 4.0, 6.0, 5000.0
+    m = base("C9", "Portale a tre cerniere con molla al piede",
+             "Colonne HE 200 A h = 4 m, traverso IPE 300 L = 6 m con cerniera interna in mezzeria. Piede sinistro a cerniera, "
+             "piede destro con ux impedito e molla verticale ky = 5000 kN/m. H = 20 kN al nodo 2. Struttura isostatica.")
+    m.update({
+        "nodi": [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 0, "y": h}, {"id": 5, "nome": "cerniera", "x": L / 2, "y": h},
+                 {"id": 3, "x": L, "y": h}, {"id": 4, "x": L, "y": 0}],
+        "sezioni": [HEA200, IPE300],
+        "aste": [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 2, "nodo_i": 2, "nodo_j": 5, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                 {"id": 4, "nodo_i": 5, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"},
+                 {"id": 3, "nodo_i": 4, "nodo_j": 3, "materiale": "S275", "sezione": "HEA200"}],
+        "vincoli": [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 4, "ux": True, "molle": {"ky": k}}],
+        "casi_di_carico": [{"id": "H", "nome": "Forza orizzontale", "categoria": "vento", "carichi_nodali": [{"nodo": 2, "Fx": H}]}],
+        "analisi": {"tipo": "statica_lineare", "deformabilita_assiale": True, "punti_diagramma": 5},
+    })
+    Rby = H * h / L
+    Rbx = -L * Rby / (2 * h)
+    atteso = {"caso": "H", "formule": {
+        "rotazione attorno al nodo 1": "Ry4·L − H·h = 0 → Ry4 = H·h/L",
+        "equilibrio verticale": "Ry1 = −Ry4",
+        "momento nullo in cerniera (parte destra)": "(L/2)·Ry4 + h·Rx4 = 0 → Rx4 = −L·Ry4/(2h) = −H/2",
+        "equilibrio orizzontale": "Rx1 = −H − Rx4",
+        "momento in testa alla colonna destra": "|M| = |Rx4|·h",
+        "molla": "uy4 = −Ry4/k (la struttura è isostatica: la molla non cambia le reazioni)"},
+        "valori": [
+            {"grandezza": "Ry nodo 4 (molla)", "valore": Rby, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": -Rby, "unita": "kN"},
+            {"grandezza": "Rx nodo 4", "valore": Rbx, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": -H - Rbx, "unita": "kN"},
+            {"grandezza": "uy nodo 4", "valore": -Rby / k, "unita": "m"},
+            {"grandezza": "|M| asta 3 x=h (testa colonna destra)", "valore": abs(Rbx) * h, "unita": "kNm"},
+            {"grandezza": "M asta 2 x=L/2 (cerniera)", "valore": 0.0, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
-                    ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8)):
+                    ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8),
+                    ("C9_portale_tre_cerniere_molla", c9)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

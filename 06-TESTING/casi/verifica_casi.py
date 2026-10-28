@@ -6,6 +6,7 @@
 
 Uso:  python3 verifica_casi.py              → risolutore di riferimento Python
       python3 verifica_casi.py --fortran    → solutore Fortran tramite il convertitore (03-BACKEND/converter)
+      python3 verifica_casi.py --api        → percorso completo del prototipo: POST al servizio FastAPI → Fortran
       python3 verifica_casi.py --scrivi     → salva anche i risultati del riferimento in C*.riferimento.json
 
 Con --fortran confronta anche, nodo per nodo e asta per asta, i risultati
@@ -92,16 +93,31 @@ LETTURE = {
     "C8": {
         "Ry nodo 2 (molla)": R(2, "Ry"), "uy nodo 2": U(2, "uy"), "Ry nodo 1": R(1, "Ry"),
         "M asta 1 x=3 (mezzeria)": S(1, "M", 3.0)},
+    "C9": {
+        "Ry nodo 4 (molla)": R(4, "Ry"), "Ry nodo 1": R(1, "Ry"), "Rx nodo 4": R(4, "Rx"), "Rx nodo 1": R(1, "Rx"),
+        "uy nodo 4": U(4, "uy"), "|M| asta 3 x=h (testa colonna destra)": ABS(S(3, "M", 4.0)),
+        "M asta 2 x=L/2 (cerniera)": S(2, "M", 3.0)},
 }
 
 
-FORTRAN = "--fortran" in sys.argv
+API = "--api" in sys.argv
+FORTRAN = "--fortran" in sys.argv or API
 if FORTRAN:
     sys.path.insert(0, os.path.join(RADICE, "03-BACKEND", "converter"))
     import converti  # noqa: E402
+if API:
+    sys.path.insert(0, os.path.join(RADICE, "03-BACKEND", "servizio"))
+    from fastapi.testclient import TestClient  # noqa: E402
+    import app as servizio  # noqa: E402
+    CLIENT = TestClient(servizio.app)
 
 
 def risultati(modello, caso):
+    if API:
+        r = CLIENT.post(f"/api/calcola?caso={caso}", json=modello)
+        if r.status_code != 200:
+            raise RuntimeError(f"servizio: {r.status_code} {r.text}")
+        return r.json()["risultati"][0]
     if FORTRAN:
         return converti.risultati(modello, caso)
     return telaio2d.analizza(modello, caso)
@@ -112,11 +128,17 @@ def confronto_completo(a, b):
     n = 0
     def vicino(p, q):
         return abs(p - q) <= 1e-6 * max(1.0, abs(p), abs(q))
-    for x, y in zip(a["spostamenti"], b["spostamenti"]):
-        n += sum(not vicino(x[k], y[k]) for k in ("ux", "uy", "rz"))
-    for x, y in zip(a["reazioni"], b["reazioni"]):
-        n += sum(not vicino(x[k], y[k]) for k in ("Rx", "Ry", "Mz"))
-    for x, y in zip(a["sollecitazioni"], b["sollecitazioni"]):
+    # confronto per identificativo, non per posizione: l'ordine dei nodi può differire
+    def per_id(lista, chiave):
+        return {x[chiave]: x for x in lista}
+    for blocco, chiave, campi in (("spostamenti", "nodo", ("ux", "uy", "rz")), ("reazioni", "nodo", ("Rx", "Ry", "Mz"))):
+        A, B = per_id(a[blocco], chiave), per_id(b[blocco], chiave)
+        n += len(set(A) ^ set(B))
+        for i in set(A) & set(B):
+            n += sum(not vicino(A[i][k], B[i][k]) for k in campi)
+    A, B = per_id(a["sollecitazioni"], "asta"), per_id(b["sollecitazioni"], "asta")
+    n += len(set(A) ^ set(B))
+    for x, y in ((A[i], B[i]) for i in set(A) & set(B)):
         for k in ("N", "V", "M"):
             n += sum(not vicino(p, q) for p, q in zip(x[k], y[k]))
     return n
@@ -140,7 +162,7 @@ def main():
         with open(f, encoding="utf-8") as fh:
             modello = json.load(fh)
         cid = modello["progetto"]["id"]
-        print(f"\n== {cid}: {modello['progetto']['nome']}" + (" [Fortran]" if FORTRAN else ""))
+        print(f"\n== {cid}: {modello['progetto']['nome']}" + (" [servizio FastAPI → Fortran]" if API else " [Fortran]" if FORTRAN else ""))
         if validatore:
             errs = sorted(validatore.iter_errors(modello), key=str)
             for e in errs:
@@ -154,7 +176,7 @@ def main():
         if FORTRAN:
             diff = confronto_completo(r, telaio2d.analizza(modello, atteso["caso"]))
             errori += diff
-            print(f"  {'✓' if diff == 0 else '✗'} confronto completo Fortran / riferimento: {diff} scostamenti")
+            print(f"  {'✓' if diff == 0 else '✗'} confronto completo {'servizio' if API else 'Fortran'} / riferimento: {diff} scostamenti")
         if scrivi and not FORTRAN:
             with open(f.replace(".json", ".riferimento.json"), "w", encoding="utf-8") as fh:
                 json.dump(r, fh, indent=2, ensure_ascii=False)

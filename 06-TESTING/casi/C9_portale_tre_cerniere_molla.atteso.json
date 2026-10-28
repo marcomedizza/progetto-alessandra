@@ -1,0 +1,48 @@
+{
+  "caso": "H",
+  "formule": {
+    "rotazione attorno al nodo 1": "Ry4·L − H·h = 0 → Ry4 = H·h/L",
+    "equilibrio verticale": "Ry1 = −Ry4",
+    "momento nullo in cerniera (parte destra)": "(L/2)·Ry4 + h·Rx4 = 0 → Rx4 = −L·Ry4/(2h) = −H/2",
+    "equilibrio orizzontale": "Rx1 = −H − Rx4",
+    "momento in testa alla colonna destra": "|M| = |Rx4|·h",
+    "molla": "uy4 = −Ry4/k (la struttura è isostatica: la molla non cambia le reazioni)"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 4 (molla)",
+      "valore": 13.333333333333334,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": -13.333333333333334,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 4",
+      "valore": -10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "uy nodo 4",
+      "valore": -0.0026666666666666666,
+      "unita": "m"
+    },
+    {
+      "grandezza": "|M| asta 3 x=h (testa colonna destra)",
+      "valore": 40.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=L/2 (cerniera)",
+      "valore": 0.0,
+      "unita": "kNm"
+    }
+  ]
+}

@@ -38,7 +38,9 @@ function pannelloAsta(el, modello, caso, id, ris, onCambio) {
     const mx = (c) => Math.max(...s[c].map(Math.abs));
     h += `<p class="nota">Sollecitazioni massime: |M| = ${num(mx('M'))} kNm · |V| = ${num(mx('V'))} kN · |N| = ${num(mx('N'))} kN</p>`;
   }
+  if (caso?._combinazione) h += '<p class="nota">Combinazione: i carichi mostrati sono già moltiplicati per i coefficienti e si modificano nei singoli casi.</p>';
   el.innerHTML = h;
+  if (caso?._combinazione) el.querySelectorAll('[data-carico]').forEach((i) => { i.disabled = true; });
   el.querySelector('#p-sezione').addEventListener('change', (e) => { a.sezione = e.target.value; onCambio(); });
   for (const [sel, k] of [['#p-rzi', 'rz_i'], ['#p-rzj', 'rz_j']]) {
     el.querySelector(sel).addEventListener('change', (e) => { a.svincoli = { ...(a.svincoli || {}), [k]: e.target.checked }; onCambio(); });
@@ -70,6 +72,7 @@ function pannelloNodo(el, modello, caso, id, ris, onCambio) {
     if (r) h += `<p class="nota">Reazioni: Rx = ${num(r.Rx)} kN · Ry = ${num(r.Ry)} kN · Mz = ${num(r.Mz)} kNm</p>`;
   }
   el.innerHTML = h;
+  if (caso?._combinazione) el.querySelectorAll('[data-forza]').forEach((i) => { i.disabled = true; });
   el.querySelectorAll('[data-vincolo]').forEach((inp) => inp.addEventListener('change', (e) => {
     if (!v) { v = { nodo: id }; modello.vincoli.push(v); }
     v[e.target.dataset.vincolo] = e.target.checked;

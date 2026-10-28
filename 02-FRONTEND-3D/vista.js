@@ -94,9 +94,13 @@ export class Vista {
       const m = new THREE.Mesh(new THREE.SphereGeometry(S * (sel ? 0.018 : 0.012), 16, 12),
         new THREE.MeshBasicMaterial({ color: sel ? COL.astaSel : COL.nodo }));
       m.position.set(n.x, n.y, 0);
-      m.userData = { tipo: 'nodo', id: n.id };
       this.gruppoModello.add(m);
-      this.selezionabili.push(m);
+      // sfera invisibile più grande per facilitare la selezione col mouse
+      const presa = new THREE.Mesh(new THREE.SphereGeometry(S * 0.035, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
+      presa.position.set(n.x, n.y, 0);
+      presa.userData = { tipo: 'nodo', id: n.id };
+      this.gruppoModello.add(presa);
+      this.selezionabili.push(presa);
     }
     // vincoli
     for (const v of modello.vincoli) this.gruppoModello.add(this.simboloVincolo(nodi.get(v.nodo), v));

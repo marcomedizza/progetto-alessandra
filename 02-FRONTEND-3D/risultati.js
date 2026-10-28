@@ -12,11 +12,40 @@ function geometriaAsta(modello, a) {
   return { ni, nj, L, c: dx / L, s: dy / L };
 }
 
-export function disegnaRisultati(gruppo, modello, ris, opzioni, S) {
+export function disegnaRisultati(gruppo, modello, ris, opzioni, S, caso) {
   while (gruppo.children.length) { const o = gruppo.children.pop(); o.geometry?.dispose(); o.material?.dispose(); }
   if (!ris) return;
   if (opzioni.diagramma) disegnaDiagramma(gruppo, modello, ris, opzioni.diagramma, S);
-  if (opzioni.deformata) disegnaDeformata(gruppo, modello, ris, S);
+  if (opzioni.deformata) disegnaDeformata(gruppo, modello, ris, S, caso);
+}
+
+// Carichi d'asta in componenti locali trasversali (wy uniforme, Py concentrati), come nel convertitore.
+function carichiTrasversali(modello, caso, a, c, s) {
+  const out = { wy: 0, P: [] };
+  const loc = (dir, v) => (dir === 'globale_y' ? v * c : dir === 'globale_x' ? -v * s : v);
+  for (const q of caso?.carichi_aste || []) {
+    if (q.asta !== a.id) continue;
+    if (q.tipo === 'distribuito_uniforme') out.wy += loc(q.direzione, q.q);
+    else out.P.push([loc(q.direzione, q.P), q.a]);
+  }
+  if (caso?.peso_proprio) {
+    const m = modello.materiali.find((x) => x.id === a.materiale), se = modello.sezioni.find((x) => x.id === a.sezione);
+    if (m?.peso_specifico) out.wy += loc('globale_y', -m.peso_specifico * se.A);
+  }
+  return out;
+}
+
+// Inflessione dell'asta a estremi incastrati sotto i carichi d'asta (soluzione particolare).
+// Sommata all'interpolazione di Hermite degli spostamenti nodali dà la deformata esatta
+// della trave di Eulero-Bernoulli per aste senza cerniere interne.
+function inflessioneIncastrata(X, L, EI, car) {
+  let v = car.wy * X * X * (L - X) ** 2 / (24 * EI);
+  for (const [P, a] of car.P) {
+    const b = L - a;
+    if (X <= a) v += P * b * b * X * X * (3 * a * L - (3 * a + b) * X) / (6 * L ** 3 * EI);
+    else { const Y = L - X; v += P * a * a * Y * Y * (3 * b * L - (3 * b + a) * Y) / (6 * L ** 3 * EI); }
+  }
+  return v;
 }
 
 function disegnaDiagramma(gruppo, modello, ris, comp, S) {
@@ -46,7 +75,7 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   }
 }
 
-function disegnaDeformata(gruppo, modello, ris, S) {
+function disegnaDeformata(gruppo, modello, ris, S, caso) {
   const sp = new Map(ris.spostamenti.map((u) => [u.nodo, u]));
   // scala riferita a traslazioni e rotazioni (×S/10): evita amplificazioni enormi quando
   // le traslazioni sono quasi nulle (aste assialmente indeformabili, schemi simmetrici)
@@ -62,12 +91,15 @@ function disegnaDeformata(gruppo, modello, ris, S) {
     // rotazioni d'estremità: con cerniera interna si usa la corda (approssimazione grafica)
     const corda = (vj - vi) / L;
     const ti = a.svincoli?.rz_i ? corda : ui.rz, tj = a.svincoli?.rz_j ? corda : uj.rz;
+    const cerniere = a.svincoli?.rz_i || a.svincoli?.rz_j;
+    const m = modello.materiali.find((x) => x.id === a.materiale), se = modello.sezioni.find((x) => x.id === a.sezione);
+    const car = cerniere ? { wy: 0, P: [] } : carichiTrasversali(modello, caso, a, c, s);
     const pts = [];
     for (let i = 0; i <= 20; i++) {
       const x = i / 20, X = x * L;
       // funzioni di forma di Hermite (interpolazione dai soli spostamenti nodali)
       const N1 = 1 - 3 * x * x + 2 * x ** 3, N2 = L * (x - 2 * x * x + x ** 3), N3 = 3 * x * x - 2 * x ** 3, N4 = L * (-x * x + x ** 3);
-      const v = N1 * vi + N2 * ti + N3 * vj + N4 * tj;
+      const v = N1 * vi + N2 * ti + N3 * vj + N4 * tj + inflessioneIncastrata(X, L, m.E * se.I, car);
       const u = (1 - x) * ui_x + x * uj_x;
       pts.push(ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v, 0);
     }
@@ -92,7 +124,7 @@ export function tabellaRisultati(modello, ris) {
     h += `<tr><td>${s.asta}</td><td class="num">${fmt(mx('M'))}</td><td class="num">${fmt(mx('V'))}</td><td class="num">${fmt(mx('N'))}</td></tr>`;
   }
   const umax = ris.spostamenti.reduce((m, u) => (Math.hypot(u.ux, u.uy) > Math.hypot(m.ux, m.uy) ? u : m));
-  h += `</tbody></table><p class="nota">Spostamento massimo: nodo ${umax.nodo}, ux = ${fmt(umax.ux * 1000)} mm, uy = ${fmt(umax.uy * 1000)} mm. Unità: kN, kNm. Solutore: ${ris.solutore}.</p>`;
-  h += '<p class="nota">La deformata tra i nodi è interpolata con le funzioni di Hermite: è esatta ai nodi, approssimata lungo le aste caricate.</p>';
+  h += `</tbody></table><p class="nota">Spostamento massimo: nodo ${umax.nodo}, ux = ${fmt(umax.ux * 1000)} mm, uy = ${fmt(umax.uy * 1000)} mm. Unità: kN, kNm. Solutore: ${String(ris.solutore).replace(/[<>&]/g, '')}.</p>`;
+  h += '<p class="nota">Deformata esatta lungo le aste (spostamenti nodali + inflessione dei carichi d\'asta); approssimata solo sulle aste con cerniere interne.</p>';
   return h;
 }

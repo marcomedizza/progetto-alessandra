@@ -49,6 +49,14 @@ Cerniere interne, carichi concentrati sulle aste e molle sono già nella v1.0 e 
 3. **Distorsioni termiche**: ΔT uniforme e a farfalla sull'asta, coerenti con la categoria «temperatura».
 4. **Cedimenti vincolari** impressi.
 
+## Decisione sulla v1.1 (Benedetta, 29/10/2026)
+
+La bozza v1.1 **non viene promossa** a schema in vigore. Il motivo è che le sue voci 2–4 (carichi parziali e trapezi, distorsioni termiche, cedimenti) non sono ancora calcolate dal solutore: uno schema che le accettasse produrrebbe risultati sbagliati senza avviso.
+
+La voce 1 (combinazioni) è già nella v1.0 e dal 28/10 viene calcolata dal servizio per sovrapposizione lineare (caso C10). Lo schema in vigore resta quindi la **v1.0**, che copre per intero ciò che il programma calcola. La v1.1 sarà promossa insieme alle modifiche del solutore che la rendono calcolabile, con un caso di prova per ogni voce.
+
+**Tabella schema ↔ epJSON di EnergyPlus**: rinviata. Serve l'Interface Developer's Guide, che non è ancora in RIFERIMENTI (vedi compito di Agata). Va detto anche che lo schema è strutturale (nodi, aste, sezioni) mentre epJSON descrive zone termiche, superfici e impianti: i campi in comune sono pochi (geometria e materiali) e il confronto riguarda la futura parte energetica, non la v1.x.
+
 ## Prossime estensioni (v2)
 
 P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.

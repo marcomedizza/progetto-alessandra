@@ -17,3 +17,28 @@
 | 11 | `02-FRONTEND-3D/risultati.js` | Deformata lungo le aste con cerniere interne ancora approssimata (rotazione di estremità non restituita dal solutore) | bassa | aperto (Mariana, Elisa) |
 
 **Verifiche eseguite dopo le correzioni**: `verifica_casi.py` (riferimento, `--fortran`, `--api`) su C1–C9 superati; `test_app.py` 9 prove superate; scenari S1–S13 superati nel navigatore.
+
+
+## Aggiornamento del 29/10/2026 (Marisa)
+
+**Stato dei punti aperti del 28/10**
+
+| # | Stato al 29/10 |
+|---|---|
+| 6 | aperto, ma misurato: 1989 gdl in 0,23 s (`04-FORTRAN-SOLVER/prova_prestazioni.py`). Il servizio ora rifiuta modelli oltre 1000 nodi o 3000 aste |
+| 7 | aperto, documentato: verifiche, servizio e interfaccia leggono i risultati per identificativo |
+| 8 | aperto |
+| 9 | aperto |
+| 10 | **chiuso**: limite di dimensione nel servizio, con prova |
+| 11 | aperto (D8) |
+
+**Revisione del codice nuovo del 29/10**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 12 | `02-FRONTEND-3D/vista.js` | Il prisma di selezione delle aste aveva uno spigolo sul piano del telaio: il clic esattamente sull'asse non selezionava l'asta | bassa | corretto (rotazione di 30°) |
+| 13 | `02-FRONTEND-3D/modifica.js` | L'eliminazione di un nodo elimina anche aste, vincoli e carichi collegati: corretto, ma non c'è annullamento | bassa | aperto: aggiungere «Annulla» |
+| 14 | `02-FRONTEND-3D/modifica.js` | Il nuovo modello usa un solo materiale (S275) e due profili: per modelli reali serve l'inserimento di materiali e sezioni | media | aperto |
+| 15 | `02-FRONTEND-3D/risultati.js` | Etichette di M in valore assoluto e di N, V con segno: scelta coerente con la pratica (diagramma dal lato teso) | — | nessun intervento |
+| 16 | `06-TESTING/casi/verifica_casi.py` | Gestisce ora anche le combinazioni (C10) in tutti e tre i percorsi | — | nessun intervento |
+| 17 | `03-BACKEND/servizio/app.py` | Il limite di dimensione è nel controllo di coerenza: il messaggio arriva sia da /api/valida sia da /api/calcola | — | nessun intervento |

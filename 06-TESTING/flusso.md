@@ -28,6 +28,9 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S11 | Altro modello | Scegliere C5 e calcolare | Telaio a due piani con diagrammi su tutte le aste |
 | S12 | File locale | Aprire un modello JSON dal computer | Il modello si carica; se non è valido, il calcolo restituisce l'elenco degli errori |
 | S13 | Servizio spento | Fermare uvicorn e premere «Calcola» | Messaggio «Servizio di calcolo non raggiungibile» |
+| S14 | Nuovo modello (D4) | «Nuovo», selezionare la trave, aggiungere q = −10 kN/m, calcolare | Trave appoggiata 6 m: M max = 45 kNm |
+| S15 | Aggiunta nodo e asta (D4) | Aggiungere il nodo (0; 3) e l'asta 1 → 3, calcolare; ripetere lo stesso nodo | Calcolo completato; il nodo doppio è rifiutato con messaggio |
+| S16 | Valori sui diagrammi (D3) | C4, calcolare, diagramma M | Etichette 25,6 · 51,3 · 83,7 kNm sui punti significativi |
 
 ## Esiti
 
@@ -48,6 +51,14 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S13 Servizio spento | — | superato: «Servizio di calcolo non raggiungibile» |
 | Combinazione SLU1 dell'esempio | — | superato: ΣRy = 241,69 kN = 1,3 × (180 + peso proprio 5,92) kN; ΣRx = −30,00 kN = −1,5 × 20 kN |
 
+| Scenario | 29/10 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S9, S11–S13, combinazione | superati di nuovo dopo le modifiche del giorno |
+| S10 | superato («matrice singolare: struttura labile o vincoli insufficienti») |
+| S14 | superato: M max 45 kNm |
+| S15 | superato: asta aggiunta e calcolata; nodo doppio rifiutato («Esiste già un nodo in quella posizione») |
+| S16 | superato: 25,6 · 51,3 · 83,7 kNm |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -56,9 +67,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 |---|---|---|---|---|---|---|
 | D1 | 27/10 | S4 | Deformata interpolata solo dagli spostamenti nodali | bassa | **chiuso 28/10**: aggiunta l'inflessione dei carichi d'asta, esatta per aste senza cerniere (verificata su C1 e C7) | Mariana |
 | D2 | 27/10 | S2 | Combinazioni di carico non calcolate | media | **chiuso 28/10**: sovrapposizione lineare nel servizio e scelta della combinazione nell'interfaccia | Natalia, Benedetta |
-| D3 | 27/10 | S1 | Nessun valore numerico sui diagrammi | bassa | aperto | Mariana |
-| D4 | 27/10 | — | Non si possono disegnare nodi e aste nuovi | alta per la versione alfa | aperto | Lucia, Irene |
+| D3 | 27/10 | S1 | Nessun valore numerico sui diagrammi | bassa | **chiuso 29/10**: valori alle estremità e massimo interno; M in valore assoluto (il lato del diagramma indica le fibre tese) | Mariana |
+| D4 | 27/10 | — | Non si possono disegnare nodi e aste nuovi | alta per la versione alfa | **chiuso 29/10** in versione minima: nuovo modello, aggiunta ed eliminazione di nodi e aste per coordinate, carichi uniformi sulle aste. Resta da fare il disegno col mouse | Lucia, Irene |
 | D5 | 28/10 | S9 | Nodi difficili da selezionare col mouse | bassa | **chiuso 28/10** | Irene |
 | D6 | 28/10 | S10 | Il messaggio d'errore conteneva «STOP 2» | bassa | **chiuso 28/10** | Ottavia |
 | D7 | 28/10 | S12 | Un modello aperto da file poteva inserire codice HTML nella pagina | alta | **chiuso 28/10** | Irene |
-| D8 | 28/10 | S4 | Deformata approssimata sulle aste con cerniere interne | bassa | aperto | Mariana, Elisa |
+| D8 | 28/10 | S4 | Deformata approssimata sulle aste con cerniere interne | bassa | aperto: serve che il solutore restituisca la rotazione dell'estremità svincolata (Elisa) | Mariana, Elisa |
+| D9 | 29/10 | S15 | Il clic esattamente sull'asse di un'asta non la selezionava (spigolo del prisma di selezione sul piano del telaio) | bassa | **chiuso 29/10** | Irene |
+| D10 | 29/10 | — | Disegno di nodi e aste direttamente col mouse | media | aperto | Irene, Lucia |

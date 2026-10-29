@@ -37,6 +37,11 @@ except ImportError:  # validazione disattivata solo se manca la libreria
     VALIDATORE = None
 
 CASI = os.path.join(RADICE, "06-TESTING", "casi")
+
+# Limiti di dimensione (Natalia, 29/10): il solutore v0.1 usa una matrice piena (3 gdl per nodo, tre copie
+# in memoria). Con 1000 nodi: circa 216 MB e meno di 1 s (misure in 04-FORTRAN-SOLVER/prova_prestazioni.py).
+MAX_NODI = 1000
+MAX_ASTE = 3000
 FRONTEND = os.path.join(RADICE, "02-FRONTEND-3D")
 
 app = FastAPI(title="Progetto Alessandra — servizio di calcolo", version="0.1")
@@ -52,6 +57,8 @@ def errori_schema(modello):
 def errori_coerenza(modello):
     """Controlli che lo schema non può fare: riferimenti tra nodi, aste, materiali e sezioni."""
     err = []
+    if len(modello.get("nodi", [])) > MAX_NODI or len(modello.get("aste", [])) > MAX_ASTE:
+        return [f"modello troppo grande per il solutore v0.1: al massimo {MAX_NODI} nodi e {MAX_ASTE} aste"]
     nodi = {n["id"] for n in modello.get("nodi", [])}
     mat = {m["id"] for m in modello.get("materiali", [])}
     sez = {s["id"] for s in modello.get("sezioni", [])}

@@ -79,6 +79,33 @@ def test_combinazione_lineare():
     assert client.post("/api/calcola?combinazione=XX", json=m).status_code == 422
 
 
+def test_c9_cerniera_e_molla():
+    r = client.post("/api/calcola", json=modello("C9_portale_tre_cerniere_molla"))
+    assert r.status_code == 200
+    reaz = {x["nodo"]: x for x in r.json()["risultati"][0]["reazioni"]}
+    assert abs(reaz[4]["Ry"] - 20 * 4 / 6) < 1e-6 and abs(reaz[4]["Rx"] + 10) < 1e-6
+
+
+def test_modello_modificato():
+    # come dall'interfaccia (D4): si aggiunge un nodo e un'asta con identificativi non consecutivi
+    m = modello("C1_trave_appoggiata")
+    m["nodi"].append({"id": 10, "x": 0, "y": 3})
+    m["aste"].append({"id": 7, "nodo_i": 1, "nodo_j": 10, "materiale": "S275", "sezione": "IPE300"})
+    m["casi_di_carico"][0]["carichi_nodali"] = [{"nodo": 10, "Fx": 5}]
+    r = client.post("/api/calcola", json=m)
+    assert r.status_code == 200
+    ris = r.json()["risultati"][0]
+    assert abs(sum(x["Rx"] for x in ris["reazioni"]) + 5) < 1e-9
+    assert {s["asta"] for s in ris["sollecitazioni"]} == {1, 2, 7}
+
+
+def test_limite_dimensione():
+    m = modello("C1_trave_appoggiata")
+    m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]
+    v = client.post("/api/valida", json=m).json()
+    assert not v["valido"] and "troppo grande" in v["coerenza"][0]
+
+
 def test_frontend():
     assert client.get("/app/").status_code == 200
 

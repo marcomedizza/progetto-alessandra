@@ -27,14 +27,45 @@ export class Vista {
     this.selezionabili = [];
     this.vistaCorrente = 'frontale';
     this.S = 1;
+    this.etichette = [];
+    this.strato = document.createElement('div');
+    this.strato.className = 'strato-etichette';
+    contenitore.appendChild(this.strato);
     this.centro = new THREE.Vector3();
     new ResizeObserver(() => this.ridimensiona()).observe(contenitore);
     this.renderer.domElement.addEventListener('pointerdown', (e) => { this._giu = [e.clientX, e.clientY]; });
     this.renderer.domElement.addEventListener('pointerup', (e) => {
       if (this._giu && Math.hypot(e.clientX - this._giu[0], e.clientY - this._giu[1]) < 4) this.clic(e);
     });
-    const ciclo = () => { this.controlli.update(); this.renderer.render(this.scene, this.camera); requestAnimationFrame(ciclo); };
+    const ciclo = () => {
+      this.controlli.update();
+      this.renderer.render(this.scene, this.camera);
+      this.posizionaEtichette();
+      requestAnimationFrame(ciclo);
+    };
     ciclo();
+  }
+
+  // Etichette numeriche dei diagrammi (Mariana, D3): elementi HTML posizionati sul punto 3D a ogni fotogramma.
+  impostaEtichette(lista) {
+    this.strato.replaceChildren();
+    this.etichette = lista.map(({ x, y, testo }) => {
+      const el = document.createElement('span');
+      el.className = 'etichetta';
+      el.textContent = testo;
+      this.strato.appendChild(el);
+      return { pos: new THREE.Vector3(x, y, 0), el };
+    });
+  }
+
+  posizionaEtichette() {
+    if (!this.etichette.length) return;
+    const w = this.renderer.domElement.clientWidth, h = this.renderer.domElement.clientHeight;
+    const v = new THREE.Vector3();
+    for (const e of this.etichette) {
+      v.copy(e.pos).project(this.camera);
+      e.el.style.transform = `translate(${((v.x + 1) / 2) * w}px, ${((1 - v.y) / 2) * h}px) translate(-50%, -50%)`;
+    }
   }
 
   ridimensiona() {
@@ -74,8 +105,8 @@ export class Vista {
       m.position.copy(p1).add(p2).multiplyScalar(0.5);
       m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
       this.gruppoModello.add(m);
-      // cilindro invisibile più largo per facilitare la selezione col mouse
-      const presa = new THREE.Mesh(new THREE.CylinderGeometry(S * 0.025, S * 0.025, L, 6), new THREE.MeshBasicMaterial({ visible: false }));
+      // cilindro invisibile più largo per la selezione col mouse, ruotato di 30° perché nessuno spigolo cada sul piano del telaio
+      const presa = new THREE.Mesh(new THREE.CylinderGeometry(S * 0.025, S * 0.025, L, 6, 1, false, Math.PI / 6), new THREE.MeshBasicMaterial({ visible: false }));
       presa.position.copy(m.position); presa.quaternion.copy(m.quaternion);
       presa.userData = { tipo: 'asta', id: a.id };
       this.gruppoModello.add(presa);

@@ -14,10 +14,13 @@ function geometriaAsta(modello, a) {
 
 export function disegnaRisultati(gruppo, modello, ris, opzioni, S, caso) {
   while (gruppo.children.length) { const o = gruppo.children.pop(); o.geometry?.dispose(); o.material?.dispose(); }
-  if (!ris) return;
-  if (opzioni.diagramma) disegnaDiagramma(gruppo, modello, ris, opzioni.diagramma, S);
+  if (!ris) return [];
+  const etichette = opzioni.diagramma ? disegnaDiagramma(gruppo, modello, ris, opzioni.diagramma, S) : [];
   if (opzioni.deformata) disegnaDeformata(gruppo, modello, ris, S, caso);
+  return etichette;
 }
+
+const fmtE = (v) => (Math.abs(v) < 5e-3 ? 0 : v).toLocaleString('it-IT', { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 1 });
 
 // Carichi d'asta in componenti locali trasversali (wy uniforme, Py concentrati), come nel convertitore.
 function carichiTrasversali(modello, caso, a, c, s) {
@@ -54,6 +57,7 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   const segno = comp === 'M' ? -1 : 1;
   const matRiemp = new THREE.MeshBasicMaterial({ color: COLORI[comp], transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false });
   const matLinea = new THREE.LineBasicMaterial({ color: COLORI[comp] });
+  const etichette = [];
   for (const s of ris.sollecitazioni) {
     const a = modello.aste.find((x) => x.id === s.asta);
     const { ni, c, s: sn } = geometriaAsta(modello, a);
@@ -72,7 +76,20 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
     const gl = new THREE.BufferGeometry();
     gl.setAttribute('position', new THREE.Float32BufferAttribute(curva, 3));
     gruppo.add(new THREE.Line(gl, matLinea));
+    // valori alle estremità e, se maggiore, il massimo interno (D3)
+    const n = s.x.length, val = s[comp];
+    const indici = [0, n - 1];
+    let im = 0;
+    for (let i = 1; i < n - 1; i++) if (Math.abs(val[i]) > Math.abs(val[im])) im = i;
+    if (im > 0 && Math.abs(val[im]) > Math.max(Math.abs(val[0]), Math.abs(val[n - 1])) * 1.01) indici.push(im);
+    for (const i of indici) {
+      if (Math.abs(val[i]) < max * 0.02) continue;
+      const [px, py] = punto(s.x[i], val[i] * 1.15);
+      // M in valore assoluto: il lato del diagramma indica già le fibre tese; N e V con il segno
+      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]) });
+    }
   }
+  return etichette;
 }
 
 function disegnaDeformata(gruppo, modello, ris, S, caso) {

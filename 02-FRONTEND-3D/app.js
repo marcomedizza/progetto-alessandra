@@ -2,6 +2,7 @@
 import { Vista } from './vista.js';
 import { pannelloProprieta } from './proprieta.js';
 import { disegnaRisultati, tabellaRisultati } from './risultati.js';
+import { pannelloModifica, modelloNuovo } from './modifica.js';
 
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -40,12 +41,16 @@ function aggiorna(ridisegnaModello = true) {
   if (!m) return;
   stato.caso = casoEffettivo(m, $('#sel-carico').value);
   if (ridisegnaModello) vista.disegna(m, stato.caso, stato.selezione);
-  disegnaRisultati(vista.gruppoRisultati, m, stato.ris, opzioni(), vista.S, stato.caso);
-  pannelloProprieta($('#pannello-proprieta'), m, stato.caso, stato.selezione, stato.ris, () => {
+  vista.impostaEtichette(disegnaRisultati(vista.gruppoRisultati, m, stato.ris, opzioni(), vista.S, stato.caso));
+  const modificato = (testo = 'Modello modificato', deseleziona = false) => {
     stato.ris = null;
-    messaggio('Modello modificato: premi «Calcola» per aggiornare i risultati');
+    if (deseleziona) stato.selezione = null;
+    messaggio(`${testo}: premi «Calcola» per aggiornare i risultati`);
     aggiorna();
-  });
+  };
+  pannelloProprieta($('#pannello-proprieta'), m, stato.caso, stato.selezione, stato.ris, () => modificato());
+  pannelloModifica($('#pannello-modifica'), m, stato.caso, stato.selezione, (t, d) => { modificato(t, d); vista.vista(vista.vistaCorrente); },
+    (err) => messaggio(err, 'errore'));
   $('#pannello-risultati').innerHTML = tabellaRisultati(m, stato.ris);
 }
 
@@ -106,6 +111,7 @@ $('#file-modello').addEventListener('change', async (e) => {
   try { caricaModello(JSON.parse(await f.text())); } catch { messaggio('File non leggibile come modello JSON', 'errore'); }
 });
 $('#sel-carico').addEventListener('change', () => { stato.ris = null; aggiorna(); });
+$('#btn-nuovo').addEventListener('click', () => caricaModello(modelloNuovo()));
 $('#btn-calcola').addEventListener('click', calcola);
 $('#chk-def').addEventListener('change', () => aggiorna(false));
 document.querySelectorAll('input[name=diag]').forEach((r) => r.addEventListener('change', () => aggiorna(false)));

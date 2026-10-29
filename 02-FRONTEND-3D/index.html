@@ -31,6 +31,9 @@
   #vista canvas { display: block; }
   #legenda { position: absolute; left: 10px; bottom: 10px; background: rgba(255,255,255,0.9); border: 1px solid var(--line);
              border-radius: 6px; padding: 6px 10px; font-size: 12px; color: var(--muted); }
+  .strato-etichette { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .etichetta { position: absolute; left: 0; top: 0; font: 11px/1 var(--mono); padding: 2px 4px; border-radius: 3px;
+               background: rgba(255,255,255,0.85); color: var(--ink); white-space: nowrap; }
   #stato { position: absolute; left: 10px; top: 10px; font-size: 12px; padding: 4px 8px; border-radius: 6px;
            background: rgba(255,255,255,0.9); border: 1px solid var(--line); }
   #stato.errore { color: var(--warn); border-color: var(--warn); }
@@ -54,6 +57,7 @@
   <h1>Telaio 2D · prototipo</h1>
   <div class="gruppo">
     <select id="sel-caso" aria-label="Modello"></select>
+    <button id="btn-nuovo">Nuovo</button>
     <label class="gruppo nota">o file <input type="file" id="file-modello" accept=".json"></label>
   </div>
   <div class="gruppo">
@@ -79,6 +83,8 @@
     <div id="legenda">Clic su un'asta o un nodo per le proprietà · trascina per ruotare (assonometrica), rotella per lo zoom</div>
   </div>
   <aside>
+    <h2>Modifica del modello</h2>
+    <div id="pannello-modifica"></div>
     <h2>Proprietà</h2>
     <div id="pannello-proprieta"><p class="vuoto">Nessun elemento selezionato.</p></div>
     <h2>Risultati principali</h2>

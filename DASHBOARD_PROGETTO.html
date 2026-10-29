@@ -845,14 +845,14 @@
         <header>
             <div>
                 <h1>🚀 Progetto Alessandra</h1>
-                <p style="color: #666; margin-top: 5px;">Cruscotto interattivo · dati aggiornati al 17/10/2026</p>
+                <p style="color: #666; margin-top: 5px;">Cruscotto interattivo · dati aggiornati al 29/10/2026</p>
             </div>
             <div class="header-info">
                 <div style="text-align: right;">
                     <div style="font-size: 12px; color: #666;">Oggi</div>
                     <div style="font-size: 18px; font-weight: bold;" id="today-date"></div>
                 </div>
-                <div class="status-badge">🟢 COMPITI ASSEGNATI 23/10</div>
+                <div class="status-badge">🟢 PROTOTIPO VERIFICATO 29/10</div>
             </div>
         </header>
 
@@ -1228,11 +1228,11 @@
     </div>
 
     <script>
-        // ===== DATI AGGIORNATI AL 17/10/2026 =====
-        // Fonte: ramo claude/sviluppi-496gl0 (ultimo commit 31/08/2026)
-        const SEED_VERSION = '2026-10-23e';
+        // ===== DATI AGGIORNATI AL 29/10/2026 =====
+        // Fonte: ramo claude/alessandra-project-updates-nm3gv9
+        const SEED_VERSION = '2026-10-29a';
         const PROJECT_START = '2026-08-15';
-        const LAST_DATA_DATE = '2026-08-31';
+        const LAST_DATA_DATE = '2026-10-29';
         const FINAL_ASSESSMENT = '2026-10-24';
 
         const learningPhases = [
@@ -1243,24 +1243,24 @@
         ];
 
         const devPhases = [
-            { name: 'Fase 1 · pianificazione e specifiche (sett. 1–2)', start: '2026-08-15', end: '2026-08-28', doc: 'Schema dati v2.0 in stato «DRAFT_v1» (18/08). Specifiche API e documento di architettura assenti.', pct: 30 },
-            { name: 'Fase 2 · sviluppo base (sett. 2–4)', start: '2026-08-22', end: '2026-09-11', doc: 'Nessun codice in archivio.', pct: 0 },
-            { name: 'Fase 3 · integrazione (sett. 4–6)', start: '2026-09-05', end: '2026-09-25', doc: 'Nessun codice in archivio.', pct: 0 },
-            { name: 'Fase 4 · collegamento ModeSt (sett. 6–8)', start: '2026-09-19', end: '2026-10-09', doc: 'Nessun codice in archivio.', pct: 0 }
+            { name: 'Fase 1 · pianificazione e specifiche (sett. 1–2)', start: '2026-08-15', end: '2026-08-28', doc: 'Schema dati v1.0 per telai piani chiuso il 24/10 (Benedetta), con descrizione in SCHEMA_DATI_v1.0.md. La v1.1 non è promossa: epJSON rinviato (29/10).', pct: 100 },
+            { name: 'Fase 2 · sviluppo base (sett. 2–4)', start: '2026-08-22', end: '2026-09-11', doc: 'Recuperata dal 23/10. Solutore Fortran per telai piani (statica lineare, cerniere interne, molle), convertitore Python, servizio FastAPI, interfaccia Three.js. Mancano P-Delta e DXF del piano originale.', pct: 70 },
+            { name: 'Fase 3 · integrazione (sett. 4–6)', start: '2026-09-05', end: '2026-09-25', doc: 'Catena completa JSON → Fortran → risultati → vista 3D dal 27/10. Casi C1–C10 superati su tre percorsi, 12 prove del servizio, 16 scenari utente (29/10). Aperti D8 (deformata con cerniere) e D10 (disegno col mouse).', pct: 85 },
+            { name: 'Fase 4 · collegamento ModeSt (sett. 6–8)', start: '2026-09-19', end: '2026-10-09', doc: 'Bloccata: mancano documentazione e file di esempio ModeSt. Richiesta a Marco l\'esportazione del portale C4 (05-RICERCA/modest.md).', pct: 5 }
         ];
 
         const SEED_MILESTONES = [
-            { title: 'Schema dati finalizzato', date: '2026-08-19', status: 'pending', note: 'Esiste solo la bozza v2.0 «DRAFT_v1» del 18/08 (Benedetta).' },
+            { title: 'Schema dati finalizzato', date: '2026-08-19', status: 'completed', note: 'Chiuso in ritardo il 24/10: schema v1.0 (Benedetta).' },
             { title: 'Fase 0 formazione conclusa', date: '2026-08-29', status: 'completed', note: '73% agenti avviati al 28/08.' },
             { title: 'Rilascio alfa (statica lineare + P-Delta, DXF)', date: '2026-09-02', status: 'pending', note: 'Nessun codice in archivio.' },
             { title: 'Valutazione fase 1 idraulica (Ginevra)', date: '2026-09-05', status: 'pending', note: 'Esito non documentato.' },
             { title: 'Rilascio beta (modale, esportazione ModeSt)', date: '2026-09-16', status: 'pending', note: 'Nessun codice in archivio.' },
             { title: 'Casi studio fase 3 definiti (Beatrice)', date: '2026-09-30', status: 'pending', note: 'Nessun documento in archivio.' },
             { title: 'Valutazione finale programma di formazione', date: '2026-10-24', status: 'completed', note: 'Sostituita dall\'assegnazione compiti del 23/10: diventa la verifica delle consegne del 24/10.' },
-            { title: 'RIFERIMENTI riordinata; NTC, Circolare e manuali EnergyPlus scaricati (Agata); primo rapporto di tutti', date: '2026-10-23', status: 'pending', note: 'Verifica: Raffaella.' },
-            { title: 'Schema dati v1.0; casi di prova; prime sintesi di studio', date: '2026-10-24', status: 'pending', note: 'Verifica: Sole. Schema: Benedetta. Casi di prova: Valentina.' },
-            { title: 'Prototipo minimo: portale 2D JSON → Fortran → risultati → vista 3D', date: '2026-10-28', status: 'pending', note: 'Verifica: Alessandra, Valentina.' },
-            { title: 'Revisione: prototipo sui casi di prova, sintesi di studio', date: '2026-10-30', status: 'pending', note: 'Verifica: Marco.' }
+            { title: 'RIFERIMENTI riordinata; NTC, Circolare e manuali EnergyPlus scaricati (Agata); primo rapporto di tutti', date: '2026-10-23', status: 'pending', note: 'Verifica: Raffaella. Rapporti avviati; riordino di RIFERIMENTI e scarico dei testi bloccati: il collegatore Drive non vede i PDF caricati da Marco.' },
+            { title: 'Schema dati v1.0; casi di prova; prime sintesi di studio', date: '2026-10-24', status: 'pending', note: 'Schema v1.0 e casi di prova fatti (oggi C1–C10). Sintesi di studio ferme: PDF non accessibili.' },
+            { title: 'Prototipo minimo: portale 2D JSON → Fortran → risultati → vista 3D', date: '2026-10-28', status: 'completed', note: 'Funzionante dal 27/10, verificato il 28/10 e il 29/10 (Alessandra, Valentina, Vittoria).' },
+            { title: 'Revisione: prototipo sui casi di prova, sintesi di studio', date: '2026-10-30', status: 'pending', note: 'Verifica: Marco. Controllare i valori attesi C6–C10 e provare l\'interfaccia in Firefox.' }
         ];
 
         const SEED_NOTIFICATIONS = [
@@ -1271,7 +1271,11 @@
             { title: 'Incongruenze nell\'elenco agenti', message: '24 agenti nei mandati, 26 nel resoconto del 28/08. Il team business ha due composizioni diverse (Aurora, Livia… oppure Katia, Nina, Elena…), con Paola e Valentina presenti in due gruppi.', priority: 'medium', time: '17/10/2026' },
             { title: 'Rapporto conversione JSON del 31/08 incoerente', message: 'Lo stato dice «prova fallita, manca la chiave API», il rapporto di Agata «successo». Allegati 2,3 MB nelle email, 18,5 KB nel catalogo.', priority: 'medium', time: '17/10/2026' },
             { title: 'Giorni della settimana errati nei documenti', message: '«Lunedì 30 agosto» è domenica, «venerdì 5 settembre» è sabato, «lunedì 1 settembre» è martedì.', priority: 'low', time: '17/10/2026' },
-            { title: 'Blocco invio GitHub risolto', message: 'L\'errore 403 del 21/08 è superato: i commit sono sul repository.', priority: 'low', time: '17/10/2026' }
+            { title: 'Blocco invio GitHub risolto', message: 'L\'errore 403 del 21/08 è superato: i commit sono sul repository.', priority: 'low', time: '17/10/2026' },
+            { title: '⛔ Studio dei testi fermo', message: 'Il collegatore Google Drive vede solo i file creati dalle applicazioni, non i PDF caricati in RIFERIMENTI. Alessia, Ilaria, Gabriella e il team strutturale non possono studiare i testi finché i PDF non sono accessibili.', priority: 'high', time: '29/10/2026' },
+            { title: '⛔ ModeSt bloccato', message: 'Carla e Daniela non hanno documentazione né file di esempio. Serve l\'esportazione del portale C4 in RIFERIMENTI/MODEST/.', priority: 'high', time: '29/10/2026' },
+            { title: '🟡 Repository pubblico', message: 'marcomedizza/progetto-alessandra è pubblico: decidere se renderlo privato prima di aggiungere materiale riservato.', priority: 'medium', time: '29/10/2026' },
+            { title: '🟢 Prototipo verificato il 29/10', message: 'C1–C10 superati su riferimento, Fortran e servizio; 12 prove del servizio; scenari S1–S16. Chiusi D3 (valori sui diagrammi), D4 minimo (modifica del modello), D9. Telaio da 1989 gradi di libertà in 0,23 s.', priority: 'high', time: '29/10/2026' }
         ];
 
         const SEED_RESEARCH = [
@@ -1288,6 +1292,10 @@
         ];
 
         const SEED_MY_REQUESTS = [
+            { text: 'Marco: esportare da ModeSt il portale C4 (06-TESTING/casi) in RIFERIMENTI/MODEST/, con il file di lavoro e i risultati.', priority: 'urgent', time: '29/10/2026' },
+            { text: 'Marco: controllare i valori attesi dei casi C6–C10 (06-TESTING/casi/README.md) per la revisione del 30/10.', priority: 'high', time: '29/10/2026' },
+            { text: 'Marco: provare l\'interfaccia in Firefox (scenari S1–S16 in 06-TESTING/flusso.md); qui non è disponibile.', priority: 'normal', time: '29/10/2026' },
+            { text: 'Marco: decidere come rendere accessibili agli agenti i PDF di RIFERIMENTI: il collegatore Drive non li vede e il repository è pubblico, quindi non vanno caricati lì.', priority: 'urgent', time: '29/10/2026' },
             { text: 'Roberta, Elisa, Katia: consegnare i rapporti settimanali dal 06/09 al 12/10, o dichiararne l\'assenza.', priority: 'urgent', time: '17/10/2026' },
             { text: 'Roberta, Ginevra: esito della fase 1 idraulica (valutazione del 05/09).', priority: 'urgent', time: '17/10/2026' },
             { text: 'Roberta: rapporto di lettura di Alessia sul Lancellotta (atteso il 03/09, non pervenuto) e avvio della lettura del Bowles.', priority: 'high', time: '17/10/2026' },

@@ -97,6 +97,8 @@ LETTURE = {
         "Ry nodo 4 (molla)": R(4, "Ry"), "Ry nodo 1": R(1, "Ry"), "Rx nodo 4": R(4, "Rx"), "Rx nodo 1": R(1, "Rx"),
         "uy nodo 4": U(4, "uy"), "|M| asta 3 x=h (testa colonna destra)": ABS(S(3, "M", 4.0)),
         "M asta 2 x=L/2 (cerniera)": S(2, "M", 3.0)},
+    "C10": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0)},
 }
 
 
@@ -112,15 +114,36 @@ if API:
     CLIENT = TestClient(servizio.app)
 
 
+def combinazione_riferimento(modello, comb_id):
+    """Sovrapposizione lineare dei casi con il risolutore di riferimento."""
+    comb = next(c for c in modello["combinazioni"] if c["id"] == comb_id)
+    parti = [(telaio2d.analizza(modello, cid), f) for cid, f in comb["coefficienti"].items()]
+    out = json.loads(json.dumps(parti[0][0]))
+    out["caso"] = comb_id
+    for blocco, campi in (("spostamenti", ("ux", "uy", "rz")), ("reazioni", ("Rx", "Ry", "Mz")), ("sollecitazioni", ("N", "V", "M"))):
+        for i, el in enumerate(out[blocco]):
+            for k in campi:
+                if isinstance(el[k], list):
+                    el[k] = [sum(f * p[blocco][i][k][j] for p, f in parti) for j in range(len(el[k]))]
+                else:
+                    el[k] = sum(f * p[blocco][i][k] for p, f in parti)
+    return out
+
+
+def e_combinazione(modello, caso):
+    return any(c["id"] == caso for c in modello.get("combinazioni", []))
+
+
 def risultati(modello, caso):
+    comb = e_combinazione(modello, caso)
     if API:
-        r = CLIENT.post(f"/api/calcola?caso={caso}", json=modello)
+        r = CLIENT.post(f"/api/calcola?{'combinazione' if comb else 'caso'}={caso}", json=modello)
         if r.status_code != 200:
             raise RuntimeError(f"servizio: {r.status_code} {r.text}")
         return r.json()["risultati"][0]
     if FORTRAN:
-        return converti.risultati(modello, caso)
-    return telaio2d.analizza(modello, caso)
+        return converti.combina(modello, caso) if comb else converti.risultati(modello, caso)
+    return combinazione_riferimento(modello, caso) if comb else telaio2d.analizza(modello, caso)
 
 
 def confronto_completo(a, b):
@@ -174,7 +197,9 @@ def main():
             atteso = json.load(fh)
         r = risultati(modello, atteso["caso"])
         if FORTRAN:
-            diff = confronto_completo(r, telaio2d.analizza(modello, atteso["caso"]))
+            rif = (combinazione_riferimento(modello, atteso["caso"]) if e_combinazione(modello, atteso["caso"])
+                   else telaio2d.analizza(modello, atteso["caso"]))
+            diff = confronto_completo(r, rif)
             errori += diff
             print(f"  {'✓' if diff == 0 else '✗'} confronto completo {'servizio' if API else 'Fortran'} / riferimento: {diff} scostamenti")
         if scrivi and not FORTRAN:

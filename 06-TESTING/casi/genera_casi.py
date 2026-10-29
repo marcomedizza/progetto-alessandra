@@ -309,11 +309,40 @@ def c9():
     return m, atteso
 
 
+def c10():
+    q, P, L, a = 10.0, 20.0, 6.0, 2.0
+    b = L - a
+    gG, gQ = 1.3, 1.5
+    m = trave("C10", "Trave appoggiata, combinazione SLU di due casi",
+              "IPE 300, L = 6 m. Caso G2: q = 10 kN/m; caso Q: P = 20 kN a 2 m dall'appoggio sinistro. Combinazione SLU 1,3·G2 + 1,5·Q (NTC 2018 §2.5.3).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+              {"id": "G2", "nome": "Permanenti portati", "categoria": "G2", "carichi_aste": [
+                  {"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 4)
+    m["casi_di_carico"].append({"id": "Q", "nome": "Variabile concentrato", "categoria": "Q", "carichi_aste": [
+        {"asta": 1, "tipo": "concentrato", "direzione": "globale_y", "P": -P, "a": a}]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "SLU 1,3·G2 + 1,5·Q", "tipo": "SLU", "coefficienti": {"G2": gG, "Q": gQ}}]
+    MG = q * a * b / 2                  # momento del carico uniforme nella sezione x = a
+    MQ = P * a * b / L
+    atteso = {"caso": "SLU1", "formule": {
+        "reazione sinistra": "R1 = 1,3·qL/2 + 1,5·P·b/L",
+        "reazione destra": "R2 = 1,3·qL/2 + 1,5·P·a/L",
+        "momento sotto il carico": "M(a) = 1,3·q·a·b/2 + 1,5·P·a·b/L",
+        "nota": "verifica della sovrapposizione lineare dei casi nelle combinazioni"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * q * L / 2 + gQ * P * b / L, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * q * L / 2 + gQ * P * a / L, "unita": "kN"},
+            {"grandezza": "M asta 1 x=2 (sotto il carico)", "valore": gG * MG + gQ * MQ, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
                     ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8),
-                    ("C9_portale_tre_cerniere_molla", c9)):
+                    ("C9_portale_tre_cerniere_molla", c9),
+                    ("C10_combinazione_slu", c10)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

@@ -1,6 +1,6 @@
 # Casi di prova con soluzione nota
 
-**Data**: 26/10/2026 (C1–C5), 27/10/2026 (C6–C8), 28/10/2026 (C9) · **Schema**: `01-ARCHITETTURA/DATA_SCHEMA.json` v1.0
+**Data**: 26/10/2026 (C1–C5), 27/10/2026 (C6–C8), 28/10/2026 (C9), 29/10/2026 (C10) · **Schema**: `01-ARCHITETTURA/DATA_SCHEMA.json` v1.0
 **Da controllare**: Marco (i valori attesi sono la base di verifica del solutore Fortran)
 
 | Caso | Modello | Verifica | Valori attesi principali |
@@ -13,6 +13,7 @@
 | C6 | Trave Gerber IPE 300: incastro, cerniera interna a 4 m, appoggio a 6 m, q = 10 kN/m | statica (isostatica) | R1 = 50 kN; M incastro = −120,0 kNm; M cerniera = 0; M tratto appoggiato = 5,00 kNm; R3 = 10 kN |
 | C7 | Trave appoggiata IPE 300, L = 6 m, P = 20 kN a 2 m | formule chiuse | R1 = 13,33 kN; R2 = 6,67 kN; M = Pab/L = 26,67 kNm |
 | C8 | Trave appoggiata IPE 300, L = 6 m, q = 10 kN/m, molla ky = 1000 kN/m in mezzeria | congruenza | forza nella molla = 7,654 kN; freccia = 7,65 mm; M mezzeria = 33,52 kNm |
+| C10 | Trave appoggiata IPE 300, L = 6 m: G2 q = 10 kN/m, Q P = 20 kN a 2 m; combinazione SLU 1,3·G2 + 1,5·Q | formule chiuse + sovrapposizione | R1 = 59 kN; R2 = 49 kN; M sotto il carico = 92 kNm |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.

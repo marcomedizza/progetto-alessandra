@@ -845,14 +845,14 @@
         <header>
             <div>
                 <h1>🚀 Progetto Alessandra</h1>
-                <p style="color: #666; margin-top: 5px;">Cruscotto interattivo · dati aggiornati al 29/10/2026</p>
+                <p style="color: #666; margin-top: 5px;">Cruscotto interattivo · dati aggiornati al 30/10/2026</p>
             </div>
             <div class="header-info">
                 <div style="text-align: right;">
                     <div style="font-size: 12px; color: #666;">Oggi</div>
                     <div style="font-size: 18px; font-weight: bold;" id="today-date"></div>
                 </div>
-                <div class="status-badge">🟢 PROTOTIPO VERIFICATO 29/10</div>
+                <div class="status-badge">🟢 REVISIONE DI MARCO 30/10</div>
             </div>
         </header>
 
@@ -1228,11 +1228,11 @@
     </div>
 
     <script>
-        // ===== DATI AGGIORNATI AL 29/10/2026 =====
+        // ===== DATI AGGIORNATI AL 30/10/2026 =====
         // Fonte: ramo claude/alessandra-project-updates-nm3gv9
-        const SEED_VERSION = '2026-10-29a';
+        const SEED_VERSION = '2026-10-30a';
         const PROJECT_START = '2026-08-15';
-        const LAST_DATA_DATE = '2026-10-29';
+        const LAST_DATA_DATE = '2026-10-30';
         const FINAL_ASSESSMENT = '2026-10-24';
 
         const learningPhases = [
@@ -1244,9 +1244,9 @@
 
         const devPhases = [
             { name: 'Fase 1 · pianificazione e specifiche (sett. 1–2)', start: '2026-08-15', end: '2026-08-28', doc: 'Schema dati v1.0 per telai piani chiuso il 24/10 (Benedetta), con descrizione in SCHEMA_DATI_v1.0.md. La v1.1 non è promossa: epJSON rinviato (29/10).', pct: 100 },
-            { name: 'Fase 2 · sviluppo base (sett. 2–4)', start: '2026-08-22', end: '2026-09-11', doc: 'Recuperata dal 23/10. Solutore Fortran per telai piani (statica lineare, cerniere interne, molle), convertitore Python, servizio FastAPI, interfaccia Three.js. Mancano P-Delta e DXF del piano originale.', pct: 70 },
-            { name: 'Fase 3 · integrazione (sett. 4–6)', start: '2026-09-05', end: '2026-09-25', doc: 'Catena completa JSON → Fortran → risultati → vista 3D dal 27/10. Casi C1–C10 superati su tre percorsi, 12 prove del servizio, 16 scenari utente (29/10). Aperti D8 (deformata con cerniere) e D10 (disegno col mouse).', pct: 85 },
-            { name: 'Fase 4 · collegamento ModeSt (sett. 6–8)', start: '2026-09-19', end: '2026-10-09', doc: 'Bloccata: mancano documentazione e file di esempio ModeSt. Richiesta a Marco l\'esportazione del portale C4 (05-RICERCA/modest.md).', pct: 5 }
+            { name: 'Fase 2 · sviluppo base (sett. 2–4)', start: '2026-08-22', end: '2026-09-11', doc: 'Recuperata dal 23/10. Solutore Fortran per telai piani (statica lineare, cerniere interne, molle), convertitore Python, servizio FastAPI, interfaccia Three.js. Dal 30/10 solutore v0.2 a matrice a banda (14 043 gdl in 0,26 s) con rotazioni alle cerniere. Mancano P-Delta e DXF del piano originale.', pct: 75 },
+            { name: 'Fase 3 · integrazione (sett. 4–6)', start: '2026-09-05', end: '2026-09-25', doc: 'Catena completa JSON → Fortran → risultati → vista 3D dal 27/10. Casi C1–C10 superati su tre percorsi, 12 prove del servizio, 16 scenari utente (29/10). Il 30/10: C1–C10 su tre percorsi, 16 prove, scenari S1–S19; chiusi D8, D10 (minimo), D11. Aperti D12, D13 (minori).', pct: 95 },
+            { name: 'Fase 4 · collegamento ModeSt (sett. 6–8)', start: '2026-09-19', end: '2026-10-09', doc: 'Bloccata: mancano documentazione e file di esempio ModeSt. Richiesta a Marco l\'esportazione del portale C4. Pronta una bozza di esportazione DXF della sola geometria, non provata in ModeSt.', pct: 10 }
         ];
 
         const SEED_MILESTONES = [
@@ -1260,7 +1260,7 @@
             { title: 'RIFERIMENTI riordinata; NTC, Circolare e manuali EnergyPlus scaricati (Agata); primo rapporto di tutti', date: '2026-10-23', status: 'pending', note: 'Verifica: Raffaella. Rapporti avviati; riordino di RIFERIMENTI e scarico dei testi bloccati: il collegatore Drive non vede i PDF caricati da Marco.' },
             { title: 'Schema dati v1.0; casi di prova; prime sintesi di studio', date: '2026-10-24', status: 'pending', note: 'Schema v1.0 e casi di prova fatti (oggi C1–C10). Sintesi di studio ferme: PDF non accessibili.' },
             { title: 'Prototipo minimo: portale 2D JSON → Fortran → risultati → vista 3D', date: '2026-10-28', status: 'completed', note: 'Funzionante dal 27/10, verificato il 28/10 e il 29/10 (Alessandra, Valentina, Vittoria).' },
-            { title: 'Revisione: prototipo sui casi di prova, sintesi di studio', date: '2026-10-30', status: 'pending', note: 'Verifica: Marco. Controllare i valori attesi C6–C10 e provare l\'interfaccia in Firefox.' }
+            { title: 'Revisione: prototipo sui casi di prova, sintesi di studio', date: '2026-10-30', status: 'pending', note: 'Verifica: Marco. Passaggi a mano di C6–C10 in 06-TESTING/casi/README.md; prova in Firefox (S1–S19); esportazione ModeSt del portale C4.' }
         ];
 
         const SEED_NOTIFICATIONS = [
@@ -1275,7 +1275,9 @@
             { title: '⛔ Studio dei testi fermo', message: 'Il collegatore Google Drive vede solo i file creati dalle applicazioni, non i PDF caricati in RIFERIMENTI. Alessia, Ilaria, Gabriella e il team strutturale non possono studiare i testi finché i PDF non sono accessibili.', priority: 'high', time: '29/10/2026' },
             { title: '⛔ ModeSt bloccato', message: 'Carla e Daniela non hanno documentazione né file di esempio. Serve l\'esportazione del portale C4 in RIFERIMENTI/MODEST/.', priority: 'high', time: '29/10/2026' },
             { title: '🟡 Repository pubblico', message: 'marcomedizza/progetto-alessandra è pubblico: decidere se renderlo privato prima di aggiungere materiale riservato.', priority: 'medium', time: '29/10/2026' },
-            { title: '🟢 Prototipo verificato il 29/10', message: 'C1–C10 superati su riferimento, Fortran e servizio; 12 prove del servizio; scenari S1–S16. Chiusi D3 (valori sui diagrammi), D4 minimo (modifica del modello), D9. Telaio da 1989 gradi di libertà in 0,23 s.', priority: 'high', time: '29/10/2026' }
+            { title: '🟢 Prototipo verificato il 29/10', message: 'C1–C10 superati su riferimento, Fortran e servizio; 12 prove del servizio; scenari S1–S16. Chiusi D3 (valori sui diagrammi), D4 minimo (modifica del modello), D9. Telaio da 1989 gradi di libertà in 0,23 s.', priority: 'high', time: '29/10/2026' },
+            { title: '🔴 Consegne finali mancanti il 30/10', message: 'Aurora (costi e prezzo), Katia (concorrenti), Camilla (rassegna normativa): nessun file. Sintesi di studio del team strutturale, di Francesca e di Gabriella ferme per i PDF non accessibili.', priority: 'high', time: '30/10/2026' },
+            { title: '🟢 Solutore v0.2 e interfaccia per la revisione', message: 'Matrice a banda e riordino dei nodi (fino a 5000 nodi); rotazioni alle cerniere e deformata esatta (D8); disegno col mouse (D10); materiali e sezioni inseribili. C1–C10, 16 prove del servizio, S1–S19 superati.', priority: 'high', time: '30/10/2026' }
         ];
 
         const SEED_RESEARCH = [

@@ -22,6 +22,53 @@ C3 e C4 trascurano la deformabilità assiale (`deformabilita_assiale: false`), c
 
 C5 non ha una soluzione chiusa semplice per la ripartizione interna. I valori in `C5_telaio_due_piani.riferimento.json` sono del risolutore di riferimento e vanno confermati con un programma commerciale (ModeSt).
 
+## Valori da controllare per la revisione di Marco (Valentina, 30/10/2026)
+
+Passaggi a mano dei casi C6–C10. EI dell'IPE 300 = 2,1·10⁸ × 8356·10⁻⁸ = 17 547,6 kNm².
+
+**C6 · trave Gerber** (incastro in 0, cerniera interna in 4 m, appoggio in 6 m, q = 10 kN/m)
+1. Tratto appoggiato 4–6, isostatico: R3 = q·2/2 = 10 kN; forza trasmessa alla cerniera Rs = 10 kN; M in x = 5 = q·2²/8 = 5,00 kNm.
+2. Mensola 0–4 con q e Rs in punta: R1 = 10·4 + 10 = 50 kN; M incastro = −(10·4²/2 + 10·4) = −120,0 kNm.
+3. Spostamenti (aggiunti il 30/10 per D8):
+   - abbassamento della cerniera v2 = q·4⁴/(8EI) + Rs·4³/(3EI) = 533,33/EI = 30,39 mm;
+   - rotazione della mensola alla cerniera = −(q·4³/(6EI) + Rs·4²/(2EI)) = −186,67/EI = −10,64 mrad;
+   - rotazione del tratto appoggiato alla cerniera = v2/2 − q·2³/(24EI) = 15,01 mrad.
+
+**C7 · trave appoggiata, P = 20 kN a 2 m** (L = 6 m)
+R1 = P·b/L = 20·4/6 = 13,33 kN; R2 = 20·2/6 = 6,67 kN; M sotto il carico = P·a·b/L = 20·2·4/6 = 26,67 kNm.
+
+**C8 · trave appoggiata con molla in mezzeria** (q = 10 kN/m, ky = 1000 kN/m)
+1. Freccia senza molla: δ0 = 5qL⁴/(384EI) = 9,617 mm.
+2. Cedevolezza della trave in mezzeria: f = L³/(48EI) = 0,2565 mm/kN.
+3. Congruenza: X·(f + 1/ky) = δ0, quindi X = 9,617/(0,2565 + 1,000) = 7,654 kN; freccia = X/ky = 7,65 mm.
+4. M in mezzeria = qL²/8 − X·L/4 = 45,00 − 11,48 = 33,52 kNm.
+
+**C9 · portale a tre cerniere, molla verticale al piede destro** (h = 4 m, L = 6 m, H = 20 kN in testa)
+1. Equilibrio alla rotazione attorno al piede sinistro: Ry4 = H·h/L = 20·4/6 = 13,33 kN; Ry1 = −13,33 kN.
+2. Cerniera in mezzeria del traverso: il momento delle forze di destra attorno a essa è nullo, quindi Rx4·h = −Ry4·L/2, cioè Rx4 = −10 kN; Rx1 = −20 + 10 = −10 kN.
+3. M in testa alla colonna = |Rx|·h = 40,00 kNm; abbassamento della molla = 13,33/5000 = 2,67 mm.
+
+La molla non cambia le reazioni, perché la struttura resta isostatica.
+
+**C10 · combinazione SLU su trave appoggiata** (G2: q = 10 kN/m; Q: P = 20 kN a 2 m; 1,3·G2 + 1,5·Q)
+- G2: R1 = R2 = 30 kN; M in x = 2 = q·x·(L − x)/2 = 40 kNm.
+- Q: R1 = 13,33 kN; R2 = 6,67 kN; M in x = 2 = 26,67 kNm.
+- Combinazione:
+  - R1 = 1,3·30 + 1,5·13,33 = 59,0 kN;
+  - R2 = 1,3·30 + 1,5·6,67 = 49,0 kN;
+  - M = 1,3·40 + 1,5·26,67 = 92,0 kNm.
+
+## C11 · cedimento vincolare (preparato il 30/10, non ancora calcolabile)
+
+Trave continua su tre appoggi, IPE 300, due campate da 6 m, nessun carico, cedimento dell'appoggio centrale δ = 10 mm verso il basso.
+
+Soluzione a mano: la reazione dell'appoggio centrale equivale alla forza che, in mezzeria di una trave appoggiata lunga 2L = 12 m, produce la freccia δ.
+1. F = 48·EI·δ/(2L)³ = 48 × 17 547,6 × 0,010/1728 = 4,874 kN, diretta verso il basso: è l'appoggio che trattiene la trave.
+2. Reazioni: RB = −4,874 kN; RA = RC = +2,437 kN.
+3. Momento sull'appoggio centrale: |MB| = F·2L/4 = 14,62 kNm, con fibre tese in basso.
+
+Il caso **non è ancora nei file JSON**, perché né lo schema v1.0 né il solutore v0.2 gestiscono i cedimenti imposti (voce 4 della bozza v1.1, decisione di Benedetta del 29/10). Diventerà il caso di prova della voce «cedimenti» quando il solutore li calcolerà.
+
 ## File
 
 - `C*.json`: modelli di input

@@ -207,17 +207,25 @@ def c6():
                   {"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
                   {"asta": 2, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 5)
     Rs = q * 2 / 2               # tratto appoggiato 4–6: reazione e forza trasmessa alla cerniera
+    EI = E_ACC * IPE300["I"]
+    v2 = (q * 4 ** 4 / 8 + Rs * 4 ** 3 / 3) / EI      # abbassamento della punta della mensola
+    th1 = -(q * 4 ** 3 / 6 + Rs * 4 ** 2 / 2) / EI    # rotazione della mensola alla cerniera (oraria)
+    th2 = v2 / 2 - q * 2 ** 3 / (24 * EI)             # tratto appoggiato: corda + rotazione d'appoggio
     atteso = {"caso": "Q", "formule": {
         "tratto appoggiato (2 m)": "R3 = q·2/2; forza in cerniera = q·2/2; M max = q·2²/8 in x = 5",
         "mensola (4 m) con carico in punta dalla cerniera": "R1 = q·4 + Rs; M1 = −(q·4²/2 + Rs·4)",
-        "cerniera": "M = 0 in x = 4"},
+        "cerniera": "M = 0 in x = 4",
+        "spostamenti (D8)": "v2 = q·4⁴/(8EI) + Rs·4³/(3EI); φ mensola = −(q·4³/(6EI) + Rs·4²/(2EI)); φ tratto appoggiato = v2/2 − q·2³/(24EI)"},
         "valori": [
             {"grandezza": "Ry nodo 3", "valore": Rs, "unita": "kN"},
             {"grandezza": "Ry nodo 1", "valore": q * 4 + Rs, "unita": "kN"},
             {"grandezza": "Mz nodo 1 (reazione)", "valore": q * 4 ** 2 / 2 + Rs * 4, "unita": "kNm"},
             {"grandezza": "M asta 1 x=0", "valore": -(q * 4 ** 2 / 2 + Rs * 4), "unita": "kNm"},
             {"grandezza": "M asta 1 x=4 (cerniera)", "valore": 0.0, "unita": "kNm"},
-            {"grandezza": "M asta 2 x=1 (mezzeria tratto appoggiato)", "valore": q * 2 ** 2 / 8, "unita": "kNm"}]}
+            {"grandezza": "M asta 2 x=1 (mezzeria tratto appoggiato)", "valore": q * 2 ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cerniera)", "valore": -v2, "unita": "m"},
+            {"grandezza": "φj asta 1 (mensola alla cerniera)", "valore": th1, "unita": "rad"},
+            {"grandezza": "rz nodo 2 (tratto appoggiato alla cerniera)", "valore": th2, "unita": "rad"}]}
     return m, atteso
 
 

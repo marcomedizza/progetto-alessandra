@@ -245,6 +245,20 @@ def analizza(modello, caso_id, punti=None):
         if any(i + r in reaz for r in range(3)):
             out["reazioni"].append({"nodo": nid, "Rx": reaz.get(i, 0.0), "Ry": reaz.get(i + 1, 0.0), "Mz": reaz.get(i + 2, 0.0)})
 
+    out["rotazioni_aste"] = []
+    for d in dati:
+        ul = matvec(d["T"], [u[k] for k in d["dofs"]])
+        # rotazioni svincolate (D8): momenti d'estremità nulli sull'asta non condensata
+        R = d["ril"]
+        if R:
+            for r in R:
+                ul[r] = 0.0
+            b = [-(sum(d["kl"][r][c] * ul[c] for c in range(6)) + d["ff"][r]) for r in R]
+            th = risolvi([[d["kl"][r][c] for c in R] for r in R], b)
+            for r, t in zip(R, th):
+                ul[r] = t
+        out["rotazioni_aste"].append({"asta": d["el"]["id"], "phi_i": ul[2], "phi_j": ul[5]})
+
     for d in dati:
         ug = [u[k] for k in d["dofs"]]
         ul = matvec(d["T"], ug)

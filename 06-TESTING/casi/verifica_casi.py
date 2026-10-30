@@ -45,6 +45,11 @@ def S(asta, comp, x):
     return f
 
 
+def ROT(asta, estremo):
+    """Rotazione d'estremità dell'asta (rotazioni_aste, D8): diversa da quella del nodo dove c'è una cerniera."""
+    return lambda r: next(x[estremo] for x in r["rotazioni_aste"] if x["asta"] == asta)
+
+
 def ABS(g):
     return lambda r: abs(g(r))
 
@@ -86,7 +91,9 @@ LETTURE = {
     "C6": {
         "Ry nodo 3": R(3, "Ry"), "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"),
         "M asta 1 x=0": S(1, "M", 0.0), "M asta 1 x=4 (cerniera)": S(1, "M", 4.0),
-        "M asta 2 x=1 (mezzeria tratto appoggiato)": S(2, "M", 1.0)},
+        "M asta 2 x=1 (mezzeria tratto appoggiato)": S(2, "M", 1.0),
+        "uy nodo 2 (cerniera)": U(2, "uy"), "φj asta 1 (mensola alla cerniera)": ROT(1, "phi_j"),
+        "rz nodo 2 (tratto appoggiato alla cerniera)": U(2, "rz")},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},
@@ -120,7 +127,8 @@ def combinazione_riferimento(modello, comb_id):
     parti = [(telaio2d.analizza(modello, cid), f) for cid, f in comb["coefficienti"].items()]
     out = json.loads(json.dumps(parti[0][0]))
     out["caso"] = comb_id
-    for blocco, campi in (("spostamenti", ("ux", "uy", "rz")), ("reazioni", ("Rx", "Ry", "Mz")), ("sollecitazioni", ("N", "V", "M"))):
+    for blocco, campi in (("spostamenti", ("ux", "uy", "rz")), ("reazioni", ("Rx", "Ry", "Mz")), ("rotazioni_aste", ("phi_i", "phi_j")),
+                          ("sollecitazioni", ("N", "V", "M"))):
         for i, el in enumerate(out[blocco]):
             for k in campi:
                 if isinstance(el[k], list):
@@ -154,8 +162,9 @@ def confronto_completo(a, b):
     # confronto per identificativo, non per posizione: l'ordine dei nodi può differire
     def per_id(lista, chiave):
         return {x[chiave]: x for x in lista}
-    for blocco, chiave, campi in (("spostamenti", "nodo", ("ux", "uy", "rz")), ("reazioni", "nodo", ("Rx", "Ry", "Mz"))):
-        A, B = per_id(a[blocco], chiave), per_id(b[blocco], chiave)
+    for blocco, chiave, campi in (("spostamenti", "nodo", ("ux", "uy", "rz")), ("reazioni", "nodo", ("Rx", "Ry", "Mz")),
+                                  ("rotazioni_aste", "asta", ("phi_i", "phi_j"))):
+        A, B = per_id(a.get(blocco, []), chiave), per_id(b.get(blocco, []), chiave)
         n += len(set(A) ^ set(B))
         for i in set(A) & set(B):
             n += sum(not vicino(A[i][k], B[i][k]) for k in campi)

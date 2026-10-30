@@ -1,4 +1,4 @@
-# Licenze dei componenti — 27/10/2026
+# Licenze dei componenti — 27/10/2026, aggiornato il 30/10/2026
 
 **Autrice**: Veronica (normativa e conformità)
 **Scopo**: verificare che i componenti usati o previsti permettano di distribuire il programma, anche a pagamento.
@@ -19,7 +19,7 @@
 | Componente | Uso previsto | Licenza | Nota | Esito |
 |---|---|---|---|---|
 | LAPACK | solutore, prossima versione | BSD modificata | avviso di copyright | compatibile |
-| EnergyPlus | parte energetica | licenza di tipo BSD del Dipartimento dell'Energia statunitense, con clausole aggiuntive sull'uso del nome | leggere il testo integrale prima di includerlo nella distribuzione | da verificare |
+| EnergyPlus | parte energetica | BSD 3 clausole con clausole aggiuntive (testo letto il 30/10 in `LICENSE.txt` del repository NREL/EnergyPlus) | conservare avviso e clausola di esclusione di responsabilità; il governo statunitense conserva una licenza d'uso gratuita e irrevocabile; il nome «EnergyPlus» non va usato nel nome della società o del prodotto né in pubblicità, e il programma va citato come «EnergyPlus version X» | compatibile, a condizione di chiamarlo come programma esterno e di non usarne il nome nel prodotto |
 | OpenFOAM | CFD | GPL v3 | collegarlo come libreria impone la GPL a tutto il programma; usarlo come **processo separato** (file di input e output) di norma no | compatibile solo come processo separato |
 | ParaView | post-elaborazione CFD | BSD 3 clausole | avviso di copyright | compatibile |
 | ModeSt | esportazione | proprietaria (Tecnisoft) | serve la documentazione del formato o un accordo; nessuna analisi a ritroso del formato senza autorizzazione | da chiarire con Tecnisoft |

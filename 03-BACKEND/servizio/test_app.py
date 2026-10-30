@@ -99,6 +99,61 @@ def test_modello_modificato():
     assert {s["asta"] for s in ris["sollecitazioni"]} == {1, 2, 7}
 
 
+def test_rotazioni_alle_cerniere():
+    # D8 (30/10): rotazione della mensola alla cerniera di C6, soluzione chiusa −(q·4³/6 + Rs·4²/2)/EI
+    r = client.post("/api/calcola", json=modello("C6_trave_gerber"))
+    ris = r.json()["risultati"][0]
+    rot = {x["asta"]: x for x in ris["rotazioni_aste"]}
+    EI = 2.1e8 * 8356e-8
+    assert abs(rot[1]["phi_j"] + (10 * 4 ** 3 / 6 + 10 * 4 ** 2 / 2) / EI) < 1e-9
+    rz2 = next(u["rz"] for u in ris["spostamenti"] if u["nodo"] == 2)
+    assert abs(rot[2]["phi_i"] - rz2) < 1e-15 and abs(rot[1]["phi_j"] - rz2) > 1e-3
+
+
+def test_sezione_e_materiale_inseriti():
+    # revisione 14 (30/10): come dall'interfaccia, sezione e materiale copiati e modificati su un'asta di C1.
+    # Freccia in mezzeria = somma dei contributi delle due metà: δ = δ0·(EI0/EI1 + EI0/EI2)/2
+    m = modello("C1_trave_appoggiata")
+    m["sezioni"].append({"id": "IPE300_2", "nome": "IPE 300 (2)", "A": 53.81e-4, "I": 2 * 8356e-8, "fonte": "valori inseriti dall'utente"})
+    m["materiali"].append({"id": "S275_2", "nome": "Alluminio", "E": 7.0e7})
+    m["aste"][0].update(sezione="IPE300_2", materiale="S275_2")
+    uy = next(u["uy"] for u in client.post("/api/calcola", json=m).json()["risultati"][0]["spostamenti"] if u["nodo"] == 2)
+    d0 = 5 * 10 * 6 ** 4 / (384 * 2.1e8 * 8356e-8)
+    assert abs(-uy - d0 * (2.1e8 / (7.0e7 * 2) + 1) / 2) < 1e-9
+    m["sezioni"][-1]["I"] = 0
+    assert client.post("/api/calcola", json=m).status_code == 422
+
+
+def test_modello_grande():
+    # matrice a banda (30/10): telaio 20 campate × 100 piani, 2121 nodi e 4100 aste, equilibrio verticale
+    sys.path.insert(0, os.path.join(servizio.RADICE, "04-FORTRAN-SOLVER"))
+    from prova_prestazioni import telaio
+    m = telaio(20, 100)
+    ris = client.post("/api/calcola", json=m).json()["risultati"][0]
+    assert abs(sum(x["Ry"] for x in ris["reazioni"]) - 25 * 6 * 20 * 100) < 1e-6
+
+
+def test_nodi_in_ordine_qualsiasi():
+    # riordino di Cuthill-McKee (30/10): nodi mescolati come in un modello disegnato a mano
+    import random
+    sys.path.insert(0, os.path.join(servizio.RADICE, "04-FORTRAN-SOLVER"))
+    from prova_prestazioni import telaio
+    import converti
+    m = telaio(30, 150)
+    random.Random(1).shuffle(m["nodi"])
+    assert converti.semibanda(m, converti.ordine_nodi(m)) < 120 < converti.semibanda(m)
+    ris = client.post("/api/calcola", json=m).json()["risultati"][0]
+    assert [u["nodo"] for u in ris["spostamenti"]] == [n["id"] for n in m["nodi"]]
+    # senza riordino la semibanda supera il limite di memoria e il solutore lo dice
+    originale = converti.ordine_nodi
+    converti.ordine_nodi = lambda mod: [n["id"] for n in mod["nodi"]]
+    try:
+        r = client.post("/api/calcola", json=m)
+        assert r.status_code != 200 and "semibanda" in r.text
+    finally:
+        converti.ordine_nodi = originale
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

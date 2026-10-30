@@ -57,6 +57,12 @@ La voce 1 (combinazioni) è già nella v1.0 e dal 28/10 viene calcolata dal serv
 
 **Tabella schema ↔ epJSON di EnergyPlus**: rinviata. Serve l'Interface Developer's Guide, che non è ancora in RIFERIMENTI (vedi compito di Agata). Va detto anche che lo schema è strutturale (nodi, aste, sezioni) mentre epJSON descrive zone termiche, superfici e impianti: i campi in comune sono pochi (geometria e materiali) e il confronto riguarda la futura parte energetica, non la v1.x.
 
+## Aggiunta compatibile del 30/10/2026 (Benedetta)
+
+Nel blocco `risultati` è stato aggiunto il campo facoltativo `rotazioni_aste` (asta, phi_i, phi_j [rad]), scritto dal solutore v0.2 per il difetto D8: alla cerniera interna la rotazione dell'estremità dell'asta è diversa da quella del nodo. È un campo di uscita e facoltativo, quindi i modelli esistenti restano validi e `schema_version` resta «1.0». Senza il campo, un blocco risultati con le rotazioni sarebbe stato rifiutato da `additionalProperties: false`.
+
+**Tabella schema ↔ epJSON**: ancora rinviata per lo stesso motivo del 29/10. L'Interface Developer's Guide di EnergyPlus non è in RIFERIMENTI e non può essere scaricata dagli agenti, perché il collegatore Drive non vede i file caricati. Proposta dei campi v1.1 da validare con un caso ciascuno: carichi parziali e trapezi (caso da preparare a mano su trave appoggiata), cedimenti vincolari (C11 di Valentina, quando il solutore li calcolerà), distorsioni termiche (caso da preparare).
+
 ## Prossime estensioni (v2)
 
 P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.

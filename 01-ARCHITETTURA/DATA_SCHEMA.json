@@ -253,6 +253,20 @@
               }
             }
           },
+          "rotazioni_aste": {
+            "type": "array",
+            "description": "Facoltativo (aggiunta compatibile del 30/10/2026, difetto D8): rotazioni delle estremità delle aste [rad], antiorarie positive. Differiscono dalla rotazione del nodo solo dove c'è una cerniera interna.",
+            "items": {
+              "type": "object",
+              "required": ["asta", "phi_i", "phi_j"],
+              "additionalProperties": false,
+              "properties": {
+                "asta": { "$ref": "#/$defs/id_intero" },
+                "phi_i": { "type": "number", "description": "[rad] all'estremità i" },
+                "phi_j": { "type": "number", "description": "[rad] all'estremità j" }
+              }
+            }
+          },
           "sollecitazioni": {
             "type": "array",
             "items": {

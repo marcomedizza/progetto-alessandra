@@ -2,7 +2,7 @@
 import { Vista } from './vista.js';
 import { pannelloProprieta } from './proprieta.js';
 import { disegnaRisultati, tabellaRisultati } from './risultati.js';
-import { pannelloModifica, modelloNuovo } from './modifica.js';
+import { pannelloModifica, modelloNuovo, aggiungiNodo, aggiungiAsta } from './modifica.js';
 
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -26,7 +26,7 @@ function casoEffettivo(m, valore) {
   }
   return out;
 }
-const stato = { modello: null, caso: null, ris: null, selezione: null, servizio: false };
+const stato = { modello: null, caso: null, ris: null, selezione: null, servizio: false, disegno: null };
 
 const vista = new Vista($('#vista'), (sel) => { stato.selezione = sel; aggiorna(); });
 
@@ -54,7 +54,45 @@ function aggiorna(ridisegnaModello = true) {
   $('#pannello-risultati').innerHTML = tabellaRisultati(m, stato.ris);
 }
 
+// Disegno col mouse (Irene, Lucia — D10): ogni clic dà un nodo (esistente o nuovo, agganciato alla griglia);
+// dal secondo clic in poi si crea l'asta dal nodo precedente. Esc chiude la spezzata, il pulsante esce dal disegno.
+function puntoDisegnato(p) {
+  const m = stato.modello;
+  let id = p.nodo;
+  if (id === undefined) {
+    const esistente = m.nodi.find((n) => Math.hypot(n.x - p.x, n.y - p.y) < 1e-6);
+    id = esistente ? esistente.id : aggiungiNodo(m, p.x, p.y);
+    if (typeof id === 'string') { messaggio(id, 'errore'); return; }
+  }
+  const prec = stato.disegno.ultimo;
+  stato.disegno.ultimo = id;
+  stato.selezione = { tipo: 'nodo', id };
+  stato.ris = null;
+  if (prec === null || prec === id) {
+    aggiorna();
+    vista.mostraGrigliaDisegno(true);
+    messaggio(`Disegno: nodo iniziale ${id}; clic sul nodo successivo (Esc per chiudere)`);
+    return;
+  }
+  const r = aggiungiAsta(m, prec, id, stato.disegno.sezione || m.sezioni[0].id);
+  aggiorna();
+  vista.mostraGrigliaDisegno(true);
+  if (typeof r === 'string') messaggio(r, 'errore');
+  else messaggio(`Disegno: aggiunta l'asta ${r} (${prec} → ${id}); clic sul nodo successivo (Esc per chiudere)`);
+}
+
+function disegno(attivo) {
+  if (attivo && !stato.modello) return;
+  stato.disegno = attivo ? { ultimo: null, sezione: stato.modello.aste.at(-1)?.sezione } : null;
+  vista.onPunto = attivo ? puntoDisegnato : null;
+  vista.passo = Number($('#passo').value) > 0 ? Number($('#passo').value) : 0.5;
+  vista.mostraGrigliaDisegno(attivo);
+  $('#btn-disegna').classList.toggle('attivo', attivo);
+  messaggio(attivo ? `Disegno: clic sulla vista per il nodo iniziale (passo ${vista.passo} m)` : 'Disegno terminato: premi «Calcola»');
+}
+
 function caricaModello(m) {
+  if (stato.disegno) disegno(false);
   stato.modello = m; stato.ris = null; stato.selezione = null;
   $('#sel-carico').innerHTML = m.casi_di_carico.map((c) => `<option value="${esc(c.id)}">${esc(c.id)} · ${esc(c.nome)}</option>`).join('')
     + (m.combinazioni || []).map((c) => `<option value="comb:${esc(c.id)}">combinazione ${esc(c.id)} · ${esc(c.nome)}</option>`).join('');
@@ -113,6 +151,11 @@ $('#file-modello').addEventListener('change', async (e) => {
 $('#sel-carico').addEventListener('change', () => { stato.ris = null; aggiorna(); });
 $('#btn-nuovo').addEventListener('click', () => caricaModello(modelloNuovo()));
 $('#btn-calcola').addEventListener('click', calcola);
+$('#btn-disegna').addEventListener('click', () => disegno(!stato.disegno));
+$('#passo').addEventListener('change', () => { if (stato.disegno) disegno(true); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && stato.disegno) { stato.disegno.ultimo = null; messaggio('Disegno: spezzata chiusa; clic per un nuovo nodo iniziale'); }
+});
 $('#chk-def').addEventListener('change', () => aggiorna(false));
 document.querySelectorAll('input[name=diag]').forEach((r) => r.addEventListener('change', () => aggiorna(false)));
 document.querySelectorAll('[data-vista]').forEach((b) => b.addEventListener('click', () => {

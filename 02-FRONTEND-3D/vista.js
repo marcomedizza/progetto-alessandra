@@ -37,6 +37,11 @@ export class Vista {
     this.renderer.domElement.addEventListener('pointerup', (e) => {
       if (this._giu && Math.hypot(e.clientX - this._giu[0], e.clientY - this._giu[1]) < 4) this.clic(e);
     });
+    // Disegno col mouse (Irene, D10): con onPunto impostato il clic restituisce il punto del piano del
+    // telaio (z = 0) agganciato alla griglia di passo this.passo, oppure il nodo colpito.
+    this.onPunto = null;
+    this.passo = 0.5;
+    this.grigliaDisegno = null;
     const ciclo = () => {
       this.controlli.update();
       this.renderer.render(this.scene, this.camera);
@@ -217,6 +222,7 @@ export class Vista {
     this.controlli.target.copy(c);
     this.controlli.enableRotate = nome === 'asso';
     this.camera.zoom = 1;
+    this.ridimensiona();   // inquadratura riferita alla dimensione del modello corrente (this.S)
     this.camera.updateProjectionMatrix();
     this.controlli.update();
   }
@@ -227,7 +233,28 @@ export class Vista {
     this.raycaster.setFromCamera(v, this.camera);
     const hit = this.raycaster.intersectObjects(this.selezionabili, false);
     // i nodi hanno la precedenza sulle aste quando sono entrambi colpiti
-    const scelto = hit.find((h) => h.object.userData.tipo === 'nodo') || hit[0];
+    const nodo = hit.find((h) => h.object.userData.tipo === 'nodo');
+    if (this.onPunto) {
+      if (nodo) { this.onPunto({ nodo: nodo.object.userData.id }); return; }
+      const p = new THREE.Vector3();
+      if (!this.raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), p)) return;  // vista dall'alto
+      const g = (t) => Math.round(Math.round(t / this.passo) * this.passo * 1e6) / 1e6;
+      this.onPunto({ x: g(p.x), y: g(p.y) });
+      return;
+    }
+    const scelto = nodo || hit[0];
     this.onSeleziona(scelto ? scelto.object.userData : null);
+  }
+
+  // Griglia del piano del telaio con il passo di aggancio, visibile solo durante il disegno.
+  mostraGrigliaDisegno(attiva) {
+    if (this.grigliaDisegno) { this.scene.remove(this.grigliaDisegno); this.grigliaDisegno.geometry.dispose(); this.grigliaDisegno = null; }
+    if (!attiva) return;
+    const n = 2 * Math.min(200, Math.ceil((this.S * 1.5) / this.passo));  // pari: linee sui multipli del passo
+    const g = new THREE.GridHelper(n * this.passo, n, 0xc9d3e3, 0xe3e8ef);
+    g.rotation.x = Math.PI / 2;
+    g.position.set(Math.round(this.centro.x / this.passo) * this.passo, Math.round(this.centro.y / this.passo) * this.passo, -0.001);
+    this.grigliaDisegno = g;
+    this.scene.add(g);
   }
 }

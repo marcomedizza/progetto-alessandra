@@ -1230,7 +1230,7 @@
     <script>
         // ===== DATI AGGIORNATI AL 30/10/2026 =====
         // Fonte: ramo claude/alessandra-project-updates-nm3gv9
-        const SEED_VERSION = '2026-10-30a';
+        const SEED_VERSION = '2026-10-30b';
         const PROJECT_START = '2026-08-15';
         const LAST_DATA_DATE = '2026-10-30';
         const FINAL_ASSESSMENT = '2026-10-24';
@@ -1273,7 +1273,7 @@
             { title: 'Giorni della settimana errati nei documenti', message: '«Lunedì 30 agosto» è domenica, «venerdì 5 settembre» è sabato, «lunedì 1 settembre» è martedì.', priority: 'low', time: '17/10/2026' },
             { title: 'Blocco invio GitHub risolto', message: 'L\'errore 403 del 21/08 è superato: i commit sono sul repository.', priority: 'low', time: '17/10/2026' },
             { title: '⛔ Studio dei testi fermo', message: 'Il collegatore Google Drive vede solo i file creati dalle applicazioni, non i PDF caricati in RIFERIMENTI. Alessia, Ilaria, Gabriella e il team strutturale non possono studiare i testi finché i PDF non sono accessibili.', priority: 'high', time: '29/10/2026' },
-            { title: '⛔ ModeSt bloccato', message: 'Carla e Daniela non hanno documentazione né file di esempio. Serve l\'esportazione del portale C4 in RIFERIMENTI/MODEST/.', priority: 'high', time: '29/10/2026' },
+            { title: '⏸ ModeSt sospeso (30/10 sera, Marco)', message: 'Non bloccante. Carla passa ai cedimenti vincolari (C11), Daniela ai carichi parziali e trapezi, entrambe nella v1.1 del solutore. Bozza DXF conservata. Note precedenti: serviva l\'esportazione del portale C4 in RIFERIMENTI/MODEST/.', priority: 'high', time: '29/10/2026' },
             { title: '🟡 Repository pubblico', message: 'marcomedizza/progetto-alessandra è pubblico: decidere se renderlo privato prima di aggiungere materiale riservato.', priority: 'medium', time: '29/10/2026' },
             { title: '🟢 Prototipo verificato il 29/10', message: 'C1–C10 superati su riferimento, Fortran e servizio; 12 prove del servizio; scenari S1–S16. Chiusi D3 (valori sui diagrammi), D4 minimo (modifica del modello), D9. Telaio da 1989 gradi di libertà in 0,23 s.', priority: 'high', time: '29/10/2026' },
             { title: '🔴 Consegne finali mancanti il 30/10', message: 'Aurora (costi e prezzo), Katia (concorrenti), Camilla (rassegna normativa): nessun file. Sintesi di studio del team strutturale, di Francesca e di Gabriella ferme per i PDF non accessibili.', priority: 'high', time: '30/10/2026' },
@@ -1294,7 +1294,7 @@
         ];
 
         const SEED_MY_REQUESTS = [
-            { text: 'Marco: esportare da ModeSt il portale C4 (06-TESTING/casi) in RIFERIMENTI/MODEST/, con il file di lavoro e i risultati.', priority: 'urgent', time: '29/10/2026' },
+            { text: 'Facoltativo, ModeSt sospeso: esportare da ModeSt il portale C4 (06-TESTING/casi) in RIFERIMENTI/MODEST/, con il file di lavoro e i risultati.', priority: 'normal', time: '29/10/2026' },
             { text: 'Marco: controllare i valori attesi dei casi C6–C10 (06-TESTING/casi/README.md) per la revisione del 30/10.', priority: 'high', time: '29/10/2026' },
             { text: 'Marco: provare l\'interfaccia in Firefox (scenari S1–S16 in 06-TESTING/flusso.md); qui non è disponibile.', priority: 'normal', time: '29/10/2026' },
             { text: 'Marco: decidere come rendere accessibili agli agenti i PDF di RIFERIMENTI: il collegatore Drive non li vede e il repository è pubblico, quindi non vanno caricati lì.', priority: 'urgent', time: '29/10/2026' },
@@ -1590,8 +1590,8 @@
                     { name: 'Elisa', role: 'Solutore Fortran · resp. formazione tech', status: 'active', team: 'Dev' },
                     { name: 'Francesca', role: 'Ricerca', status: 'active', team: 'Dev' },
                     { name: 'Valentina', role: 'Qualità tech', status: 'active', team: 'Dev' },
-                    { name: 'Carla', role: 'Collegamento ModeSt', status: 'active', team: 'Dev' },
-                    { name: 'Daniela', role: 'Ricerca ModeSt', status: 'active', team: 'Dev' },
+                    { name: 'Carla', role: 'Cedimenti vincolari (dal 31/10)', status: 'active', team: 'Dev' },
+                    { name: 'Daniela', role: 'Carichi parziali e trapezi (dal 31/10)', status: 'active', team: 'Dev' },
                     { name: 'Lucia', role: 'Editor geometria', status: 'active', team: 'Dev' },
                     { name: 'Mariana', role: 'Visualizzazione risultati', status: 'active', team: 'Dev' },
                     { name: 'Ottavia', role: 'Compilazione Fortran', status: 'active', team: 'Dev' },

@@ -54,8 +54,8 @@ Obiettivo: il prototipo minimo di mercoledì 28/10, sul portale 2D di `ESEMPIO_P
 | Renata | Prova del flusso completo dal punto di vista dell'utente: disegno, calcolo, lettura dei risultati. Lista dei difetti | 28/10 `06-TESTING/flusso.md` |
 | Francesca | Studio idraulica (Connor-Brebbia, quaderni 1–5). Verifica con Gabriella degli script OpenFOAM in `ENERGETICA` | 24/10 sintesi |
 | Gabriella | Energetica: Olgyay per i concetti di base, poi i manuali EnergyPlus nell'ordine della disposizione; priorità all'Interface Developer's Guide (IDF/epJSON) | 24/10 sintesi Olgyay; 30/10 sintesi Engineering Reference |
-| Carla | ModeSt: formati di importazione accettati (DXF, IFC, testo). Proposta del formato di esportazione dal nostro schema | 30/10 `05-RICERCA/modest.md` |
-| Daniela | Con Carla: analisi dei file di esempio ModeSt, corrispondenza delle grandezze con lo schema v1.0 | 30/10 `05-RICERCA/modest.md` |
+| Carla | **Dal 31/10 (disposizione di Marco del 30/10: ModeSt sospeso, non bloccante)**: cedimenti vincolari nel solutore e nello schema (voce 4 della v1.1), validati con C11 di Valentina | 03/11 solutore + C11 superato |
+| Daniela | **Dal 31/10**: carichi distribuiti parziali e trapezoidali nel solutore e nello schema (voce 2 della v1.1), con un caso di prova risolto a mano | 03/11 solutore + caso superato |
 
 ## Team Giorgia (resp. Giorgia) — attività di supporto al progetto
 

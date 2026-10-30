@@ -1,7 +1,7 @@
 # Collegamento con ModeSt — stato al 30/10/2026
 
 **Autrici**: Carla (collegamento ModeSt), Daniela (ricerca ModeSt)
-**Consegna prevista**: 30/10/2026 · **Stato al 30/10**: corrispondenza con ModeSt non completabile senza documentazione; pronti la tabella lato schema, i formati pubblici e una bozza di esportazione DXF della sola geometria
+**Stato dal 30/10 sera**: SOSPESO su disposizione di Marco: ModeSt non blocca nessuna attività; Carla e Daniela passano a cedimenti e carichi parziali (v1.1). Si riprende se e quando arrivano i file di esempio. · **Stato al 30/10 mattina**: corrispondenza con ModeSt non completabile senza documentazione; pronti la tabella lato schema, i formati pubblici e una bozza di esportazione DXF della sola geometria
 
 ## Cosa serve e non è disponibile
 

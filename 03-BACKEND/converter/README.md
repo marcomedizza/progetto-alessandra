@@ -11,6 +11,10 @@ Il solutore si compila con `04-FORTRAN-SOLVER/build.sh`; il percorso si può cam
 - `risultati(modello, caso)` → blocco `risultati` dello schema per un caso di carico
 - `combina(modello, combinazione)` → risultati di una combinazione per sovrapposizione lineare
 - La chiamata al solutore è nel modulo di Ottavia `04-FORTRAN-SOLVER/esegui.py`
+- Dal 30/10 i risultati contengono anche `rotazioni_aste` (asta, phi_i, phi_j), cioè le rotazioni d'estremità delle aste. Alla cerniera interna sono diverse da quella del nodo (D8). Le combinazioni le sommano come gli altri risultati.
+- Dal 30/10 i nodi sono scritti per il solutore nell'ordine di Cuthill-McKee inverso (`ordine_nodi`), che riduce la semibanda della matrice. Spostamenti e reazioni sono poi rimessi nell'ordine del modello.
+  - Telaio 20 × 100 con nodi mescolati: semibanda da 6203 a 71 gradi di libertà.
+  - Verificato su C1–C10 (casi C9 e C10 compresi), su identificativi non consecutivi e su modelli disegnati a mano.
 
 ## Campi in dubbio
 

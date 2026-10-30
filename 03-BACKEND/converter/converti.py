@@ -64,13 +64,42 @@ def carichi_locali(modello, caso):
     return out
 
 
+def ordine_nodi(modello):
+    """Ordine dei nodi di Cuthill-McKee inverso (Paola, 30/10): riduce la semibanda della matrice del
+    solutore, che numera le equazioni nell'ordine dei nodi del file d'ingresso. Senza riordino un modello
+    disegnato a mano (nodi aggiunti in coda e collegati ai primi) può avere semibanda vicina al totale."""
+    vicini = {n["id"]: set() for n in modello["nodi"]}
+    for a in modello["aste"]:
+        vicini[a["nodo_i"]].add(a["nodo_j"])
+        vicini[a["nodo_j"]].add(a["nodo_i"])
+    visti, ordine = set(), []
+    for inizio in sorted(vicini, key=lambda n: len(vicini[n])):   # una ricerca per parte connessa
+        if inizio in visti:
+            continue
+        visti.add(inizio)
+        coda = [inizio]
+        for n in coda:
+            ordine.append(n)
+            for v in sorted(vicini[n] - visti, key=lambda x: len(vicini[x])):
+                visti.add(v)
+                coda.append(v)
+    return ordine[::-1]
+
+
+def semibanda(modello, ordine=None):
+    """Semibanda in gradi di libertà per un dato ordine dei nodi (per le prove)."""
+    pos = {n: i for i, n in enumerate(ordine or [n["id"] for n in modello["nodi"]])}
+    return max((3 * abs(pos[a["nodo_i"]] - pos[a["nodo_j"]]) + 2 for a in modello["aste"]), default=0)
+
+
 def scrivi_input(modello, caso_id):
     caso = next(c for c in modello["casi_di_carico"] if c["id"] == caso_id)
     mat = {m["id"]: m for m in modello["materiali"]}
     sez = {s["id"]: s for s in modello["sezioni"]}
     rigida = not modello.get("analisi", {}).get("deformabilita_assiale", True)
     righe = ["TELAIO2D 1", f"NODI {len(modello['nodi'])}"]
-    righe += [f"{n['id']} {n['x']!r} {n['y']!r}" for n in modello["nodi"]]
+    nodi = {n["id"]: n for n in modello["nodi"]}
+    righe += [f"{i} {nodi[i]['x']!r} {nodi[i]['y']!r}" for i in ordine_nodi(modello)]
     righe.append(f"ASTE {len(modello['aste'])}")
     for el in modello["aste"]:
         A = sez[el["sezione"]]["A"] * (1e6 if rigida else 1.0)
@@ -94,7 +123,7 @@ def scrivi_input(modello, caso_id):
 
 
 def leggi_output(testo):
-    out = {"spostamenti": [], "reazioni": [], "estremita": {}}
+    out = {"spostamenti": [], "reazioni": [], "estremita": {}, "rotazioni_aste": []}
     righe = iter(testo.split("\n"))
     for r in righe:
         p = r.split()
@@ -112,6 +141,10 @@ def leggi_output(testo):
             for _ in range(int(p[1])):
                 v = next(righe).split()
                 out["estremita"][int(v[0])] = [float(x) for x in v[1:7]]
+        elif p[0] == "ROTAZIONI_ASTE":
+            for _ in range(int(p[1])):
+                v = next(righe).split()
+                out["rotazioni_aste"].append({"asta": int(v[0]), "phi_i": float(v[1]), "phi_j": float(v[2])})
     return out
 
 
@@ -138,6 +171,10 @@ def diagrammi(f, carichi, L, npt):
 
 def risultati(modello, caso_id):
     grezzo = leggi_output(esegui(scrivi_input(modello, caso_id)))
+    # il solutore scrive i nodi nell'ordine di calcolo: si torna all'ordine del modello
+    pos = {n["id"]: i for i, n in enumerate(modello["nodi"])}
+    for blocco in ("spostamenti", "reazioni"):
+        grezzo[blocco].sort(key=lambda x: pos[x["nodo"]])
     caso = next(c for c in modello["casi_di_carico"] if c["id"] == caso_id)
     cl = carichi_locali(modello, caso)
     geo = _geometria(modello)
@@ -146,8 +183,8 @@ def risultati(modello, caso_id):
     for el in modello["aste"]:
         xs, N, V, M = diagrammi(grezzo["estremita"][el["id"]], cl[el["id"]], geo[el["id"]][0], npt)
         soll.append({"asta": el["id"], "x": xs, "N": N, "V": V, "M": M})
-    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.1", "spostamenti": grezzo["spostamenti"],
-            "reazioni": grezzo["reazioni"], "sollecitazioni": soll}
+    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.2", "spostamenti": grezzo["spostamenti"],
+            "reazioni": grezzo["reazioni"], "rotazioni_aste": grezzo["rotazioni_aste"], "sollecitazioni": soll}
 
 
 def combina(modello, comb_id):
@@ -175,6 +212,7 @@ def combina(modello, comb_id):
     return {"caso": comb_id, "solutore": base["solutore"] + " (combinazione lineare)",
             "spostamenti": somma("spostamenti", ("ux", "uy", "rz"), "nodo"),
             "reazioni": somma("reazioni", ("Rx", "Ry", "Mz"), "nodo"),
+            "rotazioni_aste": somma("rotazioni_aste", ("phi_i", "phi_j"), "asta"),
             "sollecitazioni": [{"asta": s["asta"], "x": s["x"], "N": s["N"], "V": s["V"], "M": s["M"]} for s in sol]}
 
 

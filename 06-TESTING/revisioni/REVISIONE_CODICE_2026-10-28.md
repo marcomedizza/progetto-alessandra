@@ -42,3 +42,35 @@
 | 15 | `02-FRONTEND-3D/risultati.js` | Etichette di M in valore assoluto e di N, V con segno: scelta coerente con la pratica (diagramma dal lato teso) | — | nessun intervento |
 | 16 | `06-TESTING/casi/verifica_casi.py` | Gestisce ora anche le combinazioni (C10) in tutti e tre i percorsi | — | nessun intervento |
 | 17 | `03-BACKEND/servizio/app.py` | Il limite di dimensione è nel controllo di coerenza: il messaggio arriva sia da /api/valida sia da /api/calcola | — | nessun intervento |
+
+
+## Aggiornamento del 30/10/2026 (Marisa)
+
+**Stato dei punti aperti**
+
+| # | Stato al 30/10 |
+|---|---|
+| 6 | **chiuso**: Cholesky a banda (solutore v0.2), confrontato con la matrice piena fino a 1989 gdl (scarto ≤ 2,4·10⁻¹²); limite del servizio portato a 5000 nodi e 10 000 aste |
+| 7 | aperto, documentato |
+| 8 | aperto |
+| 9 | aperto |
+| 11 | **chiuso** (D8): rotazioni d'estremità restituite dal solutore e usate nella deformata |
+| 13 | aperto: nessun «Annulla», ora anche per il disegno col mouse (D13) |
+| 14 | **chiuso** (D11): E, A, I modificabili e copia di materiale e sezione |
+
+**Revisione del codice nuovo del 30/10**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 18 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | La semibanda dipende dall'ordine dei nodi. Un modello disegnato a mano, con nodi aggiunti in coda e collegati ai primi, porta la banda vicino al numero totale di gdl: con 5000 nodi sarebbero circa 1,8 GB | alta | corretto lo stesso giorno: riordino di Cuthill-McKee inverso nel convertitore (semibanda da 6203 a 71 sul telaio di prova) e limite di 5·10⁷ termini nel solutore, con messaggio leggibile; due prove nuove |
+| 19 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Soglia di labilità relativa al massimo termine diagonale (10⁻¹²). Con molle molto cedevoli accanto ad aste con deformabilità assiale trascurata (A × 10⁶) il rapporto tra i termini può avvicinarsi alla soglia e dare un falso «labile» | bassa | aperto: aggiungere un caso di prova con molla di 1 kN/m e aste assialmente rigide |
+| 20 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Rotazioni alle cerniere ricavate dall'asta non condensata con momento d'estremità nullo; con due cerniere sulla stessa asta si risolve un sistema 2 × 2 (biella) | — | verificato su C6 con le formule chiuse e su C9 con il riferimento |
+| 21 | `02-FRONTEND-3D/app.js` | Il disegno assegna alla nuova asta la sezione dell'ultima asta e il primo materiale del modello, senza dirlo | bassa | aperto: mostrare sezione e materiale nel messaggio di disegno |
+| 22 | `02-FRONTEND-3D/vista.js` | La vista si reinquadra solo cambiando vista; durante il disegno i nodi fuori dall'inquadratura restano invisibili (D12) | bassa | aperto |
+| 23 | `02-FRONTEND-3D/proprieta.js` | Cambiare A o I di una sezione da sagomario toglie W e la fonte: corretto, perché W non sarebbe più coerente. Il pannello indica quante aste usano la sezione | — | nessun intervento |
+| 24 | `01-ARCHITETTURA/DATA_SCHEMA.json` | Campo facoltativo `rotazioni_aste` aggiunto ai risultati senza cambiare versione: compatibile, perché è un'uscita facoltativa | — | nessun intervento, motivato in SCHEMA_DATI_v1.0.md |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C10: superati;
+- `test_app.py`: 16 prove superate;
+- scenari S1–S19 nel navigatore: superati.

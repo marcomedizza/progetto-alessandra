@@ -1,8 +1,9 @@
 ! =============================================================================
 !  telaio2d — solutore per telai piani, statica lineare (metodo degli spostamenti)
-!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.1 (prototipo del 28/10/2026)
+!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.2 (30/10/2026)
 !
-!  Uso:   telaio2d  input.txt  output.txt
+!  Uso:   telaio2d  input.txt  output.txt  [piena]
+!         (piena: eliminazione di Gauss a matrice piena, per confronto)
 !
 !  Ingresso ASCII scritto dal convertitore (03-BACKEND/converter/converti.py).
 !  Unità coerenti m, kN. Carichi d'asta già in componenti LOCALI.
@@ -16,37 +17,47 @@
 !    FINE
 !
 !  Uscita: SPOSTAMENTI, REAZIONI, ESTREMITA (forze d'estremità locali
-!  f1..f6 = Fx_i Fy_i M_i Fx_j Fy_j M_j agenti sull'asta).
+!  f1..f6 = Fx_i Fy_i M_i Fx_j Fy_j M_j agenti sull'asta), ROTAZIONI_ASTE
+!  (rotazioni delle due estremità di ogni asta: diverse da quelle dei nodi
+!  solo dove c'è una cerniera interna; difetto D8, 30/10).
 !
 !  Convenzioni identiche a 01-ARCHITETTURA/DATA_SCHEMA.json.
-!  Sistema risolto con eliminazione di Gauss a matrice piena (sufficiente per
-!  il prototipo; LAPACK e matrice a banda nella versione successiva).
+!  Sistema risolto con Cholesky a banda (30/10, Elisa e Ottavia): memoria
+!  proporzionale a n·b e tempo a n·b², con b semibanda dipendente dalla
+!  numerazione dei nodi. L'opzione «piena» conserva il metodo della v0.1.
 ! =============================================================================
 program telaio2d
    implicit none
    integer, parameter :: dp = kind(1.0d0)
 
-   integer :: nn, ne, nv, ncn, nca, ndof, i, j, k, a, b, ios, u_in, u_out
+   integer :: nn, ne, nv, ncn, nca, ndof, i, j, k, a, b, ios, u_in, u_out, hb, nr, rr(2)
    integer, allocatable :: nid(:), eid(:), eni(:), enj(:), ril(:,:)
    integer, allocatable :: vnodo(:), vfix(:,:), cnn(:), cae(:), cat(:)
    real(dp), allocatable :: x(:), y(:), eE(:), eA(:), eI(:), vk(:,:)
    real(dp), allocatable :: cnf(:,:), caw(:,:)
-   real(dp), allocatable :: Kt(:,:), Kv(:,:), Fv(:), Uv(:), Kll(:,:), Fll(:), Rku(:)
+   real(dp), allocatable :: Kb(:,:), Kf(:,:), Fv(:), Fn(:), Uv(:), Fll(:), Rku(:), molk(:)
    logical, allocatable :: vinc(:), molla(:)
-   integer, allocatable :: lib(:), dofs(:,:)
-   real(dp), allocatable :: elL(:), elc(:), els(:), kc(:,:,:), fc(:,:)
-   real(dp) :: kl(6,6), ff(6), T(6,6), kg(6,6), fg(6), ul(6), fe(6), ug(6)
+   integer, allocatable :: eq(:), dofs(:,:)
+   real(dp), allocatable :: elL(:), elc(:), els(:), kc(:,:,:), fc(:,:), k0(:,:,:), f0(:,:)
+   real(dp) :: kl(6,6), ff(6), T(6,6), kg(6,6), fg(6), ul(6), fe(6), ug(6), phi(6), A2(2,2), b2(2), det
    real(dp) :: dx, dy, L
    integer :: nlib
-   character(len=256) :: fin, fout, tag
+   logical :: piena
+   character(len=256) :: fin, fout, tag, opz
    character(len=32) :: hdr
 
-   if (command_argument_count() /= 2) then
-      write(*,'(a)') 'Uso: telaio2d input.txt output.txt'
+   if (command_argument_count() < 2 .or. command_argument_count() > 3) then
+      write(*,'(a)') 'Uso: telaio2d input.txt output.txt [piena]'
       stop 1
    end if
    call get_command_argument(1, fin)
    call get_command_argument(2, fout)
+   piena = .false.
+   if (command_argument_count() == 3) then
+      call get_command_argument(3, opz)
+      if (trim(opz) /= 'piena') call errore('opzione sconosciuta: '//trim(opz))
+      piena = .true.
+   end if
 
    open(newunit=u_in, file=trim(fin), status='old', action='read', iostat=ios)
    if (ios /= 0) call errore('impossibile aprire il file di ingresso')
@@ -101,12 +112,32 @@ program telaio2d
       if (count(nid == nid(k)) /= 1) call errore('identificativi dei nodi duplicati')
    end do
 
-   ! ---------------------------------------------------------------- assemblaggio
+   ! ---------------------------------------------------------------- vincoli e numerazione
    ndof = 3*nn
-   allocate(Kt(ndof,ndof), Kv(ndof,ndof), Fv(ndof), Uv(ndof), Rku(ndof))
-   allocate(dofs(6,ne), elL(ne), elc(ne), els(ne), kc(6,6,ne), fc(6,ne))
-   Kt = 0; Fv = 0; Uv = 0
+   allocate(Fv(ndof), Fn(ndof), Uv(ndof), Rku(ndof), molk(ndof), vinc(ndof), molla(ndof), eq(ndof))
+   allocate(dofs(6,ne), elL(ne), elc(ne), els(ne), kc(6,6,ne), fc(6,ne), k0(6,6,ne), f0(6,ne))
+   Fv = 0; Fn = 0; Uv = 0; molk = 0
+   vinc = .false.; molla = .false.
+   do k = 1, nv
+      i = indice(vnodo(k))
+      do a = 1, 3
+         if (vfix(a,k) == 1) vinc(3*i-3+a) = .true.
+         if (vk(a,k) > 0) then
+            molk(3*i-3+a) = molk(3*i-3+a) + vk(a,k)
+            molla(3*i-3+a) = .true.
+         end if
+      end do
+   end do
+   ! equazioni solo per i gradi di libertà liberi, nell'ordine dei nodi
+   nlib = 0; eq = 0
+   do a = 1, ndof
+      if (.not. vinc(a)) then
+         nlib = nlib + 1; eq(a) = nlib
+      end if
+   end do
 
+   ! ---------------------------------------------------------------- rigidezze d'asta
+   hb = 0
    do k = 1, ne
       i = indice(eni(k)); j = indice(enj(k))
       dx = x(j) - x(i); dy = y(j) - y(i)
@@ -115,49 +146,67 @@ program telaio2d
       elL(k) = L; elc(k) = dx/L; els(k) = dy/L
       call rig_locale(eE(k), eA(k), eI(k), L, kl)
       call incastro(k, L, ff)
+      k0(:,:,k) = kl; f0(:,k) = ff
       call condensa(kl, ff, ril(:,k))
       kc(:,:,k) = kl; fc(:,k) = ff
-      call rotazione(elc(k), els(k), T)
-      kg = matmul(transpose(T), matmul(kl, T))
-      fg = matmul(transpose(T), ff)
       dofs(:,k) = [3*i-2, 3*i-1, 3*i, 3*j-2, 3*j-1, 3*j]
       do a = 1, 6
-         Fv(dofs(a,k)) = Fv(dofs(a,k)) - fg(a)
          do b = 1, 6
-            Kt(dofs(a,k), dofs(b,k)) = Kt(dofs(a,k), dofs(b,k)) + kg(a,b)
+            if (eq(dofs(a,k)) > 0 .and. eq(dofs(b,k)) > 0) hb = max(hb, eq(dofs(b,k)) - eq(dofs(a,k)))
          end do
       end do
    end do
 
-   do k = 1, ncn
-      i = indice(cnn(k))
-      Fv(3*i-2:3*i) = Fv(3*i-2:3*i) + cnf(:,k)
-   end do
-
-   allocate(vinc(ndof), molla(ndof))
-   vinc = .false.; molla = .false.
-   Kv = Kt
-   do k = 1, nv
-      i = indice(vnodo(k))
-      do a = 1, 3
-         if (vfix(a,k) == 1) vinc(3*i-3+a) = .true.
-         if (vk(a,k) > 0) then
-            Kv(3*i-3+a, 3*i-3+a) = Kv(3*i-3+a, 3*i-3+a) + vk(a,k)
-            molla(3*i-3+a) = .true.
-         end if
+   ! ---------------------------------------------------------------- assemblaggio
+   ! limite di memoria della matrice a banda: 5·10⁷ termini (400 MB). Il convertitore riordina i nodi
+   ! (Cuthill-McKee inverso) per contenere la semibanda; il limite protegge da file scritti a mano.
+   if (.not. piena .and. real(hb+1, dp)*real(nlib, dp) > 5.0e7_dp) &
+      call errore('semibanda troppo grande: riordinare i nodi o ridurre il modello')
+   if (piena) then
+      allocate(Kf(nlib,nlib)); Kf = 0
+   else
+      allocate(Kb(0:hb,nlib)); Kb = 0
+   end if
+   do k = 1, ne
+      call rotazione(elc(k), els(k), T)
+      kg = matmul(transpose(T), matmul(kc(:,:,k), T))
+      fg = matmul(transpose(T), fc(:,k))
+      do a = 1, 6
+         Fv(dofs(a,k)) = Fv(dofs(a,k)) - fg(a)
+         do b = 1, 6
+            call somma(eq(dofs(a,k)), eq(dofs(b,k)), kg(a,b))
+         end do
       end do
    end do
+   do a = 1, ndof
+      if (molla(a)) call somma(eq(a), eq(a), molk(a))
+   end do
+
+   do k = 1, ncn
+      i = indice(cnn(k))
+      Fn(3*i-2:3*i) = Fn(3*i-2:3*i) + cnf(:,k)
+   end do
+   Fv = Fv + Fn
 
    ! ---------------------------------------------------------------- soluzione
-   nlib = count(.not. vinc)
-   allocate(lib(nlib), Kll(nlib,nlib), Fll(nlib))
-   lib = pack([(i, i = 1, ndof)], .not. vinc)
-   Kll = Kv(lib, lib)
-   Fll = Fv(lib)
-   call gauss(Kll, Fll, nlib)
-   Uv(lib) = Fll
+   allocate(Fll(nlib))
+   Fll = pack(Fv, .not. vinc)
+   if (piena) then
+      call gauss(Kf, Fll, nlib)
+   else
+      call cholesky_banda(Kb, Fll, nlib, hb)
+   end if
+   Uv = unpack(Fll, .not. vinc, 0.0_dp)
 
-   Rku = matmul(Kt, Uv)
+   ! reazioni = somma delle forze d'asta nei nodi − carichi nodali (molle escluse dalla rigidezza)
+   Rku = 0
+   do k = 1, ne
+      call rotazione(elc(k), els(k), T)
+      ul = matmul(T, Uv(dofs(:,k)))
+      fe = matmul(kc(:,:,k), ul) + fc(:,k)
+      Rku(dofs(:,k)) = Rku(dofs(:,k)) + matmul(transpose(T), fe)
+   end do
+   Rku = Rku - Fn
 
    ! ---------------------------------------------------------------- uscita
    open(newunit=u_out, file=trim(fout), status='replace', action='write')
@@ -179,6 +228,32 @@ program telaio2d
       fe = matmul(kc(:,:,k), ul) + fc(:,k)
       write(u_out,'(i0,6(1x,es24.16))') eid(k), fe
    end do
+   write(u_out,'(a,1x,i0)') 'ROTAZIONI_ASTE', ne
+   do k = 1, ne
+      call rotazione(elc(k), els(k), T)
+      ul = matmul(T, Uv(dofs(:,k)))
+      phi = ul
+      ! rotazioni svincolate: equilibrio dei momenti d'estremità nulli sull'asta non condensata
+      nr = 0
+      do a = 1, 2
+         if (ril(a,k) == 1) then
+            nr = nr + 1; rr(nr) = 3*a
+         end if
+      end do
+      do a = 1, nr
+         phi(rr(a)) = 0
+      end do
+      if (nr == 1) then
+         phi(rr(1)) = -(dot_product(k0(rr(1),:,k), phi) + f0(rr(1),k))/k0(rr(1),rr(1),k)
+      else if (nr == 2) then
+         A2 = k0(rr, rr, k)
+         b2 = -(matmul(k0(rr,:,k), phi) + f0(rr,k))
+         det = A2(1,1)*A2(2,2) - A2(1,2)*A2(2,1)
+         phi(3) = (b2(1)*A2(2,2) - A2(1,2)*b2(2))/det
+         phi(6) = (A2(1,1)*b2(2) - A2(2,1)*b2(1))/det
+      end if
+      write(u_out,'(i0,2(1x,es24.16))') eid(k), phi(3), phi(6)
+   end do
    write(u_out,'(a)') 'FINE'
    close(u_out)
 
@@ -187,7 +262,7 @@ contains
    real(dp) function reazione(d)
       integer, intent(in) :: d
       if (vinc(d) .or. molla(d)) then
-         reazione = Rku(d) - Fv(d)
+         reazione = Rku(d)
       else
          reazione = 0
       end if
@@ -282,6 +357,57 @@ contains
             f(ia) = f(ia) - kl(ia,q)*f(q)/kl(q,q)
          end do
          kl(q,:) = 0; kl(:,q) = 0; f(q) = 0
+      end do
+   end subroutine
+
+   subroutine somma(p, q, v)
+      ! aggiunge v al termine (p,q) della matrice dei gradi di libertà liberi
+      integer, intent(in) :: p, q
+      real(dp), intent(in) :: v
+      if (p == 0 .or. q == 0) return
+      if (piena) then
+         Kf(p,q) = Kf(p,q) + v
+      else if (q >= p) then
+         Kb(q-p,p) = Kb(q-p,p) + v
+      end if
+   end subroutine
+
+   subroutine cholesky_banda(B, f, n, h)
+      ! K = Uᵀ U con K simmetrica definita positiva in forma a banda superiore:
+      ! B(d,i) = K(i,i+d), d = 0..h. Pivot non positivo o trascurabile → struttura labile.
+      integer, intent(in) :: n, h
+      real(dp), intent(inout) :: B(0:h,n), f(n)
+      integer :: p, q, r
+      real(dp) :: sm, dmax
+      dmax = max(tiny(1.0_dp), maxval(abs(B(0,:))))
+      do p = 1, n
+         sm = B(0,p)
+         do r = max(1,p-h), p-1
+            sm = sm - B(p-r,r)**2
+         end do
+         if (sm <= 1.0e-12_dp*dmax) call errore('matrice singolare: struttura labile o vincoli insufficienti')
+         B(0,p) = sqrt(sm)
+         do q = p+1, min(n,p+h)
+            sm = B(q-p,p)
+            do r = max(1,q-h), p-1
+               sm = sm - B(p-r,r)*B(q-r,r)
+            end do
+            B(q-p,p) = sm/B(0,p)
+         end do
+      end do
+      do p = 1, n
+         sm = f(p)
+         do r = max(1,p-h), p-1
+            sm = sm - B(p-r,r)*f(r)
+         end do
+         f(p) = sm/B(0,p)
+      end do
+      do p = n, 1, -1
+         sm = f(p)
+         do q = p+1, min(n,p+h)
+            sm = sm - B(q-p,p)*f(q)
+         end do
+         f(p) = sm/B(0,p)
       end do
    end subroutine
 

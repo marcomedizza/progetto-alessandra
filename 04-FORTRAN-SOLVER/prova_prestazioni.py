@@ -1,7 +1,9 @@
 """Prova di prestazioni del solutore (Ottavia, Elisa).
 
-Genera telai regolari (campate × piani), li risolve con il Fortran tramite il convertitore
-e misura il tempo. Serve a fissare il limite di dimensione del modello accettato dal servizio.
+Genera telai regolari (campate × piani), li risolve con il Fortran e misura il tempo del solo
+solutore, con la matrice a banda (predefinita) e con la matrice piena (opzione «piena»).
+Controlla che i due metodi diano gli stessi spostamenti. Serve a fissare il limite di dimensione
+del modello accettato dal servizio.
 
 Uso:  python3 04-FORTRAN-SOLVER/prova_prestazioni.py
 """
@@ -9,6 +11,9 @@ Uso:  python3 04-FORTRAN-SOLVER/prova_prestazioni.py
 import os
 import sys
 import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from esegui import esegui  # noqa: E402
 
 RADICE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 sys.path.insert(0, os.path.join(RADICE, "03-BACKEND", "converter"))
@@ -45,13 +50,26 @@ def telaio(campate, piani, L=6.0, h=3.5, q=-25.0, H=10.0):
     }
 
 
+def cronometra(testo, opzioni=()):
+    t0 = time.perf_counter()
+    out = esegui(testo, opzioni=opzioni, tempo_massimo=600)
+    return time.perf_counter() - t0, converti.leggi_output(out)
+
+
 if __name__ == "__main__":
-    print(f"{'telaio':>10} {'nodi':>6} {'aste':>6} {'gdl':>6} {'tempo [s]':>10} {'ΣRy/carico':>12}")
-    for campate, piani in ((1, 10), (3, 10), (5, 20), (8, 25), (10, 40), (12, 50)):
+    PIENA_FINO_A = 2000  # oltre questi gdl la matrice piena richiede troppa memoria e tempo
+    print(f"{'telaio':>10} {'nodi':>6} {'aste':>6} {'gdl':>6} {'banda [s]':>10} {'piena [s]':>10} {'scarto':>9} {'ΣRy/carico':>12}")
+    for campate, piani in ((1, 10), (3, 10), (5, 20), (8, 25), (10, 40), (12, 50), (20, 100), (30, 150)):
         m = telaio(campate, piani)
-        t0 = time.perf_counter()
-        r = converti.risultati(m, "C")
-        dt = time.perf_counter() - t0
+        testo = converti.scrivi_input(m, "C")
+        gdl = 3 * len(m["nodi"])
+        tb, rb = cronometra(testo)
+        tp, scarto = "—", "—"
+        if gdl <= PIENA_FINO_A:
+            t, rp = cronometra(testo, ("piena",))
+            tp = f"{t:.3f}"
+            umax = max(abs(u["ux"]) for u in rp["spostamenti"])
+            scarto = f"{max(abs(a['ux'] - b['ux']) for a, b in zip(rb['spostamenti'], rp['spostamenti'])) / umax:.1e}"
         carico = 25.0 * 6.0 * campate * piani
-        sry = sum(x["Ry"] for x in r["reazioni"])
-        print(f"{campate:>4}x{piani:<5} {len(m['nodi']):>6} {len(m['aste']):>6} {3 * len(m['nodi']):>6} {dt:>10.3f} {sry / carico:>12.9f}")
+        sry = sum(x["Ry"] for x in rb["reazioni"])
+        print(f"{campate:>4}x{piani:<5} {len(m['nodi']):>6} {len(m['aste']):>6} {gdl:>6} {tb:>10.3f} {tp:>10} {scarto:>9} {sry / carico:>12.9f}")

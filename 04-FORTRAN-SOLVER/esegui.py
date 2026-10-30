@@ -19,7 +19,7 @@ SOLUTORE = os.environ.get("TELAIO2D_BIN", os.path.join(QUI, "bin", "telaio2d"))
 TEMPO_MASSIMO = 60  # secondi
 
 
-def esegui(testo_input, solutore=None, tempo_massimo=TEMPO_MASSIMO):
+def esegui(testo_input, solutore=None, tempo_massimo=TEMPO_MASSIMO, opzioni=()):
     exe = solutore or SOLUTORE
     if not os.path.exists(exe):
         raise FileNotFoundError(f"solutore non compilato: {exe} (eseguire 04-FORTRAN-SOLVER/build.sh)")
@@ -28,7 +28,7 @@ def esegui(testo_input, solutore=None, tempo_massimo=TEMPO_MASSIMO):
         with open(fin, "w") as fh:
             fh.write(testo_input)
         try:
-            r = subprocess.run([exe, fin, fout], capture_output=True, text=True, timeout=tempo_massimo)
+            r = subprocess.run([exe, fin, fout, *opzioni], capture_output=True, text=True, timeout=tempo_massimo)
         except subprocess.TimeoutExpired as ex:
             raise TimeoutError(f"il solutore ha superato {tempo_massimo} s") from ex
         if r.returncode != 0:

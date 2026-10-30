@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 28/10/2026
+# Prova del flusso utente — prototipo del 30/10/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -31,6 +31,9 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S14 | Nuovo modello (D4) | «Nuovo», selezionare la trave, aggiungere q = −10 kN/m, calcolare | Trave appoggiata 6 m: M max = 45 kNm |
 | S15 | Aggiunta nodo e asta (D4) | Aggiungere il nodo (0; 3) e l'asta 1 → 3, calcolare; ripetere lo stesso nodo | Calcolo completato; il nodo doppio è rifiutato con messaggio |
 | S16 | Valori sui diagrammi (D3) | C4, calcolare, diagramma M | Etichette 25,6 · 51,3 · 83,7 kNm sui punti significativi |
+| S17 | Disegno col mouse (D10) | «Nuovo», «Disegna aste», clic sul nodo 1, poi vicino a (0; 3), (6; 3) e sul nodo 2; Esc; Fx = 10 kN nel nodo 3; calcolare | Nodi agganciati alla griglia di passo 0,5 m (il clic a (0,1; 3,12) dà il nodo (0; 3)); tre aste aggiunte; Rx1 = −10 kN, Ry1 = −5 kN, Ry2 = +5 kN |
+| S18 | Materiali e sezioni (rev. 14) | C1, selezionare un'asta, I = 16 712 cm⁴ (doppio), calcolare; poi «+» sezione e «+» materiale con E = 70 000 MPa sulla sola asta 1 | Freccia 4,808 mm, metà di 9,617; con l'asta 1 a E·I = 2/3 dell'originale e l'asta 2 al doppio la freccia torna 9,617 mm (contributi delle due metà); E = −5 rifiutato |
+| S19 | Deformata con cerniera (D8) | C6, calcolare | Deformata con angolo alla cerniera: mensola curva fino a 4 m, tratto appoggiato quasi rettilineo; nota «comprese quelle alle cerniere interne» |
 
 ## Esiti
 
@@ -59,6 +62,14 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S15 | superato: asta aggiunta e calcolata; nodo doppio rifiutato («Esiste già un nodo in quella posizione») |
 | S16 | superato: 25,6 · 51,3 · 83,7 kNm |
 
+| Scenario | 30/10 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S9, S11–S16, combinazione | superati di nuovo dopo le modifiche del giorno |
+| S10 | superato con la prova dedicata (errore «matrice singolare: struttura labile o vincoli insufficienti»); nella prova generale lo script stima male la posizione del nodo, difetto dello script e non del programma |
+| S17 | superato: nodi (0; 3) e (6; 3) agganciati, aste 2, 3 e 4, reazioni −10 · −5 · +5 kN |
+| S18 | superato: 4,808 mm, poi 9,617 mm; E negativo rifiutato; copie IPE300_2 e S275_2 create |
+| S19 | superato: scarto tra deformata disegnata e soluzione esatta 3·10⁻¹⁷ m su entrambe le aste |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -72,6 +83,9 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D5 | 28/10 | S9 | Nodi difficili da selezionare col mouse | bassa | **chiuso 28/10** | Irene |
 | D6 | 28/10 | S10 | Il messaggio d'errore conteneva «STOP 2» | bassa | **chiuso 28/10** | Ottavia |
 | D7 | 28/10 | S12 | Un modello aperto da file poteva inserire codice HTML nella pagina | alta | **chiuso 28/10** | Irene |
-| D8 | 28/10 | S4 | Deformata approssimata sulle aste con cerniere interne | bassa | aperto: serve che il solutore restituisca la rotazione dell'estremità svincolata (Elisa) | Mariana, Elisa |
+| D8 | 28/10 | S4 | Deformata approssimata sulle aste con cerniere interne | bassa | **chiuso 30/10**: il solutore restituisce le rotazioni d'estremità delle aste (`rotazioni_aste`), verificate su C6 con le formule chiuse; la deformata le usa ed è esatta | Mariana, Elisa |
 | D9 | 29/10 | S15 | Il clic esattamente sull'asse di un'asta non la selezionava (spigolo del prisma di selezione sul piano del telaio) | bassa | **chiuso 29/10** | Irene |
-| D10 | 29/10 | — | Disegno di nodi e aste direttamente col mouse | media | aperto | Irene, Lucia |
+| D10 | 29/10 | — | Disegno di nodi e aste direttamente col mouse | media | **chiuso 30/10** in versione minima: spezzata di aste con aggancio alla griglia e ai nodi esistenti; sezione dell'ultima asta | Irene, Lucia |
+| D11 | 30/10 | S18 | Materiali e sezioni non inseribili dall'interfaccia (revisione 14) | media | **chiuso 30/10**: E, A, I modificabili; copia di materiale e sezione per una sola asta | Lucia |
+| D12 | 30/10 | S17 | Durante il disegno la vista non si adatta ai nodi aggiunti fuori dall'inquadratura (va usata la rotella o ricaricata la vista) | bassa | aperto | Irene |
+| D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | aperto | Lucia |

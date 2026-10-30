@@ -1,7 +1,7 @@
-# Collegamento con ModeSt — stato al 29/10/2026
+# Collegamento con ModeSt — stato al 30/10/2026
 
 **Autrici**: Carla (collegamento ModeSt), Daniela (ricerca ModeSt)
-**Consegna prevista**: 30/10/2026 · **Stato**: bloccata in parte, per mancanza della documentazione del formato
+**Consegna prevista**: 30/10/2026 · **Stato al 30/10**: corrispondenza con ModeSt non completabile senza documentazione; pronti la tabella lato schema, i formati pubblici e una bozza di esportazione DXF della sola geometria
 
 ## Cosa serve e non è disponibile
 
@@ -22,17 +22,46 @@ Le grandezze del nostro schema v1.0 che l'esportazione deve trasferire. La colon
 
 | Schema v1.0 | Contenuto | Unità | ModeSt |
 |---|---|---|---|
-| `nodi[].x`, `nodi[].y` | coordinate dei nodi | m | da documentazione |
-| `aste[].nodo_i`, `nodo_j` | connettività | — | da documentazione |
-| `aste[].svincoli.rz_i/rz_j` | cerniere interne | — | da documentazione |
-| `materiali[].E`, `peso_specifico` | modulo elastico, peso | kN/m², kN/m³ | da documentazione |
-| `sezioni[].A`, `I` | area, inerzia nel piano | m², m⁴ | da documentazione (ModeSt usa in genere il nome del profilo da sagomario) |
-| `vincoli[].ux/uy/rz`, `molle` | vincoli e molle | —, kN/m, kNm/rad | da documentazione |
-| `casi_di_carico[]` | casi con categoria NTC | — | da documentazione |
-| `carichi_nodali[]` | Fx, Fy, Mz | kN, kNm | da documentazione |
-| `carichi_aste[]` | uniformi e concentrati, direzione | kN/m, kN | da documentazione |
-| `combinazioni[]` | coefficienti | — | ModeSt genera le combinazioni da sé: probabilmente si esportano solo i casi |
+| `nodi[].x`, `nodi[].y` | coordinate dei nodi | m | da verificare |
+| `aste[].nodo_i`, `nodo_j` | connettività | — | da verificare |
+| `aste[].svincoli.rz_i/rz_j` | cerniere interne | — | da verificare |
+| `materiali[].E`, `peso_specifico` | modulo elastico, peso | kN/m², kN/m³ | da verificare |
+| `sezioni[].A`, `I` | area, inerzia nel piano | m², m⁴ | da verificare (ipotesi: ModeSt usa il nome del profilo da sagomario) |
+| `vincoli[].ux/uy/rz`, `molle` | vincoli e molle | —, kN/m, kNm/rad | da verificare |
+| `casi_di_carico[]` | casi con categoria NTC | — | da verificare |
+| `carichi_nodali[]` | Fx, Fy, Mz | kN, kNm | da verificare |
+| `carichi_aste[]` | uniformi e concentrati, direzione | kN/m, kN | da verificare |
+| `combinazioni[]` | coefficienti | — | da verificare (ipotesi: ModeSt genera le combinazioni da sé e si esportano solo i casi) |
 
 ## Ripiego possibile subito
 
-Esportare la sola geometria (nodi e aste) in DXF, su livelli separati per colonne e travi. È un formato pubblico e ModeSt, come la maggior parte dei programmi di calcolo, importa geometrie da DXF; sezioni, vincoli e carichi andrebbero però reinseriti a mano. Da decidere con Marco se vale la pena.
+Esportare la sola geometria (nodi e aste) in DXF, su livelli separati per colonne e travi. È un formato pubblico. Molti programmi di calcolo importano geometrie da DXF, ma per ModeSt non è confermato (vedi aggiornamento del 30/10). Sezioni, vincoli e carichi andrebbero però reinseriti a mano. Da decidere con Marco se vale la pena.
+
+## Aggiornamento del 30/10 (Carla, Daniela)
+
+### Cosa dicono le fonti pubbliche su ModeSt
+
+Una ricerca sul sito del produttore e su fonti pubbliche non ha trovato documentazione dei formati che ModeSt **importa**. Le fonti trovate parlano solo dei disegni esecutivi che ModeSt **produce** in DXF. Non risulta né confermato né escluso che ModeSt importi IFC. Tutte le righe della tabella sopra restano quindi «da verificare». Contatto del produttore: Tecnisoft, Prato.
+
+**Richiesta a Marco, ribadita**: esportare da ModeSt il portale C4 nei formati di scambio disponibili, caricarlo in `RIFERIMENTI/MODEST/` e indicare quali formati ModeSt accetta in importazione (menu «Importa» o simile).
+
+### Formati pubblici utilizzabili
+
+| Formato | Specifica | Cosa può trasferire | Limiti |
+|---|---|---|---|
+| DXF | Autodesk, «DXF Reference», pubblica e gratuita | geometria: linee e punti su livelli | nessuna informazione strutturale: sezioni, vincoli e carichi vanno reinseriti |
+| IFC 4 | buildingSMART, norma ISO 16739 | modello di calcolo completo: `IfcStructuralAnalysisModel`, aste `IfcStructuralCurveMember`, nodi `IfcStructuralPointConnection` con `IfcBoundaryNodeCondition` (vincoli e molle), casi `IfcStructuralLoadCase`, carichi `IfcStructuralPointAction` e `IfcStructuralCurveAction` | utile solo se ModeSt importa la parte di calcolo dell'IFC, cosa da verificare; molti programmi importano solo la parte architettonica |
+| Testo proprio di ModeSt | non pubblico | tutto | serve documentazione o autorizzazione di Tecnisoft |
+
+I nomi delle entità IFC vengono dalla specifica IFC 4 di buildingSMART (standards.buildingsmart.org). Prima di scrivere un esportatore vanno ricontrollati sulla versione esatta che ModeSt dichiara di leggere.
+
+### Bozza di esportazione: `05-RICERCA/esporta_dxf.py`
+
+- **Cosa esporta**: dallo schema v1.0 la sola geometria, in un DXF R12 minimo:
+  - un punto per nodo sul livello `NODI`;
+  - una linea per asta, su un livello per sezione (`ASTE_IPE300`, `ASTE_HEA200`);
+  - coordinate in metri.
+- **Prova sul portale C4**: 4 nodi e 3 aste. Il file è stato riletto senza errori da una libreria DXF indipendente (ezdxf), che lo riconosce come versione AC1009 (R12).
+- **Non ancora provato in ModeSt.**
+
+    python3 05-RICERCA/esporta_dxf.py 06-TESTING/casi/C4_portale_carico_uniforme.json c4.dxf

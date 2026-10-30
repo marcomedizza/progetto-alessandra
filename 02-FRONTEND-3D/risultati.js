@@ -94,6 +94,7 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
 
 function disegnaDeformata(gruppo, modello, ris, S, caso) {
   const sp = new Map(ris.spostamenti.map((u) => [u.nodo, u]));
+  const rot = new Map((ris.rotazioni_aste || []).map((r) => [r.asta, r]));
   // scala riferita a traslazioni e rotazioni (×S/10): evita amplificazioni enormi quando
   // le traslazioni sono quasi nulle (aste assialmente indeformabili, schemi simmetrici)
   const max = Math.max(1e-12, ...ris.spostamenti.map((u) => Math.max(Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1)));
@@ -105,12 +106,13 @@ function disegnaDeformata(gruppo, modello, ris, S, caso) {
     // spostamenti locali d'estremità
     const ui_x = c * ui.ux + s * ui.uy, vi = -s * ui.ux + c * ui.uy;
     const uj_x = c * uj.ux + s * uj.uy, vj = -s * uj.ux + c * uj.uy;
-    // rotazioni d'estremità: con cerniera interna si usa la corda (approssimazione grafica)
-    const corda = (vj - vi) / L;
-    const ti = a.svincoli?.rz_i ? corda : ui.rz, tj = a.svincoli?.rz_j ? corda : uj.rz;
-    const cerniere = a.svincoli?.rz_i || a.svincoli?.rz_j;
+    // rotazioni d'estremità dell'asta dal solutore (D8): alla cerniera differiscono da quella del nodo.
+    // Senza il dato (risultati di versioni precedenti) si usa la corda, approssimazione grafica.
+    const r = rot.get(a.id), corda = (vj - vi) / L;
+    const ti = a.svincoli?.rz_i ? (r ? r.phi_i : corda) : ui.rz, tj = a.svincoli?.rz_j ? (r ? r.phi_j : corda) : uj.rz;
+    const approssimata = (a.svincoli?.rz_i || a.svincoli?.rz_j) && !r;
     const m = modello.materiali.find((x) => x.id === a.materiale), se = modello.sezioni.find((x) => x.id === a.sezione);
-    const car = cerniere ? { wy: 0, P: [] } : carichiTrasversali(modello, caso, a, c, s);
+    const car = approssimata ? { wy: 0, P: [] } : carichiTrasversali(modello, caso, a, c, s);
     const pts = [];
     for (let i = 0; i <= 20; i++) {
       const x = i / 20, X = x * L;
@@ -142,6 +144,6 @@ export function tabellaRisultati(modello, ris) {
   }
   const umax = ris.spostamenti.reduce((m, u) => (Math.hypot(u.ux, u.uy) > Math.hypot(m.ux, m.uy) ? u : m));
   h += `</tbody></table><p class="nota">Spostamento massimo: nodo ${umax.nodo}, ux = ${fmt(umax.ux * 1000)} mm, uy = ${fmt(umax.uy * 1000)} mm. Unità: kN, kNm. Solutore: ${String(ris.solutore).replace(/[<>&]/g, '')}.</p>`;
-  h += '<p class="nota">Deformata esatta lungo le aste (spostamenti nodali + inflessione dei carichi d\'asta); approssimata solo sulle aste con cerniere interne.</p>';
+  h += '<p class="nota">Deformata esatta lungo le aste: spostamenti e rotazioni d\'estremità, comprese quelle alle cerniere interne, più l\'inflessione dei carichi d\'asta.</p>';
   return h;
 }

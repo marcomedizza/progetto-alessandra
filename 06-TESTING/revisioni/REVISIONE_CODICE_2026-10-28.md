@@ -74,3 +74,23 @@
 - `verifica_casi.py` nei tre percorsi su C1–C10: superati;
 - `test_app.py`: 16 prove superate;
 - scenari S1–S19 nel navigatore: superati.
+
+
+## Aggiornamento del 31/10/2026 (Marisa)
+
+**Revisione del codice nuovo del 31/10** (solutore v0.3, schema v1.1)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 25 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Forze d'incastro del trapezio con Gauss a 3 punti: l'integrando è di quarto grado (funzione di forma cubica per carico lineare) e la regola è esatta fino al quinto | — | verificato su C13 (formule tabellate) e con il modello di controllo a 60 aste |
+| 26 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Cedimenti portati a secondo membro asta per asta (kg·u impresso), senza conservare la matrice completa; le reazioni includono l'effetto del cedimento | — | verificato su C11 |
+| 27 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Una riga dei carichi d'asta è letta in un buffer di 1024 caratteri: sufficiente per 8 numeri in notazione esponenziale | — | nessun intervento |
+| 28 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Cedimento su una molla rifiutato («grado di libertà non vincolato»): corretto, perché la molla ha già uno spostamento incognito; da spiegare nel manuale | bassa | aperto: documentazione |
+| 29 | `03-BACKEND/servizio/app.py` | Le regole della v1.1 sono nel controllo di coerenza: versione, componenti vincolate, trapezio dentro l'asta. Un modello v1.0 con questi campi è rifiutato con un messaggio chiaro | — | nessun intervento |
+| 30 | `02-FRONTEND-3D/risultati.js` | Deformata dei trapezi: integrale della funzione di Green diviso nel punto angoloso | — | verificato: scarto ≤ 4·10⁻¹³ m |
+| 31 | `02-FRONTEND-3D/risultati.js` | «Spostamento massimo» calcolato sui soli nodi (D14) | bassa | aperto |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C13: superati;
+- `test_app.py`: 18 prove superate;
+- scenari S1–S22 nel navigatore: superati.

@@ -199,15 +199,22 @@ export class Vista {
       const a = aste.get(q.asta), ni = nodi.get(a.nodo_i), nj = nodi.get(a.nodo_j);
       const p1 = new THREE.Vector3(ni.x, ni.y, 0), p2 = new THREE.Vector3(nj.x, nj.y, 0);
       const ax = p2.clone().sub(p1).normalize(), ny = new THREE.Vector3(-ax.y, ax.x, 0);
-      const val = q.tipo === 'distribuito_uniforme' ? q.q : q.P;
       const dirBase = q.direzione === 'globale_y' ? new THREE.Vector3(0, 1, 0)
         : q.direzione === 'globale_x' ? new THREE.Vector3(1, 0, 0) : ny;
-      const d = dirBase.clone().multiplyScalar(Math.sign(val));
-      const posizioni = q.tipo === 'distribuito_uniforme' ? [...Array(9).keys()].map((k) => k / 8) : [q.a / p1.distanceTo(p2)];
-      const l = q.tipo === 'distribuito_uniforme' ? Lf * 0.6 : Lf;
-      for (const t of posizioni) {
+      const L = p1.distanceTo(p2);
+      // [posizione relativa, valore] di ogni freccia; trapezio (v1.1): frecce da a a b, lunghe in proporzione
+      let frecce, l = Lf * 0.6, qmax = 1;
+      if (q.tipo === 'distribuito_uniforme') frecce = [...Array(9).keys()].map((k) => [k / 8, q.q]);
+      else if (q.tipo === 'concentrato') { frecce = [[q.a / L, q.P]]; l = Lf; }
+      else {
+        frecce = [...Array(7).keys()].map((k) => [(q.a + (q.b - q.a) * k / 6) / L, q.q_i + (q.q_j - q.q_i) * k / 6]);
+        qmax = Math.max(Math.abs(q.q_i), Math.abs(q.q_j)) || 1;
+      }
+      for (const [t, val] of frecce) {
+        if (!val) continue;
+        const d = dirBase.clone().multiplyScalar(Math.sign(val)), lv = l * Math.max(0.15, Math.abs(val) / qmax);
         const p = p1.clone().lerp(p2, t);
-        this.gruppoModello.add(this.freccia(p.clone().sub(d.clone().multiplyScalar(l)), d, l));
+        this.gruppoModello.add(this.freccia(p.clone().sub(d.clone().multiplyScalar(lv)), d, lv));
       }
     }
   }

@@ -22,13 +22,14 @@ export function disegnaRisultati(gruppo, modello, ris, opzioni, S, caso) {
 
 const fmtE = (v) => (Math.abs(v) < 5e-3 ? 0 : v).toLocaleString('it-IT', { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 1 });
 
-// Carichi d'asta in componenti locali trasversali (wy uniforme, Py concentrati), come nel convertitore.
+// Carichi d'asta in componenti locali trasversali (wy uniforme, Py concentrati, trapezi), come nel convertitore.
 function carichiTrasversali(modello, caso, a, c, s) {
-  const out = { wy: 0, P: [] };
+  const out = { wy: 0, P: [], T: [] };
   const loc = (dir, v) => (dir === 'globale_y' ? v * c : dir === 'globale_x' ? -v * s : v);
   for (const q of caso?.carichi_aste || []) {
     if (q.asta !== a.id) continue;
     if (q.tipo === 'distribuito_uniforme') out.wy += loc(q.direzione, q.q);
+    else if (q.tipo === 'distribuito_trapezio') out.T.push([loc(q.direzione, q.q_i), q.a, loc(q.direzione, q.q_j), q.b]);
     else out.P.push([loc(q.direzione, q.P), q.a]);
   }
   if (caso?.peso_proprio) {
@@ -42,11 +43,24 @@ function carichiTrasversali(modello, caso, a, c, s) {
 // Sommata all'interpolazione di Hermite degli spostamenti nodali dà la deformata esatta
 // della trave di Eulero-Bernoulli per aste senza cerniere interne.
 function inflessioneIncastrata(X, L, EI, car) {
-  let v = car.wy * X * X * (L - X) ** 2 / (24 * EI);
-  for (const [P, a] of car.P) {
+  // spostamento in X dovuto alla forza P in a, trave incastrata (funzione di Green)
+  const green = (P, a) => {
     const b = L - a;
-    if (X <= a) v += P * b * b * X * X * (3 * a * L - (3 * a + b) * X) / (6 * L ** 3 * EI);
-    else { const Y = L - X; v += P * a * a * Y * Y * (3 * b * L - (3 * b + a) * Y) / (6 * L ** 3 * EI); }
+    if (X <= a) return P * b * b * X * X * (3 * a * L - (3 * a + b) * X) / (6 * L ** 3 * EI);
+    const Y = L - X;
+    return P * a * a * Y * Y * (3 * b * L - (3 * b + a) * Y) / (6 * L ** 3 * EI);
+  };
+  let v = car.wy * X * X * (L - X) ** 2 / (24 * EI);
+  for (const [P, a] of car.P) v += green(P, a);
+  // trapezi (v1.1): integrale della funzione di Green per il carico lineare, diviso in X dove la
+  // funzione ha il punto angoloso; Gauss a 3 punti, esatto per integrandi di quarto grado
+  const g = [-Math.sqrt(0.6), 0, Math.sqrt(0.6)], p = [5 / 9, 8 / 9, 5 / 9];
+  for (const [qi, a, qj, b] of car.T || []) {
+    for (const [s0, s1] of [[a, Math.min(X, b)], [Math.max(X, a), b]]) {
+      if (s1 <= s0) continue;
+      const m = (s0 + s1) / 2, h = (s1 - s0) / 2;
+      for (let k = 0; k < 3; k++) { const s = m + h * g[k]; v += p[k] * h * green(qi + (qj - qi) * (s - a) / (b - a), s); }
+    }
   }
   return v;
 }

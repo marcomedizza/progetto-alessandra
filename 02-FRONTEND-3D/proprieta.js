@@ -35,6 +35,10 @@ function pannelloAsta(el, modello, caso, id, ris, onCambio) {
   h += `<p class="nota">Carichi sull'asta, caso ${esc(caso?.id)}:</p>`;
   if (!carichi.length) h += '<p class="vuoto">Nessuno.</p>';
   carichi.forEach((q, k) => {
+    if (q.tipo === 'distribuito_trapezio') {   // v1.1: mostrato, modificabile solo nel file del modello
+      h += `<p class="nota">Trapezio ${esc(q.direzione)}: ${num(q.q_i)} → ${num(q.q_j)} kN/m da ${num(q.a)} a ${num(q.b)} m</p>`;
+      return;
+    }
     const etich = q.tipo === 'distribuito_uniforme' ? `q [kN/m] ${q.direzione}` : `P [kN] ${q.direzione}, a = ${num(q.a)} m`;
     h += `<div class="riga-campo"><span class="nota">${esc(etich)}</span><input type="number" step="any" data-carico="${k}" value="${q.tipo === 'distribuito_uniforme' ? q.q : q.P}"></div>`;
   });
@@ -83,11 +87,13 @@ function pannelloNodo(el, modello, caso, id, ris, onCambio) {
   const n = modello.nodi.find((x) => x.id === id);
   let v = modello.vincoli.find((x) => x.nodo === id);
   let c = (caso?.carichi_nodali || []).find((x) => x.nodo === id);
+  const ced = (caso?.cedimenti || []).find((x) => x.nodo === id);
   let h = `<table>
     <tr><td>Nodo</td><td>${esc(n.id)}${n.nome ? ' · ' + esc(n.nome) : ''}</td></tr>
     <tr><td>Coordinate</td><td class="num">x = ${num(n.x)} m · y = ${num(n.y)} m</td></tr>
     <tr><td>Vincolo</td><td>${['ux', 'uy', 'rz'].map((k) => `<label><input type="checkbox" data-vincolo="${k}"${v?.[k] ? ' checked' : ''}> ${k}</label>`).join(' ')}</td></tr>
   </table>
+  ${ced ? `<p class="nota">Cedimento impresso: ${['ux', 'uy', 'rz'].filter((k) => ced[k]).map((k) => `${k} = ${num(ced[k] * 1000)} ${k === 'rz' ? 'mrad' : 'mm'}`).join(' · ')}</p>` : ''}
   <p class="nota">Carichi nodali, caso ${esc(caso?.id)}:</p>`;
   for (const [k, u] of [['Fx', 'kN'], ['Fy', 'kN'], ['Mz', 'kNm']]) {
     h += `<div class="riga-campo"><span class="nota">${k} [${u}]</span><input type="number" step="any" data-forza="${k}" value="${c?.[k] ?? 0}"></div>`;

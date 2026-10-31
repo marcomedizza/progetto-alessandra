@@ -7,7 +7,7 @@
   "required": ["schema_version", "progetto", "nodi", "materiali", "sezioni", "aste", "vincoli", "casi_di_carico"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "const": "1.0" },
+    "schema_version": { "enum": ["1.0", "1.1"], "description": "1.1 (31/10/2026) aggiunge carichi trapezoidali sulle aste e cedimenti vincolari; un modello che li usa deve dichiarare 1.1" },
     "progetto": {
       "type": "object",
       "required": ["id", "nome", "tipo_modello", "unita"],
@@ -181,8 +181,38 @@
                     "P": { "type": "number", "description": "[kN]" },
                     "a": { "type": "number", "minimum": 0, "description": "Distanza dal nodo_i [m]" }
                   }
+                },
+                {
+                  "type": "object",
+                  "description": "v1.1: carico distribuito lineare sul tratto da a a b (parziale, trapezoidale o triangolare); q_i in a, q_j in b",
+                  "required": ["asta", "tipo", "direzione", "q_i", "q_j", "a", "b"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "asta": { "$ref": "#/$defs/id_intero" },
+                    "tipo": { "const": "distribuito_trapezio" },
+                    "direzione": { "enum": ["globale_x", "globale_y", "locale_y"] },
+                    "q_i": { "type": "number", "description": "[kN/m] in x = a" },
+                    "q_j": { "type": "number", "description": "[kN/m] in x = b" },
+                    "a": { "type": "number", "minimum": 0, "description": "Inizio del tratto, distanza dal nodo_i [m]" },
+                    "b": { "type": "number", "exclusiveMinimum": 0, "description": "Fine del tratto, distanza dal nodo_i [m]; a < b ≤ L" }
+                  }
                 }
               ]
+            }
+          },
+          "cedimenti": {
+            "type": "array",
+            "description": "v1.1: spostamenti impressi ai vincoli in questo caso di carico; ammessi solo sulle componenti vincolate (ux, uy, rz = true)",
+            "items": {
+              "type": "object",
+              "required": ["nodo"],
+              "additionalProperties": false,
+              "properties": {
+                "nodo": { "$ref": "#/$defs/id_intero" },
+                "ux": { "type": "number", "default": 0, "description": "[m]" },
+                "uy": { "type": "number", "default": 0, "description": "[m], negativo verso il basso" },
+                "rz": { "type": "number", "default": 0, "description": "[rad], positivo antiorario" }
+              }
             }
           }
         }

@@ -63,6 +63,23 @@ Nel blocco `risultati` è stato aggiunto il campo facoltativo `rotazioni_aste` (
 
 **Tabella schema ↔ epJSON**: ancora rinviata per lo stesso motivo del 29/10. L'Interface Developer's Guide di EnergyPlus non è in RIFERIMENTI e non può essere scaricata dagli agenti, perché il collegatore Drive non vede i file caricati. Proposta dei campi v1.1 da validare con un caso ciascuno: carichi parziali e trapezi (caso da preparare a mano su trave appoggiata), cedimenti vincolari (C11 di Valentina, quando il solutore li calcolerà), distorsioni termiche (caso da preparare).
 
+## Schema v1.1 in vigore dal 31/10/2026 (Benedetta, Carla, Daniela)
+
+La v1.1 è promossa insieme alle modifiche del solutore (v0.3) che la rendono calcolabile, con un caso di prova per voce, come deciso il 29/10. `DATA_SCHEMA.json` accetta `schema_version` «1.0» o «1.1».
+
+| Voce | Campo | Calcolo | Caso di prova |
+|---|---|---|---|
+| Carichi parziali e trapezi | `carichi_aste[]` con `tipo: "distribuito_trapezio"`, `q_i`, `q_j`, `a`, `b` (0 ≤ a < b ≤ L) | forze d'incastro con le funzioni di forma (Gauss a 3 punti, esatto); diagrammi con Simpson (esatto) | C12 (trapezio parziale), C13 (triangolare, trave incastrata) |
+| Cedimenti vincolari | `casi_di_carico[].cedimenti[]`: `nodo`, `ux`, `uy`, `rz` [m, rad] | spostamenti impressi ai gdl vincolati, portati a secondo membro | C11 |
+| Distorsioni termiche | — | non ancora | rinviate alla v1.2 |
+
+**Regole di coerenza** controllate dal servizio:
+- un modello che usa trapezi o cedimenti deve dichiarare «1.1»;
+- un cedimento è ammesso solo su una componente vincolata, non su una molla;
+- il trapezio deve stare dentro l'asta.
+
+I modelli v1.0 restano validi senza modifiche.
+
 ## Prossime estensioni (v2)
 
 P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.

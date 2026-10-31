@@ -33,7 +33,8 @@ def _geometria(modello):
 
 
 def carichi_locali(modello, caso):
-    """Carichi d'asta in componenti locali: {asta: [(tipo, wx, wy, a)]}, tipo 1 uniforme, 2 concentrato."""
+    """Carichi d'asta in componenti locali: {asta: [(tipo, wx, wy, a)]}, tipo 1 uniforme, 2 concentrato;
+    tipo 3 trapezio (v1.1): (3, wxi, wyi, a, wxj, wyj, b)."""
     geo = _geometria(modello)
     mat = {m["id"]: m for m in modello["materiali"]}
     sez = {s["id"]: s for s in modello["sezioni"]}
@@ -48,7 +49,10 @@ def carichi_locali(modello, caso):
 
     for q in caso.get("carichi_aste", []):
         L, c, s = geo[q["asta"]]
-        if q["tipo"] == "distribuito_uniforme":
+        if q["tipo"] == "distribuito_trapezio":
+            out[q["asta"]].append((3, *locale(q["direzione"], q["q_i"], c, s), q["a"],
+                                   *locale(q["direzione"], q["q_j"], c, s), q["b"]))
+        elif q["tipo"] == "distribuito_uniforme":
             wx, wy = locale(q["direzione"], q["q"], c, s)
             out[q["asta"]].append((1, wx, wy, 0.0))
         else:
@@ -117,7 +121,11 @@ def scrivi_input(modello, caso_id):
     cl = carichi_locali(modello, caso)
     tutte = [(a, *q) for a, lst in cl.items() for q in lst]
     righe.append(f"CARICHI_ASTE {len(tutte)}")
-    righe += [f"{a} {t} {wx!r} {wy!r} {pa!r}" for a, t, wx, wy, pa in tutte]
+    righe += [f"{a} {' '.join(repr(float(v)) if k else str(v) for k, v in enumerate(q))}" for a, *q in tutte]
+    ced = caso.get("cedimenti", [])
+    if ced:
+        righe.append(f"CEDIMENTI {len(ced)}")
+        righe += [f"{d['nodo']} {float(d.get('ux', 0))!r} {float(d.get('uy', 0))!r} {float(d.get('rz', 0))!r}" for d in ced]
     righe.append("FINE")
     return "\n".join(righe) + "\n"
 
@@ -154,8 +162,18 @@ def diagrammi(f, carichi, L, npt):
     N, V, M = [], [], []
     for x in xs:
         n, v, m = -f[0], f[1], -f[2] + x * f[1]
-        for t, wx, wy, a in carichi:
-            if t == 1:
+        for t, wx, wy, a, *resto in carichi:
+            if t == 3:
+                # trapezio da a a b (v1.1): risultanti del tratto [a, min(x, b)], Simpson esatto
+                wxj, wyj, b = resto
+                if x > a:
+                    c = min(x, b)
+                    w = lambda y, wi, wj: wi + (wj - wi) * (y - a) / (b - a)  # noqa: E731
+                    ym = (a + c) / 2
+                    n -= (c - a) * (w(a, wx, wxj) + w(c, wx, wxj)) / 2
+                    v += (c - a) * (w(a, wy, wyj) + w(c, wy, wyj)) / 2
+                    m += (c - a) / 6 * (w(a, wy, wyj) * (x - a) + 4 * w(ym, wy, wyj) * (x - ym) + w(c, wy, wyj) * (x - c))
+            elif t == 1:
                 n -= wx * x
                 v += wy * x
                 m += wy * x * x / 2
@@ -183,7 +201,7 @@ def risultati(modello, caso_id):
     for el in modello["aste"]:
         xs, N, V, M = diagrammi(grezzo["estremita"][el["id"]], cl[el["id"]], geo[el["id"]][0], npt)
         soll.append({"asta": el["id"], "x": xs, "N": N, "V": V, "M": M})
-    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.2", "spostamenti": grezzo["spostamenti"],
+    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.3", "spostamenti": grezzo["spostamenti"],
             "reazioni": grezzo["reazioni"], "rotazioni_aste": grezzo["rotazioni_aste"], "sollecitazioni": soll}
 
 

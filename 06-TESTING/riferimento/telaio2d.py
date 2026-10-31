@@ -86,10 +86,20 @@ def matmul(A, B):
 
 def carichi_locali(carichi, c, s):
     """Converte i carichi d'asta in componenti locali.
-    Restituisce lista di ('u', wx, wy) per uniformi e ('p', Px, Py, a) per concentrati."""
+    Restituisce lista di ('u', wx, wy) per uniformi, ('p', Px, Py, a) per concentrati e
+    ('t', wxi, wyi, a, wxj, wyj, b) per i trapezoidali (v1.1)."""
+    def locale(direzione, v):
+        if direzione == "globale_y":
+            return v * s, v * c
+        if direzione == "globale_x":
+            return v * c, -v * s
+        return 0.0, v
+
     out = []
     for q in carichi:
-        if q["tipo"] == "distribuito_uniforme":
+        if q["tipo"] == "distribuito_trapezio":
+            out.append(("t", *locale(q["direzione"], q["q_i"]), q["a"], *locale(q["direzione"], q["q_j"]), q["b"]))
+        elif q["tipo"] == "distribuito_uniforme":
             v = q["q"]
             if q["direzione"] == "globale_y":
                 out.append(("u", v * s, v * c))
@@ -112,7 +122,26 @@ def forze_incastro(cl, L):
     """Forze d'estremità (agenti sull'asta) con estremi incastrati, riferimento locale."""
     f = [0.0] * 6
     for q in cl:
-        if q[0] == "u":
+        if q[0] == "t":
+            # f = −∫ N(x)·w(x) dx sul tratto [a, b], con le funzioni di forma della trave;
+            # Gauss a 3 punti, esatto per N cubica × w lineare
+            wxi, wyi, a, wxj, wyj, b = q[1:]
+            if not 0 <= a < b <= L + 1e-9:
+                raise ValueError("Carico trapezoidale fuori dall'asta")
+            m, h = (a + b) / 2, (b - a) / 2
+            for t, p in ((-math.sqrt(0.6), 5 / 9), (0.0, 8 / 9), (math.sqrt(0.6), 5 / 9)):
+                x = m + h * t
+                r = (x - a) / (b - a)
+                wx, wy = wxi + (wxj - wxi) * r, wyi + (wyj - wyi) * r
+                xi = x / L
+                N = (1 - 3 * xi ** 2 + 2 * xi ** 3, L * (xi - 2 * xi ** 2 + xi ** 3), 3 * xi ** 2 - 2 * xi ** 3, L * (-xi ** 2 + xi ** 3))
+                f[0] -= p * h * wx * (1 - xi)
+                f[3] -= p * h * wx * xi
+                f[1] -= p * h * wy * N[0]
+                f[2] -= p * h * wy * N[1]
+                f[4] -= p * h * wy * N[2]
+                f[5] -= p * h * wy * N[3]
+        elif q[0] == "u":
             wx, wy = q[1], q[2]
             f[0] += -wx * L / 2
             f[3] += -wx * L / 2
@@ -226,10 +255,18 @@ def analizza(modello, caso_id, punti=None):
     for d, kv in molle.items():
         Ks[d][d] += kv
 
+    # cedimenti impressi (v1.1): spostamenti noti sui gdl vincolati, portati a secondo membro
+    u = [0.0] * ndof
+    for d in caso.get("cedimenti", []):
+        i = 3 * idx[d["nodo"]]
+        for r, nome in enumerate(("ux", "uy", "rz")):
+            if d.get(nome):
+                if i + r not in vincolati:
+                    raise ValueError(f"cedimento {nome} sul nodo {d['nodo']} non vincolato")
+                u[i + r] = d[nome]
     liberi = [d for d in range(ndof) if d not in vincolati]
     Kff = [[Ks[a][b] for b in liberi] for a in liberi]
-    uf = risolvi(Kff, [F[a] for a in liberi])
-    u = [0.0] * ndof
+    uf = risolvi(Kff, [F[a] - sum(Ks[a][c] * u[c] for c in vincolati) for a in liberi])
     for a, val in zip(liberi, uf):
         u[a] = val
 
@@ -271,7 +308,21 @@ def analizza(modello, caso_id, punti=None):
             V = f[1]
             M = -f[2] + x * f[1]
             for q in d["cl"]:
-                if q[0] == "u":
+                if q[0] == "t":
+                    wxi, wyi, a, wxj, wyj, b = q[1:]
+                    if x > a:
+                        cc = min(x, b)
+                        w = lambda y, wi, wj: wi + (wj - wi) * (y - a) / (b - a)  # noqa: E731
+                        # Simpson sul tratto [a, cc]: esatto per integrandi quadratici
+                        for wi, wj, comp in ((wxi, wxj, "x"), (wyi, wyj, "y")):
+                            W = (cc - a) * (w(a, wi, wj) + w(cc, wi, wj)) / 2
+                            if comp == "x":
+                                N -= W
+                            else:
+                                V += W
+                                ym = (a + cc) / 2
+                                M += (cc - a) / 6 * (w(a, wi, wj) * (x - a) + 4 * w(ym, wi, wj) * (x - ym) + w(cc, wi, wj) * (x - cc))
+                elif q[0] == "u":
                     N -= q[1] * x
                     V += q[2] * x
                     M += q[2] * x * x / 2

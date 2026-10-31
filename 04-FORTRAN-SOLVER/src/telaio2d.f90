@@ -1,6 +1,6 @@
 ! =============================================================================
 !  telaio2d — solutore per telai piani, statica lineare (metodo degli spostamenti)
-!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.2 (30/10/2026)
+!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.3 (31/10/2026)
 !
 !  Uso:   telaio2d  input.txt  output.txt  [piena]
 !         (piena: eliminazione di Gauss a matrice piena, per confronto)
@@ -14,6 +14,9 @@
 !    VINCOLI k         → nodo ux uy rz kx ky kr              (0/1, molle)
 !    CARICHI_NODALI p  → nodo Fx Fy Mz
 !    CARICHI_ASTE q    → asta tipo wx wy a                   (tipo 1 uniforme, 2 concentrato)
+!                        asta 3 wxi wyi a wxj wyj b         (tipo 3 trapezio da a a b, v0.3)
+!    CEDIMENTI c       → nodo dx dy dr                       (facoltativa, v0.3: spostamenti
+!                                                             impressi ai gdl vincolati)
 !    FINE
 !
 !  Uscita: SPOSTAMENTI, REAZIONI, ESTREMITA (forze d'estremità locali
@@ -30,7 +33,9 @@ program telaio2d
    implicit none
    integer, parameter :: dp = kind(1.0d0)
 
-   integer :: nn, ne, nv, ncn, nca, ndof, i, j, k, a, b, ios, u_in, u_out, hb, nr, rr(2)
+   integer :: nn, ne, nv, ncn, nca, nce, ndof, i, j, k, a, b, ios, u_in, u_out, hb, nr, rr(2)
+   integer, allocatable :: cen(:)
+   real(dp), allocatable :: ced(:,:), Ui(:)
    integer, allocatable :: nid(:), eid(:), eni(:), enj(:), ril(:,:)
    integer, allocatable :: vnodo(:), vfix(:,:), cnn(:), cae(:), cat(:)
    real(dp), allocatable :: x(:), y(:), eE(:), eA(:), eI(:), vk(:,:)
@@ -44,6 +49,7 @@ program telaio2d
    integer :: nlib
    logical :: piena
    character(len=256) :: fin, fout, tag, opz
+   character(len=1024) :: riga
    character(len=32) :: hdr
 
    if (command_argument_count() < 2 .or. command_argument_count() > 3) then
@@ -95,9 +101,30 @@ program telaio2d
 
    read(u_in,*) tag, nca
    call controlla(tag, 'CARICHI_ASTE')
-   allocate(cae(nca), cat(nca), caw(3,nca))
+   allocate(cae(nca), cat(nca), caw(6,nca))
+   caw = 0
    do i = 1, nca
-      read(u_in,*) cae(i), cat(i), caw(1,i), caw(2,i), caw(3,i)
+      read(u_in,'(a)') riga
+      read(riga,*) cae(i), cat(i)
+      if (cat(i) == 3) then
+         read(riga,*) cae(i), cat(i), caw(1:6,i)
+      else
+         read(riga,*) cae(i), cat(i), caw(1:3,i)
+      end if
+   end do
+
+   ! sezione facoltativa dei cedimenti (v0.3)
+   read(u_in,*) tag
+   nce = 0
+   if (trim(tag) == 'CEDIMENTI') then
+      backspace(u_in)
+      read(u_in,*) tag, nce
+   else
+      call controlla(tag, 'FINE')
+   end if
+   allocate(cen(nce), ced(3,nce))
+   do i = 1, nce
+      read(u_in,*) cen(i), ced(1,i), ced(2,i), ced(3,i)
    end do
    close(u_in)
 
@@ -114,7 +141,7 @@ program telaio2d
 
    ! ---------------------------------------------------------------- vincoli e numerazione
    ndof = 3*nn
-   allocate(Fv(ndof), Fn(ndof), Uv(ndof), Rku(ndof), molk(ndof), vinc(ndof), molla(ndof), eq(ndof))
+   allocate(Fv(ndof), Fn(ndof), Uv(ndof), Rku(ndof), molk(ndof), vinc(ndof), molla(ndof), eq(ndof), Ui(ndof))
    allocate(dofs(6,ne), elL(ne), elc(ne), els(ne), kc(6,6,ne), fc(6,ne), k0(6,6,ne), f0(6,ne))
    Fv = 0; Fn = 0; Uv = 0; molk = 0
    vinc = .false.; molla = .false.
@@ -125,6 +152,17 @@ program telaio2d
          if (vk(a,k) > 0) then
             molk(3*i-3+a) = molk(3*i-3+a) + vk(a,k)
             molla(3*i-3+a) = .true.
+         end if
+      end do
+   end do
+   ! spostamenti impressi (cedimenti) sui gradi di libertà vincolati
+   Ui = 0
+   do k = 1, nce
+      i = indice(cen(k))
+      do a = 1, 3
+         if (ced(a,k) /= 0) then
+            if (.not. vinc(3*i-3+a)) call errore('cedimento su un grado di libertà non vincolato')
+            Ui(3*i-3+a) = ced(a,k)
          end if
       end do
    end do
@@ -171,6 +209,8 @@ program telaio2d
       call rotazione(elc(k), els(k), T)
       kg = matmul(transpose(T), matmul(kc(:,:,k), T))
       fg = matmul(transpose(T), fc(:,k))
+      ! forze d'asta dovute ai cedimenti impressi: portate a secondo membro come le forze d'incastro
+      fg = fg + matmul(kg, Ui(dofs(:,k)))
       do a = 1, 6
          Fv(dofs(a,k)) = Fv(dofs(a,k)) - fg(a)
          do b = 1, 6
@@ -196,7 +236,7 @@ program telaio2d
    else
       call cholesky_banda(Kb, Fll, nlib, hb)
    end if
-   Uv = unpack(Fll, .not. vinc, 0.0_dp)
+   Uv = unpack(Fll, .not. vinc, 0.0_dp) + Ui
 
    ! reazioni = somma delle forze d'asta nei nodi − carichi nodali (molle escluse dalla rigidezza)
    Rku = 0
@@ -323,7 +363,9 @@ contains
       do q = 1, nca
          if (cae(q) /= eid(el)) cycle
          wx = caw(1,q); wy = caw(2,q)
-         if (cat(q) == 1) then
+         if (cat(q) == 3) then
+            call trapezio(caw(:,q), L, f)
+         else if (cat(q) == 1) then
             f(1) = f(1) - wx*L/2;  f(4) = f(4) - wx*L/2
             f(2) = f(2) - wy*L/2;  f(5) = f(5) - wy*L/2
             f(3) = f(3) - wy*L**2/12;  f(6) = f(6) + wy*L**2/12
@@ -336,6 +378,32 @@ contains
             f(3) = f(3) - wy*pa*pb**2/L**2
             f(6) = f(6) + wy*pa**2*pb/L**2
          end if
+      end do
+   end subroutine
+
+   subroutine trapezio(w, L, f)
+      ! forze d'incastro f = −∫ N(x)·q(x) dx del carico lineare da a a b (v0.3, Daniela);
+      ! Gauss a 3 punti, esatto per funzioni di forma cubiche per carico lineare
+      real(dp), intent(in) :: w(6), L
+      real(dp), intent(inout) :: f(6)
+      real(dp) :: pa, pb, m, h, xg, r, qx, qy, xi, g(3), p(3)
+      integer :: n
+      pa = w(3); pb = w(6)
+      if (pa < 0 .or. pb > L*(1 + 1.0e-12_dp) .or. pb <= pa) call errore('carico trapezoidale fuori dall''asta')
+      g = [-sqrt(0.6_dp), 0.0_dp, sqrt(0.6_dp)]; p = [5.0_dp, 8.0_dp, 5.0_dp]/9
+      m = (pa + pb)/2; h = (pb - pa)/2
+      do n = 1, 3
+         xg = m + h*g(n)
+         r = (xg - pa)/(pb - pa)
+         qx = w(1) + (w(4) - w(1))*r
+         qy = w(2) + (w(5) - w(2))*r
+         xi = xg/L
+         f(1) = f(1) - p(n)*h*qx*(1 - xi)
+         f(4) = f(4) - p(n)*h*qx*xi
+         f(2) = f(2) - p(n)*h*qy*(1 - 3*xi**2 + 2*xi**3)
+         f(3) = f(3) - p(n)*h*qy*L*(xi - 2*xi**2 + xi**3)
+         f(5) = f(5) - p(n)*h*qy*(3*xi**2 - 2*xi**3)
+         f(6) = f(6) - p(n)*h*qy*L*(-xi**2 + xi**3)
       end do
    end subroutine
 

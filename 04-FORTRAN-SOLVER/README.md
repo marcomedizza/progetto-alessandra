@@ -1,4 +1,4 @@
-# Solutore Fortran telaio2d — v0.2 (30/10/2026)
+# Solutore Fortran telaio2d — v0.3 (31/10/2026)
 
 Telai piani, statica lineare, metodo degli spostamenti (Elisa, compilazione Ottavia).
 
@@ -14,7 +14,13 @@ Gestisce: aste inclinate, cerniere interne, vincoli e molle, carichi nodali, car
 
 **Verifica (26/10/2026)**: `python3 06-TESTING/casi/verifica_casi.py --fortran` supera tutti i controlli sui casi C1–C5. Il confronto completo con il risolutore di riferimento Python dà zero scostamenti, anche su un caso misto con cerniera, molla, asta inclinata e peso proprio.
 
-**Prossimi passi**: cedimenti vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
+**v0.3 (31/10)**:
+- carichi distribuiti lineari su un tratto dell'asta (tipo 3: parziali, trapezoidali, triangolari; Daniela), con forze d'incastro integrate con Gauss a 3 punti, esatto;
+- sezione facoltativa `CEDIMENTI` (Carla): spostamenti impressi ai gradi di libertà vincolati, portati a secondo membro per asta. Un cedimento su un grado di libertà non vincolato è un errore.
+
+I file della v0.2 restano validi. Verifica sui casi C11–C13 con soluzione a mano.
+
+**Prossimi passi**: distorsioni termiche vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)
 

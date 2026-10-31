@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 30/10/2026
+# Prova del flusso utente — prototipo del 31/10/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -33,6 +33,9 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S16 | Valori sui diagrammi (D3) | C4, calcolare, diagramma M | Etichette 25,6 · 51,3 · 83,7 kNm sui punti significativi |
 | S17 | Disegno col mouse (D10) | «Nuovo», «Disegna aste», clic sul nodo 1, poi vicino a (0; 3), (6; 3) e sul nodo 2; Esc; Fx = 10 kN nel nodo 3; calcolare | Nodi agganciati alla griglia di passo 0,5 m (il clic a (0,1; 3,12) dà il nodo (0; 3)); tre aste aggiunte; Rx1 = −10 kN, Ry1 = −5 kN, Ry2 = +5 kN |
 | S18 | Materiali e sezioni (rev. 14) | C1, selezionare un'asta, I = 16 712 cm⁴ (doppio), calcolare; poi «+» sezione e «+» materiale con E = 70 000 MPa sulla sola asta 1 | Freccia 4,808 mm, metà di 9,617; con l'asta 1 a E·I = 2/3 dell'originale e l'asta 2 al doppio la freccia torna 9,617 mm (contributi delle due metà); E = −5 rifiutato |
+| S20 | Cedimento (v1.1) | C11, calcolare; clic sul nodo centrale | Ry = −4,87 · 2,44 kN; M = 14,62 kNm; nel pannello «Cedimento impresso: uy = −10 mm» |
+| S21 | Trapezio parziale (v1.1) | C12, calcolare | Frecce di lunghezza crescente da 1 a 4 m; R = 25 · 20 kN; M max del diagramma 50,6 kNm |
+| S22 | Triangolare su trave incastrata (v1.1) | C13, calcolare | R = 18 · 42 kN; momenti d'incastro 24 e 36 kNm |
 | S19 | Deformata con cerniera (D8) | C6, calcolare | Deformata con angolo alla cerniera: mensola curva fino a 4 m, tratto appoggiato quasi rettilineo; nota «comprese quelle alle cerniere interne» |
 
 ## Esiti
@@ -70,6 +73,13 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S18 | superato: 4,808 mm, poi 9,617 mm; E negativo rifiutato; copie IPE300_2 e S275_2 create |
 | S19 | superato: scarto tra deformata disegnata e soluzione esatta 3·10⁻¹⁷ m su entrambe le aste |
 
+| Scenario | 31/10 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S19, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
+| S20 | superato: −4,87 · 2,44 kN, 14,62 kNm, cedimento −10 mm nel pannello |
+| S21 | superato: 25,00 · 20,00 kN, etichetta 50,6 kNm |
+| S22 | superato: 18,00 · 42,00 kN, etichette 24 e 36 kNm |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -88,4 +98,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D10 | 29/10 | — | Disegno di nodi e aste direttamente col mouse | media | **chiuso 30/10** in versione minima: spezzata di aste con aggancio alla griglia e ai nodi esistenti; sezione dell'ultima asta | Irene, Lucia |
 | D11 | 30/10 | S18 | Materiali e sezioni non inseribili dall'interfaccia (revisione 14) | media | **chiuso 30/10**: E, A, I modificabili; copia di materiale e sezione per una sola asta | Lucia |
 | D12 | 30/10 | S17 | Durante il disegno la vista non si adatta ai nodi aggiunti fuori dall'inquadratura (va usata la rotella o ricaricata la vista) | bassa | aperto | Irene |
+| D14 | 31/10 | S21 | «Spostamento massimo» nel pannello dei risultati considera solo i nodi: su una trave con due soli nodi vincolati indica 0 mm, mentre la freccia in campata è 10 mm | bassa | aperto: usare il massimo della deformata lungo le aste | Mariana |
+| D15 | 31/10 | S21 | I carichi trapezoidali si vedono nel pannello ma non si possono inserire dall'interfaccia (solo da file) | media | aperto | Lucia |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | aperto | Lucia |

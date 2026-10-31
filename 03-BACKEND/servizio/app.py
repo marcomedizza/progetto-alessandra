@@ -17,6 +17,7 @@ Interfaccia:
 
 import glob
 import json
+import math
 import os
 import sys
 
@@ -58,7 +59,7 @@ def errori_coerenza(modello):
     """Controlli che lo schema non può fare: riferimenti tra nodi, aste, materiali e sezioni."""
     err = []
     if len(modello.get("nodi", [])) > MAX_NODI or len(modello.get("aste", [])) > MAX_ASTE:
-        return [f"modello troppo grande per il solutore v0.2: al massimo {MAX_NODI} nodi e {MAX_ASTE} aste"]
+        return [f"modello troppo grande per il solutore v0.3: al massimo {MAX_NODI} nodi e {MAX_ASTE} aste"]
     nodi = {n["id"] for n in modello.get("nodi", [])}
     mat = {m["id"] for m in modello.get("materiali", [])}
     sez = {s["id"] for s in modello.get("sezioni", [])}
@@ -78,6 +79,10 @@ def errori_coerenza(modello):
     for v in modello.get("vincoli", []):
         if v["nodo"] not in nodi:
             err.append(f"vincolo sul nodo {v['nodo']} inesistente")
+    vincoli = {v["nodo"]: v for v in modello.get("vincoli", [])}
+    coord = {n["id"]: (n["x"], n["y"]) for n in modello.get("nodi", [])}
+    lunghezze = {a["id"]: math.dist(coord[a["nodo_i"]], coord[a["nodo_j"]]) for a in modello.get("aste", [])
+                 if a["nodo_i"] in coord and a["nodo_j"] in coord}
     for c in modello.get("casi_di_carico", []):
         for q in c.get("carichi_nodali", []):
             if q["nodo"] not in nodi:
@@ -85,6 +90,17 @@ def errori_coerenza(modello):
         for q in c.get("carichi_aste", []):
             if q["asta"] not in aste:
                 err.append(f"caso {c['id']}: carico sull'asta {q['asta']} inesistente")
+            elif q["tipo"] == "distribuito_trapezio" and not 0 <= q["a"] < q["b"] <= lunghezze.get(q["asta"], 0) + 1e-9:
+                err.append(f"caso {c['id']}: carico trapezoidale sull'asta {q['asta']} fuori dall'asta (serve 0 ≤ a < b ≤ L)")
+        # cedimenti (v1.1, Carla): solo su componenti vincolate
+        for d in c.get("cedimenti", []):
+            v = vincoli.get(d["nodo"], {})
+            for k in ("ux", "uy", "rz"):
+                if d.get(k) and not v.get(k):
+                    err.append(f"caso {c['id']}: cedimento {k} sul nodo {d['nodo']}, che non ha {k} vincolato")
+        usa_v11 = c.get("cedimenti") or any(q["tipo"] == "distribuito_trapezio" for q in c.get("carichi_aste", []))
+        if usa_v11 and modello.get("schema_version") != "1.1":
+            err.append(f"caso {c['id']}: carichi trapezoidali e cedimenti richiedono schema_version 1.1")
     return err
 
 

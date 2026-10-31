@@ -154,6 +154,29 @@ def test_nodi_in_ordine_qualsiasi():
         converti.ordine_nodi = originale
 
 
+def test_v11_trapezi_e_cedimenti():
+    # schema v1.1 (31/10): C11 cedimento, C12 trapezio parziale, C13 triangolare, contro le formule chiuse
+    r11 = client.post("/api/calcola", json=modello("C11_cedimento_appoggio")).json()["risultati"][0]
+    F = 48 * 2.1e8 * 8356e-8 * 0.01 / 12 ** 3
+    assert abs(next(x["Ry"] for x in r11["reazioni"] if x["nodo"] == 2) + F) < 1e-9
+    r12 = client.post("/api/calcola", json=modello("C12_trapezio_parziale")).json()["risultati"][0]
+    assert abs(next(x["Ry"] for x in r12["reazioni"] if x["nodo"] == 1) - 25) < 1e-9
+    r13 = client.post("/api/calcola", json=modello("C13_triangolare_incastrata")).json()["risultati"][0]
+    assert abs(r13["sollecitazioni"][0]["M"][-1] + 36) < 1e-9
+
+
+def test_v11_controlli():
+    m = modello("C11_cedimento_appoggio")
+    m["schema_version"] = "1.0"
+    assert "schema_version 1.1" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+    m = modello("C11_cedimento_appoggio")
+    m["casi_di_carico"][0]["cedimenti"] = [{"nodo": 2, "ux": 0.01}]   # ux non vincolato nel nodo 2
+    assert "non ha ux vincolato" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+    m = modello("C12_trapezio_parziale")
+    m["casi_di_carico"][0]["carichi_aste"][0]["b"] = 7.0               # oltre la lunghezza dell'asta
+    assert client.post("/api/calcola", json=m).status_code == 422
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

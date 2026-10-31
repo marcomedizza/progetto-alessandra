@@ -1,0 +1,29 @@
+{
+  "caso": "Q",
+  "formule": {
+    "momenti d'incastro": "MA = qL²/30 (lato scarico), MB = qL²/20 (lato carico), fibre tese in alto",
+    "reazioni": "RA = 3qL/20, RB = 7qL/20"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 18.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 42.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": -24.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=6",
+      "valore": -36.0,
+      "unita": "kNm"
+    }
+  ]
+}

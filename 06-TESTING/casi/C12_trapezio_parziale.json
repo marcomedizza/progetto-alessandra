@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C12",
+    "nome": "Trave appoggiata, carico trapezoidale parziale",
+    "descrizione": "IPE 300, L = 6 m; carico verso il basso da 10 kN/m in x = 1 m a 20 kN/m in x = 4 m (schema v1.1, Daniela).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-31",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true
+    },
+    {
+      "nodo": 2,
+      "uy": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Carico trapezoidale",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_y",
+          "q_i": -10.0,
+          "q_j": -20.0,
+          "a": 1.0,
+          "b": 4.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 7
+  }
+}

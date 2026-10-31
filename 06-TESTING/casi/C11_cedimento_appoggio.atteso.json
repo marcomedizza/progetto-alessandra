@@ -1,0 +1,41 @@
+{
+  "caso": "CED",
+  "formule": {
+    "reazione dell'appoggio centrale": "F = 48·EI·δ/(2L)³, diretta verso il basso",
+    "appoggi di estremità": "RA = RC = F/2",
+    "momento sull'appoggio centrale": "MB = F·2L/4, fibre tese in basso",
+    "rotazione in A": "φA = −F·(2L)²/(16EI)"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": -4.874333333333333,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 2.4371666666666667,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 3",
+      "valore": 2.4371666666666667,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=6 (appoggio centrale)",
+      "valore": 14.623000000000001,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2 (cedimento impresso)",
+      "valore": -0.01,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 1",
+      "valore": -0.0024999999999999996,
+      "unita": "rad"
+    }
+  ]
+}

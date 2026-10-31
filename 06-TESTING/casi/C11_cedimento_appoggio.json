@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C11",
+    "nome": "Trave continua, cedimento dell'appoggio centrale",
+    "descrizione": "IPE 300, due campate da 6 m su tre appoggi, nessun carico; l'appoggio centrale cede di 10 mm verso il basso (schema v1.1, Carla).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-31",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 12,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true
+    },
+    {
+      "nodo": 2,
+      "uy": true
+    },
+    {
+      "nodo": 3,
+      "uy": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "CED",
+      "nome": "Cedimento appoggio centrale",
+      "categoria": "altro",
+      "cedimenti": [
+        {
+          "nodo": 2,
+          "uy": -0.01
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 7
+  }
+}

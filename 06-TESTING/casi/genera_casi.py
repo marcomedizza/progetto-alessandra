@@ -1,4 +1,4 @@
-"""Genera i casi di prova (modelli secondo DATA_SCHEMA.json v1.0) e i valori attesi
+"""Genera i casi di prova (modelli secondo DATA_SCHEMA.json v1.0; C11–C13 v1.1) e i valori attesi
 calcolati con formule chiuse di scienza delle costruzioni.
 
 Uso:  python3 genera_casi.py      (scrive i file C*.json e C*.atteso.json in questa cartella)
@@ -345,12 +345,97 @@ def c10():
     return m, atteso
 
 
+def v11(m):
+    m["schema_version"] = "1.1"
+    m["progetto"]["data"] = "2026-10-31"
+    return m
+
+
+def c11():
+    L, d = 6.0, 0.010
+    EI = E_ACC * IPE300["I"]
+    m = v11(trave("C11", "Trave continua, cedimento dell'appoggio centrale",
+                  "IPE 300, due campate da 6 m su tre appoggi, nessun carico; l'appoggio centrale cede di 10 mm verso il basso (schema v1.1, Carla).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}, {"id": 3, "x": 12, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}, {"nodo": 3, "uy": True}],
+                  {"id": "CED", "nome": "Cedimento appoggio centrale", "categoria": "altro",
+                   "cedimenti": [{"nodo": 2, "uy": -d}]}, 7))
+    F = 48 * EI * d / (2 * L) ** 3   # forza in mezzeria di una trave appoggiata di luce 2L che dà la freccia d
+    atteso = {"caso": "CED", "formule": {
+        "reazione dell'appoggio centrale": "F = 48·EI·δ/(2L)³, diretta verso il basso",
+        "appoggi di estremità": "RA = RC = F/2",
+        "momento sull'appoggio centrale": "MB = F·2L/4, fibre tese in basso",
+        "rotazione in A": "φA = −F·(2L)²/(16EI)"},
+        "valori": [
+            {"grandezza": "Ry nodo 2", "valore": -F, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": F / 2, "unita": "kN"},
+            {"grandezza": "Ry nodo 3", "valore": F / 2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=6 (appoggio centrale)", "valore": F * 2 * L / 4, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cedimento impresso)", "valore": -d, "unita": "m"},
+            {"grandezza": "rz nodo 1", "valore": -F * (2 * L) ** 2 / (16 * EI), "unita": "rad"}]}
+    return m, atteso
+
+
+def c12():
+    L, a, b, q1, q2 = 6.0, 1.0, 4.0, 10.0, 20.0
+    m = v11(trave("C12", "Trave appoggiata, carico trapezoidale parziale",
+                  "IPE 300, L = 6 m; carico verso il basso da 10 kN/m in x = 1 m a 20 kN/m in x = 4 m (schema v1.1, Daniela).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+                  {"id": "Q", "nome": "Carico trapezoidale", "categoria": "Q", "carichi_aste": [
+                      {"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -q1, "q_j": -q2, "a": a, "b": b}]}, 7))
+    c = b - a
+    W = c * (q1 + q2) / 2
+    xg = a + c * (q1 + 2 * q2) / (3 * (q1 + q2))          # baricentro del trapezio
+    R2 = W * xg / L
+    R1 = W - R2
+    t = 3 - a                                             # sezione x = 3 m, a 2 m dall'inizio del carico
+    M3 = R1 * 3 - (q1 * t ** 2 / 2 + (q2 - q1) / c * t ** 3 / 6)
+    atteso = {"caso": "Q", "formule": {
+        "risultante": "W = (b − a)·(q1 + q2)/2",
+        "baricentro": "xg = a + (b − a)·(q1 + 2q2)/(3(q1 + q2))",
+        "reazioni": "R2 = W·xg/L; R1 = W − R2",
+        "momento in x = 3": "M = R1·3 − [q1·t²/2 + (q2 − q1)/(b − a)·t³/6], t = 3 − a",
+        "momento in x = 4": "M = R2·(L − 4)"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": R1, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": R2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=1 (inizio del carico)", "valore": R1 * a, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=3", "valore": M3, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=4 (fine del carico)", "valore": R2 * (L - b), "unita": "kNm"}]}
+    return m, atteso
+
+
+def c13():
+    L, q = 6.0, 20.0
+    m = v11(trave("C13", "Trave incastrata, carico triangolare",
+                  "IPE 300, L = 6 m, incastri alle estremità; carico verso il basso crescente da 0 in x = 0 a 20 kN/m in x = 6 m (schema v1.1, Daniela).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+                  {"id": "Q", "nome": "Carico triangolare", "categoria": "Q", "carichi_aste": [
+                      {"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": 0.0, "q_j": -q, "a": 0.0, "b": L}]}, 7))
+    atteso = {"caso": "Q", "formule": {
+        "momenti d'incastro": "MA = qL²/30 (lato scarico), MB = qL²/20 (lato carico), fibre tese in alto",
+        "reazioni": "RA = 3qL/20, RB = 7qL/20"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": 3 * q * L / 20, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": 7 * q * L / 20, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0", "valore": -q * L ** 2 / 30, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=6", "valore": -q * L ** 2 / 20, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
                     ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8),
                     ("C9_portale_tre_cerniere_molla", c9),
-                    ("C10_combinazione_slu", c10)):
+                    ("C10_combinazione_slu", c10), ("C11_cedimento_appoggio", c11),
+                    ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

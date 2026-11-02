@@ -1,4 +1,4 @@
-# Licenze dei componenti — 27/10/2026, aggiornato il 30/10/2026
+# Licenze dei componenti — 27/10/2026, aggiornato il 02/11/2026
 
 **Autrice**: Veronica (normativa e conformità)
 **Scopo**: verificare che i componenti usati o previsti permettano di distribuire il programma, anche a pagamento.
@@ -13,6 +13,25 @@
 | Uvicorn | server del servizio | BSD 3 clausole | avviso di copyright, nessun uso del nome per promozione | compatibile |
 | jsonschema | validazione del modello | MIT | avviso di copyright | compatibile |
 | gfortran (GCC) | compilazione del solutore | GPL v3 con eccezione per la libreria di esecuzione | nessuno sul programma compilato, grazie all'eccezione | compatibile |
+
+### Verifica sui testi originali (Veronica, 02/11/2026)
+
+Testi letti nei file di licenza distribuiti con i pacchetti installati nell'ambiente di prova (`*.dist-info/licenses/`) e nella copia di Three.js in `02-FRONTEND-3D/vendor/`.
+
+| Componente | Versione | File letto | Testo | Titolare del copyright |
+|---|---|---|---|---|
+| FastAPI | 0.162.0 | `LICENSE` | MIT | Sebastián Ramírez, 2018 |
+| Starlette (usato da FastAPI) | 1.10.0 | `LICENSE.md` | BSD 3 clausole | Encode OSS Ltd, 2018 |
+| Pydantic (usato da FastAPI) | 2.14.1 | `LICENSE` | MIT | Pydantic Services Inc. e collaboratori |
+| Uvicorn | 0.54.0 | `LICENSE.md` | BSD 3 clausole | Encode OSS Ltd, 2017 |
+| jsonschema | 4.26.0 | `COPYING` | MIT | Julian Berman, 2013 |
+| Three.js | 0.160.0 | `vendor/LICENSE-three.txt` e intestazione del modulo | MIT | three.js authors, 2010–2023 |
+
+**Esito**: confermate le licenze della tabella precedente. Due dipendenze indirette, Starlette e Pydantic, non erano elencate e vanno aggiunte agli avvisi. Obblighi per la distribuzione:
+- tutte e sei richiedono di riportare l'avviso di copyright e il testo della licenza;
+- le BSD 3 clausole vietano anche di usare il nome dei titolari per promuovere il prodotto.
+
+Per il servizio installato in rete (uso come SaaS, senza distribuire il codice) non c'è nessun obbligo ulteriore. Le versioni sono quelle dell'ambiente di prova: per il rilascio vanno fissate in un file dei requisiti.
 
 ## Componenti previsti
 

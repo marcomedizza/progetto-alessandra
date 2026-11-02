@@ -177,6 +177,31 @@ def test_v11_controlli():
     assert client.post("/api/calcola", json=m).status_code == 422
 
 
+def test_modello_grande_con_cedimenti():
+    # Carla (02/11): telaio 20 × 100 (6363 gdl, matrice a banda), solo cedimento di 10 mm di un piede.
+    # Senza carichi le reazioni sono autoequilibrate: somme di forze e momento risultante nulli
+    sys.path.insert(0, os.path.join(servizio.RADICE, "04-FORTRAN-SOLVER"))
+    from prova_prestazioni import telaio
+    m = telaio(20, 100)
+    m["schema_version"] = "1.1"
+    m["casi_di_carico"][0].update(carichi_aste=[], carichi_nodali=[], cedimenti=[{"nodo": 11, "uy": -0.01}])
+    ris = client.post("/api/calcola", json=m).json()["risultati"][0]
+    x = {n["id"]: n["x"] for n in m["nodi"]}
+    assert abs(sum(r["Ry"] for r in ris["reazioni"])) < 1e-6 and abs(sum(r["Rx"] for r in ris["reazioni"])) < 1e-6
+    assert abs(sum(r["Mz"] + r["Ry"] * x[r["nodo"]] for r in ris["reazioni"])) < 1e-5
+    assert abs(next(u["uy"] for u in ris["spostamenti"] if u["nodo"] == 11) + 0.01) < 1e-15
+    assert max(abs(r["Ry"]) for r in ris["reazioni"]) > 1.0     # il cedimento produce davvero reazioni
+
+
+def test_cedimento_su_molla_rifiutato():
+    # punto 28 della revisione: la molla ha già uno spostamento incognito, un cedimento lì non ha senso
+    m = modello("C8_molla_in_mezzeria")
+    m["schema_version"] = "1.1"
+    m["casi_di_carico"][0]["cedimenti"] = [{"nodo": 2, "uy": -0.005}]
+    v = client.post("/api/valida", json=m).json()
+    assert not v["valido"] and "non ha uy vincolato" in " ".join(v["coerenza"])
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

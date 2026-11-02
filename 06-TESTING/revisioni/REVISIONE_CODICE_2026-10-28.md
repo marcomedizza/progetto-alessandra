@@ -94,3 +94,24 @@
 - `verifica_casi.py` nei tre percorsi su C1–C13: superati;
 - `test_app.py`: 18 prove superate;
 - scenari S1–S22 nel navigatore: superati.
+
+
+## Aggiornamento del 02/11/2026 (Marisa)
+
+**Punti aperti precedenti**: 13 **chiuso** (Annulla, D13); 28 **chiuso** (cedimento su molla spiegato nel README del solutore e coperto da una prova); 31 **chiuso** (D14).
+
+**Revisione del codice nuovo del 02/11**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 32 | `02-FRONTEND-3D/modifica.js` | Il trapezio dal pannello è sempre verticale (`globale_y`). Per carichi normali all'asta inclinata, come vento o pressione, serve `locale_y`, che oggi si inserisce solo da file | bassa | aperto: aggiungere la scelta della direzione |
+| 33 | `02-FRONTEND-3D/modifica.js` | Aggiungere un trapezio o un cedimento porta il modello a `schema_version` 1.1; togliendolo non torna a 1.0. È corretto: la 1.1 accetta anche i modelli 1.0 | — | nessun intervento |
+| 34 | `02-FRONTEND-3D/app.js` | «Annulla» conserva copie complete del modello in JSON, fino a 50. Per 5000 nodi sono qualche decina di MB: accettabile, da rivedere se il limite sale | bassa | aperto, da tenere d'occhio |
+| 35 | `02-FRONTEND-3D/app.js` | Ctrl+Z è ignorato quando il cursore è in un campo di testo, dove il navigatore annulla la digitazione: comportamento atteso | — | nessun intervento |
+| 36 | `02-FRONTEND-3D/risultati.js` | La deformata è calcolata una volta per il disegno e una per la tabella: costo doppio trascurabile fino a migliaia di aste | — | nessun intervento |
+| 37 | `02-FRONTEND-3D/vista.js` | La reinquadratura del disegno (D12) non è coperta dalle prove automatiche, perché la posizione dei clic dipende dall'inquadratura | bassa | aperto: prova a mano |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C16: superati;
+- `test_app.py`: 20 prove superate;
+- scenari S1–S26 nel navigatore: superati.

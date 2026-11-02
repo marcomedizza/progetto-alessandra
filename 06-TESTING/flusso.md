@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 31/10/2026
+# Prova del flusso utente — prototipo del 02/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -36,6 +36,10 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S20 | Cedimento (v1.1) | C11, calcolare; clic sul nodo centrale | Ry = −4,87 · 2,44 kN; M = 14,62 kNm; nel pannello «Cedimento impresso: uy = −10 mm» |
 | S21 | Trapezio parziale (v1.1) | C12, calcolare | Frecce di lunghezza crescente da 1 a 4 m; R = 25 · 20 kN; M max del diagramma 50,6 kNm |
 | S22 | Triangolare su trave incastrata (v1.1) | C13, calcolare | R = 18 · 42 kN; momenti d'incastro 24 e 36 kNm |
+| S23 | Trapezio dal pannello (D15) | «Nuovo», selezionare la trave, «+ trapezio» con i valori proposti (−10 → −20 kN/m su tutta la luce), calcolare; poi b = 7 m | R1 = 40 kN, R2 = 50 kN; con b oltre l'asta il messaggio «Il tratto deve stare dentro l'asta» |
+| S24 | Cedimento dal pannello (D15) | C1, nodo 3, uy = −10 mm, «imposta», calcolare | Compare solo il campo uy (l'unica componente vincolata); reazioni invariate 30 · 30 kN (trave isostatica); uy del nodo 3 = −10 mm |
+| S25 | Annulla (D13) | Dopo S23 premere «Annulla» due volte | Il trapezio sparisce e il ricalcolo non dà più 40 kN; al secondo clic «Niente da annullare» |
+| S26 | Spostamento massimo (D14) | Dopo S23 leggere la nota sotto le tabelle | «asta 1, x = 3,00 m, uy = −14,43 mm», uguale a 5qL⁴/(384EI) con q = 15 kN/m (il triangolo antisimmetrico non dà freccia in mezzeria) |
 | S19 | Deformata con cerniera (D8) | C6, calcolare | Deformata con angolo alla cerniera: mensola curva fino a 4 m, tratto appoggiato quasi rettilineo; nota «comprese quelle alle cerniere interne» |
 
 ## Esiti
@@ -80,6 +84,14 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S21 | superato: 25,00 · 20,00 kN, etichetta 50,6 kNm |
 | S22 | superato: 18,00 · 42,00 kN, etichette 24 e 36 kNm |
 
+| Scenario | 02/11 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S22, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
+| S23 | superato: 40,00 · 50,00 kN; b = 7 m rifiutato |
+| S24 | superato: solo il campo uy; 30,00 · 30,00 kN; uy = −10 mm |
+| S25 | superato |
+| S26 | superato: −14,43 mm in x = 3,00 m |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -97,7 +109,7 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D9 | 29/10 | S15 | Il clic esattamente sull'asse di un'asta non la selezionava (spigolo del prisma di selezione sul piano del telaio) | bassa | **chiuso 29/10** | Irene |
 | D10 | 29/10 | — | Disegno di nodi e aste direttamente col mouse | media | **chiuso 30/10** in versione minima: spezzata di aste con aggancio alla griglia e ai nodi esistenti; sezione dell'ultima asta | Irene, Lucia |
 | D11 | 30/10 | S18 | Materiali e sezioni non inseribili dall'interfaccia (revisione 14) | media | **chiuso 30/10**: E, A, I modificabili; copia di materiale e sezione per una sola asta | Lucia |
-| D12 | 30/10 | S17 | Durante il disegno la vista non si adatta ai nodi aggiunti fuori dall'inquadratura (va usata la rotella o ricaricata la vista) | bassa | aperto | Irene |
-| D14 | 31/10 | S21 | «Spostamento massimo» nel pannello dei risultati considera solo i nodi: su una trave con due soli nodi vincolati indica 0 mm, mentre la freccia in campata è 10 mm | bassa | aperto: usare il massimo della deformata lungo le aste | Mariana |
-| D15 | 31/10 | S21 | I carichi trapezoidali si vedono nel pannello ma non si possono inserire dall'interfaccia (solo da file) | media | aperto | Lucia |
-| D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | aperto | Lucia |
+| D12 | 30/10 | S17 | Durante il disegno la vista non si adatta ai nodi aggiunti fuori dall'inquadratura (va usata la rotella o ricaricata la vista) | bassa | **chiuso 02/11**: se il nodo cade fuori dal 95 % dell'inquadratura la vista si adatta al modello; non provato in automatico, da controllare a mano | Irene |
+| D14 | 31/10 | S21 | «Spostamento massimo» nel pannello dei risultati considera solo i nodi: su una trave con due soli nodi vincolati indica 0 mm, mentre la freccia in campata è 10 mm | bassa | **chiuso 02/11**: massimo sui 21 punti per asta della deformata esatta (S26) | Mariana |
+| D15 | 31/10 | S21 | I carichi trapezoidali si vedono nel pannello ma non si possono inserire dall'interfaccia (solo da file) | media | **chiuso 02/11**: «+ trapezio» sull'asta selezionata e «imposta» cedimento sul nodo, solo sulle componenti vincolate; il modello passa allo schema 1.1 | Lucia, Irene, Daniela |
+| D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

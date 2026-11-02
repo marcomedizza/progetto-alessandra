@@ -253,6 +253,12 @@ export class Vista {
     this.onSeleziona(scelto ? scelto.object.userData : null);
   }
 
+  // true se il punto (x, y) del piano del telaio è dentro l'inquadratura corrente (D12)
+  inQuadro(x, y) {
+    const v = new THREE.Vector3(x, y, 0).project(this.camera);
+    return Math.abs(v.x) <= 0.95 && Math.abs(v.y) <= 0.95;
+  }
+
   // Griglia del piano del telaio con il passo di aggancio, visibile solo durante il disegno.
   mostraGrigliaDisegno(attiva) {
     if (this.grigliaDisegno) { this.scene.remove(this.grigliaDisegno); this.grigliaDisegno.geometry.dispose(); this.grigliaDisegno = null; }

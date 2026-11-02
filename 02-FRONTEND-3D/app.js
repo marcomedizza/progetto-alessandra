@@ -30,7 +30,23 @@ function casoEffettivo(m, valore) {
   }
   return out;
 }
-const stato = { modello: null, caso: null, ris: null, selezione: null, servizio: false, disegno: null };
+const stato = { modello: null, caso: null, ris: null, selezione: null, servizio: false, disegno: null, storia: [] };
+
+// Annulla (D13, Lucia): copie del modello dopo ogni modifica, al massimo 50
+function memorizza() {
+  stato.storia.push(JSON.stringify(stato.modello));
+  if (stato.storia.length > 50) stato.storia.shift();
+}
+function annulla() {
+  if (stato.storia.length < 2) { messaggio('Niente da annullare'); return; }
+  stato.storia.pop();
+  stato.modello = JSON.parse(stato.storia.at(-1));
+  stato.ris = null; stato.selezione = null;
+  if (stato.disegno) stato.disegno.ultimo = null;
+  aggiorna();
+  if (stato.disegno) vista.mostraGrigliaDisegno(true);
+  messaggio('Ultima modifica annullata: premi «Calcola» per aggiornare i risultati');
+}
 
 const vista = new Vista($('#vista'), (sel) => { stato.selezione = sel; aggiorna(); });
 
@@ -47,6 +63,7 @@ function aggiorna(ridisegnaModello = true) {
   if (ridisegnaModello) vista.disegna(m, stato.caso, stato.selezione);
   vista.impostaEtichette(disegnaRisultati(vista.gruppoRisultati, m, stato.ris, opzioni(), vista.S, stato.caso));
   const modificato = (testo = 'Modello modificato', deseleziona = false) => {
+    memorizza();
     stato.ris = null;
     if (deseleziona) stato.selezione = null;
     messaggio(`${testo}: premi «Calcola» per aggiornare i risultati`);
@@ -55,7 +72,7 @@ function aggiorna(ridisegnaModello = true) {
   pannelloProprieta($('#pannello-proprieta'), m, stato.caso, stato.selezione, stato.ris, () => modificato());
   pannelloModifica($('#pannello-modifica'), m, stato.caso, stato.selezione, (t, d) => { modificato(t, d); vista.vista(vista.vistaCorrente); },
     (err) => messaggio(err, 'errore'));
-  $('#pannello-risultati').innerHTML = tabellaRisultati(m, stato.ris);
+  $('#pannello-risultati').innerHTML = tabellaRisultati(m, stato.ris, stato.caso);
 }
 
 // Disegno col mouse (Irene, Lucia — D10): ogni clic dà un nodo (esistente o nuovo, agganciato alla griglia);
@@ -70,16 +87,22 @@ function puntoDisegnato(p) {
   }
   const prec = stato.disegno.ultimo;
   stato.disegno.ultimo = id;
+  // D12: se il nodo esce dall'inquadratura la vista si adatta al modello
+  const n = m.nodi.find((x) => x.id === id), fuori = !vista.inQuadro(n.x, n.y);
   stato.selezione = { tipo: 'nodo', id };
   stato.ris = null;
   if (prec === null || prec === id) {
+    memorizza();
     aggiorna();
+    if (fuori) vista.vista(vista.vistaCorrente);
     vista.mostraGrigliaDisegno(true);
     messaggio(`Disegno: nodo iniziale ${id}; clic sul nodo successivo (Esc per chiudere)`);
     return;
   }
   const r = aggiungiAsta(m, prec, id, stato.disegno.sezione || m.sezioni[0].id);
+  memorizza();
   aggiorna();
+  if (fuori) vista.vista(vista.vistaCorrente);
   vista.mostraGrigliaDisegno(true);
   if (typeof r === 'string') messaggio(r, 'errore');
   else messaggio(`Disegno: aggiunta l'asta ${r} (${prec} → ${id}); clic sul nodo successivo (Esc per chiudere)`);
@@ -98,6 +121,7 @@ function disegno(attivo) {
 function caricaModello(m) {
   if (stato.disegno) disegno(false);
   stato.modello = m; stato.ris = null; stato.selezione = null;
+  stato.storia = [JSON.stringify(m)];
   $('#sel-carico').innerHTML = m.casi_di_carico.map((c) => `<option value="${esc(c.id)}">${esc(c.id)} · ${esc(c.nome)}</option>`).join('')
     + (m.combinazioni || []).map((c) => `<option value="comb:${esc(c.id)}">combinazione ${esc(c.id)} · ${esc(c.nome)}</option>`).join('');
   aggiorna();
@@ -157,7 +181,9 @@ $('#btn-nuovo').addEventListener('click', () => caricaModello(modelloNuovo()));
 $('#btn-calcola').addEventListener('click', calcola);
 $('#btn-disegna').addEventListener('click', () => disegno(!stato.disegno));
 $('#passo').addEventListener('change', () => { if (stato.disegno) disegno(true); });
+$('#btn-annulla').addEventListener('click', annulla);
 document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) { e.preventDefault(); annulla(); return; }
   if (e.key === 'Escape' && stato.disegno) { stato.disegno.ultimo = null; messaggio('Disegno: spezzata chiusa; clic per un nuovo nodo iniziale'); }
 });
 $('#chk-def').addEventListener('change', () => aggiorna(false));

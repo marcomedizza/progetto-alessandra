@@ -106,16 +106,13 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   return etichette;
 }
 
-function disegnaDeformata(gruppo, modello, ris, S, caso) {
+// Spostamenti lungo le aste (Mariana): per ogni asta 21 punti con ascissa X, spostamento assiale u e
+// trasversale v locali. Usata dalla deformata e dallo spostamento massimo (D14).
+function deformataAste(modello, ris, caso) {
   const sp = new Map(ris.spostamenti.map((u) => [u.nodo, u]));
   const rot = new Map((ris.rotazioni_aste || []).map((r) => [r.asta, r]));
-  // scala riferita a traslazioni e rotazioni (×S/10): evita amplificazioni enormi quando
-  // le traslazioni sono quasi nulle (aste assialmente indeformabili, schemi simmetrici)
-  const max = Math.max(1e-12, ...ris.spostamenti.map((u) => Math.max(Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1)));
-  const k = (S * 0.08) / max;
-  const mat = new THREE.LineDashedMaterial({ color: 0x2f5fa7, dashSize: S * 0.015, gapSize: S * 0.01 });
-  for (const a of modello.aste) {
-    const { ni, L, c, s } = geometriaAsta(modello, a);
+  return modello.aste.map((a) => {
+    const geo = geometriaAsta(modello, a), { L, c, s } = geo;
     const ui = sp.get(a.nodo_i), uj = sp.get(a.nodo_j);
     // spostamenti locali d'estremità
     const ui_x = c * ui.ux + s * ui.uy, vi = -s * ui.ux + c * ui.uy;
@@ -127,15 +124,27 @@ function disegnaDeformata(gruppo, modello, ris, S, caso) {
     const approssimata = (a.svincoli?.rz_i || a.svincoli?.rz_j) && !r;
     const m = modello.materiali.find((x) => x.id === a.materiale), se = modello.sezioni.find((x) => x.id === a.sezione);
     const car = approssimata ? { wy: 0, P: [] } : carichiTrasversali(modello, caso, a, c, s);
-    const pts = [];
+    const punti = [];
     for (let i = 0; i <= 20; i++) {
       const x = i / 20, X = x * L;
       // funzioni di forma di Hermite (interpolazione dai soli spostamenti nodali)
       const N1 = 1 - 3 * x * x + 2 * x ** 3, N2 = L * (x - 2 * x * x + x ** 3), N3 = 3 * x * x - 2 * x ** 3, N4 = L * (-x * x + x ** 3);
       const v = N1 * vi + N2 * ti + N3 * vj + N4 * tj + inflessioneIncastrata(X, L, m.E * se.I, car);
-      const u = (1 - x) * ui_x + x * uj_x;
-      pts.push(ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v, 0);
+      punti.push({ X, u: (1 - x) * ui_x + x * uj_x, v });
     }
+    return { asta: a, geo, punti };
+  });
+}
+
+function disegnaDeformata(gruppo, modello, ris, S, caso) {
+  // scala riferita a traslazioni e rotazioni (×S/10): evita amplificazioni enormi quando
+  // le traslazioni sono quasi nulle (aste assialmente indeformabili, schemi simmetrici)
+  const max = Math.max(1e-12, ...ris.spostamenti.map((u) => Math.max(Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1)));
+  const k = (S * 0.08) / max;
+  const mat = new THREE.LineDashedMaterial({ color: 0x2f5fa7, dashSize: S * 0.015, gapSize: S * 0.01 });
+  for (const { geo: { ni, c, s }, punti } of deformataAste(modello, ris, caso)) {
+    const pts = [];
+    for (const { X, u, v } of punti) pts.push(ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v, 0);
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
     const l = new THREE.Line(g, mat);
@@ -147,7 +156,7 @@ function disegnaDeformata(gruppo, modello, ris, S, caso) {
 
 const fmt = (v, d = 2) => (Math.abs(v) < 5e-13 ? 0 : v).toLocaleString('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d });
 
-export function tabellaRisultati(modello, ris) {
+export function tabellaRisultati(modello, ris, caso) {
   if (!ris) return '<p class="vuoto">Premi «Calcola».</p>';
   let h = '<table><thead><tr><th>Nodo</th><th class="num">Rx [kN]</th><th class="num">Ry [kN]</th><th class="num">Mz [kNm]</th></tr></thead><tbody>';
   for (const r of ris.reazioni) h += `<tr><td>${r.nodo}</td><td class="num">${fmt(r.Rx)}</td><td class="num">${fmt(r.Ry)}</td><td class="num">${fmt(r.Mz)}</td></tr>`;
@@ -156,8 +165,15 @@ export function tabellaRisultati(modello, ris) {
     const mx = (k) => Math.max(...s[k].map(Math.abs));
     h += `<tr><td>${s.asta}</td><td class="num">${fmt(mx('M'))}</td><td class="num">${fmt(mx('V'))}</td><td class="num">${fmt(mx('N'))}</td></tr>`;
   }
-  const umax = ris.spostamenti.reduce((m, u) => (Math.hypot(u.ux, u.uy) > Math.hypot(m.ux, m.uy) ? u : m));
-  h += `</tbody></table><p class="nota">Spostamento massimo: nodo ${umax.nodo}, ux = ${fmt(umax.ux * 1000)} mm, uy = ${fmt(umax.uy * 1000)} mm. Unità: kN, kNm. Solutore: ${String(ris.solutore).replace(/[<>&]/g, '')}.</p>`;
+  // spostamento massimo lungo le aste, non solo nei nodi (D14): 21 punti per asta della deformata esatta
+  let best = { d: -1 };
+  for (const { asta, geo: { c, s: sn }, punti } of deformataAste(modello, ris, caso)) {
+    for (const { X, u, v } of punti) {
+      const ux = c * u - sn * v, uy = sn * u + c * v, d = Math.hypot(ux, uy);
+      if (d > best.d) best = { d, ux, uy, asta: asta.id, X };
+    }
+  }
+  h += `</tbody></table><p class="nota">Spostamento massimo: asta ${best.asta}, x = ${fmt(best.X)} m, ux = ${fmt(best.ux * 1000)} mm, uy = ${fmt(best.uy * 1000)} mm (deformata lungo le aste, 21 punti per asta). Unità: kN, kNm. Solutore: ${String(ris.solutore).replace(/[<>&]/g, '')}.</p>`;
   h += '<p class="nota">Deformata esatta lungo le aste: spostamenti e rotazioni d\'estremità, comprese quelle alle cerniere interne, più l\'inflessione dei carichi d\'asta.</p>';
   return h;
 }

@@ -429,13 +429,67 @@ def c13():
     return m, atteso
 
 
+def c15():
+    q, a, b = 10.0, 1.0, 4.0
+    m = v11(trave("C15", "Asta inclinata, carico verticale parziale",
+                  "IPE 300 da (0; 0) a (4; 3), L = 5 m; cerniera al piede, carrello a scorrimento orizzontale in testa; "
+                  "carico verticale di 10 kN/m di lunghezza dell'asta da 1 a 4 m lungo l'asta (schema v1.1, Daniela).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 3}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+                  {"id": "Q", "nome": "Carico parziale", "categoria": "Q", "carichi_aste": [
+                      {"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -q, "q_j": -q, "a": a, "b": b}]}, 11))
+    c, s = 0.8, 0.6                  # coseni direttori dell'asta
+    W = q * (b - a)                  # risultante verticale
+    xg = (a + b) / 2 * c             # ascissa orizzontale del baricentro
+    R2 = W * xg / 4.0
+    R1 = W - R2
+    wy = q * c                       # componente trasversale locale del carico
+    M = R1 * c * 2.5 - wy * (2.5 - a) ** 2 / 2
+    atteso = {"caso": "Q", "formule": {
+        "reazioni verticali": "R2 = W·xg/4 con W = q·(b − a), xg = (a + b)/2·cosα; R1 = W − R2; nessuna reazione orizzontale",
+        "momento in s = 2,5 m": "M = R1·cosα·s − q·cosα·(s − a)²/2",
+        "sforzo normale": "N(0) = −R1·sinα (compressione); N(L) = +R2·sinα; differenza = q·sinα·(b − a)"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": R1, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": R2, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=2.5", "valore": M, "unita": "kNm"},
+            {"grandezza": "N asta 1 x=0", "valore": -R1 * s, "unita": "kN"},
+            {"grandezza": "N asta 1 x=5", "valore": R2 * s, "unita": "kN"}]}
+    return m, atteso
+
+
+def c16():
+    d = 0.010
+    m = v11(trave("C16", "Trave Gerber, cedimento dell'appoggio",
+                  "Geometria di C6 (incastro, cerniera interna a 4 m, appoggio a 6 m), nessun carico; l'appoggio a 6 m cede di 10 mm (schema v1.1, Silvia e Carla).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 3, "uy": True}],
+                  {"id": "CED", "nome": "Cedimento dell'appoggio", "categoria": "altro", "cedimenti": [{"nodo": 3, "uy": -d}]}, 5))
+    atteso = {"caso": "CED", "formule": {
+        "struttura isostatica": "il cedimento non produce reazioni né sollecitazioni",
+        "cinematica": "la mensola resta indeformata; il tratto 4–6 ruota rigidamente attorno alla cerniera: φ = −δ/2"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=0", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cerniera)", "valore": 0.0, "unita": "m"},
+            {"grandezza": "φj asta 1 (mensola alla cerniera)", "valore": 0.0, "unita": "rad"},
+            {"grandezza": "rz nodo 2 (tratto appoggiato)", "valore": -d / 2, "unita": "rad"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
                     ("C6_trave_gerber", c6), ("C7_carico_concentrato", c7), ("C8_molla_in_mezzeria", c8),
                     ("C9_portale_tre_cerniere_molla", c9),
                     ("C10_combinazione_slu", c10), ("C11_cedimento_appoggio", c11),
-                    ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13)):
+                    ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13),
+                    ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

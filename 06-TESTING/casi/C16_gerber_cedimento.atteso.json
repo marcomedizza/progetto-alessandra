@@ -1,0 +1,39 @@
+{
+  "caso": "CED",
+  "formule": {
+    "struttura isostatica": "il cedimento non produce reazioni né sollecitazioni",
+    "cinematica": "la mensola resta indeformata; il tratto 4–6 ruota rigidamente attorno alla cerniera: φ = −δ/2"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2 (cerniera)",
+      "valore": 0.0,
+      "unita": "m"
+    },
+    {
+      "grandezza": "φj asta 1 (mensola alla cerniera)",
+      "valore": 0.0,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "rz nodo 2 (tratto appoggiato)",
+      "valore": -0.005,
+      "unita": "rad"
+    }
+  ]
+}

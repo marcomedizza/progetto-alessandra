@@ -103,6 +103,13 @@ LETTURE = {
         "M asta 1 x=3": S(1, "M", 3.0), "M asta 1 x=4 (fine del carico)": S(1, "M", 4.0)},
     "C13": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=0": S(1, "M", 0.0), "M asta 1 x=6": S(1, "M", 6.0)},
+    "C15": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "M asta 1 x=2.5": S(1, "M", 2.5),
+        "N asta 1 x=0": S(1, "N", 0.0), "N asta 1 x=5": S(1, "N", 5.0)},
+    "C16": {
+        "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"), "M asta 1 x=0": S(1, "M", 0.0),
+        "uy nodo 2 (cerniera)": U(2, "uy"), "φj asta 1 (mensola alla cerniera)": ROT(1, "phi_j"),
+        "rz nodo 2 (tratto appoggiato)": U(2, "rz")},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

@@ -1,0 +1,40 @@
+{
+  "caso": "Q",
+  "formule": {
+    "reazioni verticali": "R2 = W·xg/4 con W = q·(b − a), xg = (a + b)/2·cosα; R1 = W − R2; nessuna reazione orizzontale",
+    "momento in s = 2,5 m": "M = R1·cosα·s − q·cosα·(s − a)²/2",
+    "sforzo normale": "N(0) = −R1·sinα (compressione); N(L) = +R2·sinα; differenza = q·sinα·(b − a)"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 15.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 15.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=2.5",
+      "valore": 21.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "N asta 1 x=0",
+      "valore": -9.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "N asta 1 x=5",
+      "valore": 9.0,
+      "unita": "kN"
+    }
+  ]
+}

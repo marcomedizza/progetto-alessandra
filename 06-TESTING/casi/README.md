@@ -17,6 +17,8 @@
 | C11 | Trave continua su tre appoggi (2 × 6 m), cedimento dell'appoggio centrale δ = 10 mm (v1.1) | formule chiuse | RB = −4,874 kN; RA = RC = 2,437 kN; MB = 14,62 kNm; φA = −2,50 mrad |
 | C12 | Trave appoggiata L = 6 m, trapezio da 10 kN/m in x = 1 m a 20 kN/m in x = 4 m (v1.1) | statica | R1 = 25 kN; R2 = 20 kN; M(1) = 25,00; M(3) = 50,56; M(4) = 40,00 kNm |
 | C13 | Trave incastrata L = 6 m, carico triangolare da 0 a 20 kN/m (v1.1) | formule chiuse | RA = 3qL/20 = 18 kN; RB = 7qL/20 = 42 kN; MA = −qL²/30 = −24; MB = −qL²/20 = −36 kNm |
+| C15 | Asta inclinata (0; 0)–(4; 3), cerniera e carrello, q = 10 kN/m verticale da 1 a 4 m lungo l'asta (v1.1) | statica | R1 = R2 = 15 kN; Rx = 0; M(2,5) = 21,0 kNm; N(0) = −9 kN; N(5) = +9 kN |
+| C16 | Geometria di C6, nessun carico, cedimento di 10 mm dell'appoggio (v1.1) | isostatica | reazioni e momenti nulli; cerniera ferma; tratto 4–6 ruota di −δ/2 = −5 mrad |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -92,6 +94,24 @@ Trave incastrata alle due estremità, L = 6 m, carico da 0 in x = 0 a q = 20 kN/
 - RA = 3qL/20 = 18 kN e RB = 7qL/20 = 42 kN.
 
 Verifica di equilibrio: RA + RB = qL/2 = 60 kN.
+
+## C15 · carico parziale su asta inclinata (Daniela, 02/11)
+
+Asta da (0; 0) a (4; 3), quindi L = 5 m, cos α = 0,8 e sin α = 0,6. Cerniera al piede, carrello in testa (solo uy impedito). Carico verticale q = 10 kN/m per metro d'asta, da s = 1 a s = 4 m.
+1. W = q·3 = 30 kN; baricentro in s = 2,5 m, cioè x = 2,0 m.
+2. Reazioni: R2 = 30 × 2/4 = 15 kN; R1 = 15 kN; nessuna reazione orizzontale, perché carichi e carrello sono verticali.
+3. Componenti locali del carico: trasversale q·cos α = 8 kN/m, assiale q·sin α = 6 kN/m verso il piede.
+4. M(2,5) = R1·cos α·2,5 − 8 × 1,5²/2 = 30 − 9 = 21,0 kNm. Con la proiezione orizzontale si ottiene lo stesso valore: 15 × 2 − 12,5 × 1,2²/2 = 21,0.
+5. Sforzo normale: N(0) = −R1·sin α = −9 kN (compressione); N(5) = +R2·sin α = +9 kN; la differenza vale 6 × 3 = 18 kN.
+
+## C16 · cedimento su struttura con cerniera (Silvia e Carla, 02/11)
+
+Stessa geometria di C6, senza carichi; l'appoggio a 6 m cede di δ = 10 mm.
+- La struttura è isostatica, quindi il cedimento non produce reazioni né sollecitazioni.
+- La mensola resta indeformata (cerniera ferma, rotazione della mensola nulla).
+- Il tratto 4–6 ruota rigidamente attorno alla cerniera di −δ/2 = −5 mrad.
+
+Il caso controlla insieme cerniera interna, rotazioni d'estremità e cedimenti.
 
 ## File
 

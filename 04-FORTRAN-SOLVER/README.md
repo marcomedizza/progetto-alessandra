@@ -18,6 +18,10 @@ Gestisce: aste inclinate, cerniere interne, vincoli e molle, carichi nodali, car
 - carichi distribuiti lineari su un tratto dell'asta (tipo 3: parziali, trapezoidali, triangolari; Daniela), con forze d'incastro integrate con Gauss a 3 punti, esatto;
 - sezione facoltativa `CEDIMENTI` (Carla): spostamenti impressi ai gradi di libertà vincolati, portati a secondo membro per asta. Un cedimento su un grado di libertà non vincolato è un errore.
 
+**Cedimento su una molla** (punto 28 della revisione): non è ammesso. Il grado di libertà con molla resta un'incognita del sistema, il cui spostamento dipende dalla rigidezza della molla. Imporne il valore annullerebbe il significato della molla. Un cedimento noto va dato su un vincolo rigido; un terreno cedevole si rappresenta con la molla e i carichi. Il servizio respinge il modello con il messaggio «il nodo non ha uy vincolato» e il solutore con «cedimento su un grado di libertà non vincolato».
+
+**Modello grande con cedimenti** (Carla, 02/11): telaio 20 × 100 (6363 gdl), cedimento di 10 mm di un piede, nessun carico. Le reazioni risultano autoequilibrate: somme delle forze e momento risultante nulli entro 10⁻⁵. Prova `test_modello_grande_con_cedimenti`.
+
 I file della v0.2 restano validi. Verifica sui casi C11–C13 con soluzione a mano.
 
 **Prossimi passi**: distorsioni termiche vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
@@ -47,5 +51,16 @@ Il sistema K·u = F sui soli gradi di libertà liberi si risolve con la fattoriz
 | 12 × 50 | 663 | 1250 | 1989 | 0,029 s | 0,350 s | 6·10⁻¹³ |
 | 20 × 100 | 2121 | 4100 | 6363 | 0,106 s | — | — |
 | 30 × 150 | 4681 | 9150 | 14 043 | 0,260 s | — | — |
+
+**Ripetizione con la v0.3** (Elisa, Ottavia, 02/11), nell'ordine dei nodi di Cuthill-McKee:
+
+| Telaio | gdl | Banda | Piena | Scarto |
+|---|---|---|---|---|
+| 10 × 40 | 1353 | 0,019 s | 0,080 s | 5·10⁻¹⁴ |
+| 12 × 50 | 1989 | 0,020 s | 0,183 s | 2·10⁻¹² |
+| 20 × 100 | 6363 | 0,103 s | — | — |
+| 30 × 150 | 14 043 | 0,458 s | — | — |
+
+L'equilibrio verticale è esatto in tutti i casi. I tempi variano di un fattore fino a 2 da un'esecuzione all'altra, per il carico della macchina di prova. La v0.3 non cambia il costo della soluzione: trapezi e cedimenti agiscono solo sul secondo membro.
 
 Lo scarto relativo è quello tra gli spostamenti dei due metodi. In tutti i casi la somma delle reazioni verticali coincide con il carico. Il percorso completo del servizio (convertitore compreso) sul telaio 30 × 150 richiede 0,5 s e produce 3,4 MB di risultati. Il servizio accetta ora fino a 5000 nodi e 10 000 aste. Il limite pratico diventa la vista 3D del navigatore, non provata oltre qualche centinaio di aste.

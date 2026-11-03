@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 02/11/2026
+# Prova del flusso utente — prototipo del 03/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -40,6 +40,10 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S24 | Cedimento dal pannello (D15) | C1, nodo 3, uy = −10 mm, «imposta», calcolare | Compare solo il campo uy (l'unica componente vincolata); reazioni invariate 30 · 30 kN (trave isostatica); uy del nodo 3 = −10 mm |
 | S25 | Annulla (D13) | Dopo S23 premere «Annulla» due volte | Il trapezio sparisce e il ricalcolo non dà più 40 kN; al secondo clic «Niente da annullare» |
 | S26 | Spostamento massimo (D14) | Dopo S23 leggere la nota sotto le tabelle | «asta 1, x = 3,00 m, uy = −14,43 mm», uguale a 5qL⁴/(384EI) con q = 15 kN/m (il triangolo antisimmetrico non dà freccia in mezzeria) |
+| S27 | Direzione del trapezio (punto 32) | «Nuovo», trave, direzione «orizzontale (X)», q = −10 kN/m su tutta la luce, calcolare | Rx1 = +60 kN, nessuna reazione verticale |
+| S28 | Carico normale all'asta inclinata | C17, calcolare | Rx1 = −18,00 kN; Ry = 5,25 · 18,75 kN |
+| S29 | ΔT su trave incastrata (v1.2) | C14, calcolare | Reazione orizzontale 271,20 kN |
+| S30 | ΔT a farfalla su trave appoggiata (v1.2) | C18, calcolare, selezionare un'asta | Spostamento massimo −1,80 mm in mezzeria; nel pannello «Distorsione termica: … 10 °C»; sollecitazioni 0 |
 | S19 | Deformata con cerniera (D8) | C6, calcolare | Deformata con angolo alla cerniera: mensola curva fino a 4 m, tratto appoggiato quasi rettilineo; nota «comprese quelle alle cerniere interne» |
 
 ## Esiti
@@ -92,6 +96,14 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S25 | superato |
 | S26 | superato: −14,43 mm in x = 3,00 m |
 
+| Scenario | 03/11 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S26, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
+| S27 | superato: Rx1 = 60,00 kN |
+| S28 | superato |
+| S29 | superato: 271,20 kN |
+| S30 | superato: −1,80 mm; residui numerici mostrati come 0 dopo la correzione di D16 |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -112,4 +124,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D12 | 30/10 | S17 | Durante il disegno la vista non si adatta ai nodi aggiunti fuori dall'inquadratura (va usata la rotella o ricaricata la vista) | bassa | **chiuso 02/11**: se il nodo cade fuori dal 95 % dell'inquadratura la vista si adatta al modello; non provato in automatico, da controllare a mano | Irene |
 | D14 | 31/10 | S21 | «Spostamento massimo» nel pannello dei risultati considera solo i nodi: su una trave con due soli nodi vincolati indica 0 mm, mentre la freccia in campata è 10 mm | bassa | **chiuso 02/11**: massimo sui 21 punti per asta della deformata esatta (S26) | Mariana |
 | D15 | 31/10 | S21 | I carichi trapezoidali si vedono nel pannello ma non si possono inserire dall'interfaccia (solo da file) | media | **chiuso 02/11**: «+ trapezio» sull'asta selezionata e «imposta» cedimento sul nodo, solo sulle componenti vincolate; il modello passa allo schema 1.1 | Lucia, Irene, Daniela |
+| D16 | 03/11 | S30 | Nel pannello proprietà i residui numerici comparivano come 0,000000000000003887 kNm | bassa | **chiuso 03/11**: valori sotto 10⁻⁹ mostrati come 0 | Lucia |
+| D17 | 03/11 | — | Le distorsioni termiche si vedono nel pannello ma si inseriscono solo da file | bassa | aperto | Lucia, Irene |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

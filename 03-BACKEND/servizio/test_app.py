@@ -210,6 +210,24 @@ def test_trapezio_normale_asta_inclinata():
     assert max(abs(n - 11.25) for n in r["sollecitazioni"][0]["N"]) < 1e-9
 
 
+def test_v12_distorsioni_termiche():
+    # v1.2 (03/11): C14 incastrata (N = −EAαΔT, M = −EIαΔTg/h) e C18 appoggiata (freccia −κL²/8)
+    r14 = client.post("/api/calcola", json=modello("C14_termica_incastrata")).json()["risultati"][0]
+    assert abs(r14["sollecitazioni"][0]["N"][0] + 2.1e8 * 53.81e-4 * 1.2e-5 * 20) < 1e-6
+    r18 = client.post("/api/calcola", json=modello("C18_termica_appoggiata")).json()["risultati"][0]
+    assert abs(next(u["uy"] for u in r18["spostamenti"] if u["nodo"] == 2) + 1.2e-5 * 10 / 0.3 * 36 / 8) < 1e-12
+    # regole di coerenza
+    m = modello("C14_termica_incastrata")
+    m["schema_version"] = "1.1"
+    assert "schema_version 1.2" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+    m = modello("C14_termica_incastrata")
+    del m["sezioni"][0]["h"]
+    assert "richiede h" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+    m = modello("C14_termica_incastrata")
+    m["analisi"]["deformabilita_assiale"] = False
+    assert "deformabilità assiale" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

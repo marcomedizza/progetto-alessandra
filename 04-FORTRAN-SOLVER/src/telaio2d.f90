@@ -1,6 +1,6 @@
 ! =============================================================================
 !  telaio2d — solutore per telai piani, statica lineare (metodo degli spostamenti)
-!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.3 (31/10/2026)
+!  Progetto Alessandra · 04-FORTRAN-SOLVER · v0.4 (03/11/2026)
 !
 !  Uso:   telaio2d  input.txt  output.txt  [piena]
 !         (piena: eliminazione di Gauss a matrice piena, per confronto)
@@ -15,6 +15,8 @@
 !    CARICHI_NODALI p  → nodo Fx Fy Mz
 !    CARICHI_ASTE q    → asta tipo wx wy a                   (tipo 1 uniforme, 2 concentrato)
 !                        asta 3 wxi wyi a wxj wyj b         (tipo 3 trapezio da a a b, v0.3)
+!                        asta 4 NT MT 0                      (tipo 4 distorsione termica, v0.4:
+!                                                             NT = EAαΔTu, MT = EIαΔTg/h)
 !    CEDIMENTI c       → nodo dx dy dr                       (facoltativa, v0.3: spostamenti
 !                                                             impressi ai gdl vincolati)
 !    FINE
@@ -363,7 +365,11 @@ contains
       do q = 1, nca
          if (cae(q) /= eid(el)) cycle
          wx = caw(1,q); wy = caw(2,q)
-         if (cat(q) == 3) then
+         if (cat(q) == 4) then
+            ! dilatazione e curvatura termiche impedite: N = −NT, M = −MT su tutta l'asta
+            f(1) = f(1) + caw(1,q); f(4) = f(4) - caw(1,q)
+            f(3) = f(3) + caw(2,q); f(6) = f(6) - caw(2,q)
+         else if (cat(q) == 3) then
             call trapezio(caw(:,q), L, f)
          else if (cat(q) == 1) then
             f(1) = f(1) - wx*L/2;  f(4) = f(4) - wx*L/2

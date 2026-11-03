@@ -1,4 +1,4 @@
-# Solutore Fortran telaio2d — v0.3 (31/10/2026)
+# Solutore Fortran telaio2d — v0.4 (03/11/2026)
 
 Telai piani, statica lineare, metodo degli spostamenti (Elisa, compilazione Ottavia).
 
@@ -24,7 +24,9 @@ Gestisce: aste inclinate, cerniere interne, vincoli e molle, carichi nodali, car
 
 I file della v0.2 restano validi. Verifica sui casi C11–C13 con soluzione a mano.
 
-**Prossimi passi**: distorsioni termiche vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
+**v0.4 (03/11, Elisa e Paola)**: distorsioni termiche, carico di tipo 4 `asta 4 NT MT 0`. Il convertitore calcola NT = E·A·α·ΔTu e MT = E·I·α·ΔTg/h; il solutore li applica come forze d'incastro: f1 = +NT, f4 = −NT, f3 = +MT, f6 = −MT. Verifica: C14 (trave incastrata) e C18 (trave appoggiata) contro le formule chiuse. Il costo della soluzione non cambia, perché agisce solo sul secondo membro.
+
+**Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)
 

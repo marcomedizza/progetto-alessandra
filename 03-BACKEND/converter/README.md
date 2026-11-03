@@ -12,6 +12,7 @@ Il solutore si compila con `04-FORTRAN-SOLVER/build.sh`; il percorso si può cam
 - `combina(modello, combinazione)` → risultati di una combinazione per sovrapposizione lineare
 - La chiamata al solutore è nel modulo di Ottavia `04-FORTRAN-SOLVER/esegui.py`
 - Dal 30/10 i risultati contengono anche `rotazioni_aste` (asta, phi_i, phi_j), cioè le rotazioni d'estremità delle aste. Alla cerniera interna sono diverse da quella del nodo (D8). Le combinazioni le sommano come gli altri risultati.
+- Dal 03/11 (schema v1.2): le `carichi_termici` del caso diventano carichi di tipo 4 con NT = E·A·α·ΔTu e MT = E·I·α·ΔTg/h. Questi valori sono calcolati nel convertitore perché richiedono dati di materiale e sezione che il file del solutore non contiene. Le distorsioni non aggiungono termini ai diagrammi lungo l'asta, perché agiscono solo sulle forze d'estremità.
 - Dal 31/10 (schema v1.1): i carichi `distribuito_trapezio` diventano carichi di tipo 3 del solutore e i `cedimenti` del caso la sezione `CEDIMENTI`. I diagrammi N, V, M tengono conto del trapezio con la regola di Simpson, che per un carico lineare è esatta.
 - Dal 30/10 i nodi sono scritti per il solutore nell'ordine di Cuthill-McKee inverso (`ordine_nodi`), che riduce la semibanda della matrice. Spostamenti e reazioni sono poi rimessi nell'ordine del modello.
   - Telaio 20 × 100 con nodi mescolati: semibanda da 6203 a 71 gradi di libertà.

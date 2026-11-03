@@ -198,6 +198,9 @@ def analizza(modello, caso_id, punti=None):
     npt = punti or analisi.get("punti_diagramma", 11)
 
     caso = next(c for c in modello["casi_di_carico"] if c["id"] == caso_id)
+    termici_per_asta = {}
+    for t in caso.get("carichi_termici", []):
+        termici_per_asta.setdefault(t["asta"], []).append(t)
     carichi_per_asta = {}
     for q in caso.get("carichi_aste", []):
         carichi_per_asta.setdefault(q["asta"], []).append(q)
@@ -220,6 +223,16 @@ def analizza(modello, caso_id, punti=None):
             carichi.append({"tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -m["peso_specifico"] * se["A"]})
         cl = carichi_locali(carichi, c, s)
         ff = forze_incastro(cl, L)
+        # distorsioni termiche (v1.2): forze d'incastro dell'asta con dilatazione e curvatura impedite.
+        # ΔT uniforme: N = −EAαΔT; ΔT a farfalla (lato −y meno lato +y): curvatura libera κ = α·ΔTg/h, M = −EIκ
+        for t in termici_per_asta.get(el["id"], []):
+            alfa = m.get("alfa_t", 0.0)
+            NT = m["E"] * A * alfa * t.get("dT_u", 0.0)
+            MT = m["E"] * se["I"] * alfa * t.get("dT_g", 0.0) / se["h"] if t.get("dT_g") else 0.0
+            ff[0] += NT
+            ff[3] -= NT
+            ff[2] += MT
+            ff[5] -= MT
         sv = el.get("svincoli", {})
         ril = ([2] if sv.get("rz_i") else []) + ([5] if sv.get("rz_j") else [])
         kc, fc = condensa(kl, ff, ril)

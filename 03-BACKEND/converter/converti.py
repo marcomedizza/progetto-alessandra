@@ -34,7 +34,7 @@ def _geometria(modello):
 
 def carichi_locali(modello, caso):
     """Carichi d'asta in componenti locali: {asta: [(tipo, wx, wy, a)]}, tipo 1 uniforme, 2 concentrato;
-    tipo 3 trapezio (v1.1): (3, wxi, wyi, a, wxj, wyj, b)."""
+    tipo 3 trapezio (v1.1): (3, wxi, wyi, a, wxj, wyj, b); tipo 4 distorsione termica (v1.2): (4, NT, MT, 0)."""
     geo = _geometria(modello)
     mat = {m["id"]: m for m in modello["materiali"]}
     sez = {s["id"]: s for s in modello["sezioni"]}
@@ -58,6 +58,15 @@ def carichi_locali(modello, caso):
         else:
             wx, wy = locale(q["direzione"], q["P"], c, s)
             out[q["asta"]].append((2, wx, wy, q["a"]))
+    # distorsioni termiche (v1.2, Paola): tipo 4, forze d'incastro (NT, MT) calcolate qui dai dati di materiale e sezione
+    rigida = not modello.get("analisi", {}).get("deformabilita_assiale", True)
+    for t in caso.get("carichi_termici", []):
+        el = next(a for a in modello["aste"] if a["id"] == t["asta"])
+        mt, se = mat[el["materiale"]], sez[el["sezione"]]
+        alfa = mt.get("alfa_t", 0.0)
+        NT = mt["E"] * se["A"] * (1e6 if rigida else 1.0) * alfa * t.get("dT_u", 0.0)
+        MT = mt["E"] * se["I"] * alfa * t.get("dT_g", 0.0) / se["h"] if t.get("dT_g") else 0.0
+        out[el["id"]].append((4, NT, MT, 0.0))
     if caso.get("peso_proprio"):
         for el in modello["aste"]:
             g = mat[el["materiale"]].get("peso_specifico")
@@ -173,6 +182,8 @@ def diagrammi(f, carichi, L, npt):
                     n -= (c - a) * (w(a, wx, wxj) + w(c, wx, wxj)) / 2
                     v += (c - a) * (w(a, wy, wyj) + w(c, wy, wyj)) / 2
                     m += (c - a) / 6 * (w(a, wy, wyj) * (x - a) + 4 * w(ym, wy, wyj) * (x - ym) + w(c, wy, wyj) * (x - c))
+            elif t == 4:
+                continue   # distorsione termica: nessun carico lungo l'asta, agisce solo sulle forze d'estremità
             elif t == 1:
                 n -= wx * x
                 v += wy * x
@@ -201,7 +212,7 @@ def risultati(modello, caso_id):
     for el in modello["aste"]:
         xs, N, V, M = diagrammi(grezzo["estremita"][el["id"]], cl[el["id"]], geo[el["id"]][0], npt)
         soll.append({"asta": el["id"], "x": xs, "N": N, "V": V, "M": M})
-    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.3", "spostamenti": grezzo["spostamenti"],
+    return {"caso": caso_id, "solutore": "telaio2d Fortran v0.4", "spostamenti": grezzo["spostamenti"],
             "reazioni": grezzo["reazioni"], "rotazioni_aste": grezzo["rotazioni_aste"], "sollecitazioni": soll}
 
 

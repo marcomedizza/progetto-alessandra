@@ -115,3 +115,23 @@
 - `verifica_casi.py` nei tre percorsi su C1–C16: superati;
 - `test_app.py`: 20 prove superate;
 - scenari S1–S26 nel navigatore: superati.
+
+
+## Aggiornamento del 03/11/2026 (Marisa)
+
+**Punti aperti precedenti**: 32 **chiuso**: direzione del trapezio scelta nel pannello, coperta da C17 e S27. 34 e 37 restano aperti.
+
+**Revisione del codice nuovo del 03/11** (solutore v0.4, schema v1.2)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 38 | `03-BACKEND/converter/converti.py` | NT e MT sono calcolati nel convertitore, non nel solutore: il file del solutore resta senza α e h. Scelta corretta, ma il formato di tipo 4 è valido solo con quei valori precalcolati: va scritto nel README del solutore | — | fatto (README v0.4) |
+| 39 | `03-BACKEND/servizio/app.py` | Il ΔT uniforme è rifiutato con deformabilità assiale trascurata (A × 10⁶ darebbe una forza fittizia enorme): il messaggio è chiaro e coperto da una prova | — | nessun intervento |
+| 40 | `01-ARCHITETTURA/DATA_SCHEMA.json` | La convenzione di `dT_g` (lato −y meno lato +y) dipende dal verso dell'asta: invertendo nodo_i e nodo_j cambia il lato. Va spiegato all'utente, perché è facile sbagliare il segno | media | aperto: nota nell'interfaccia quando le distorsioni saranno inseribili (D17) |
+| 41 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Con una cerniera interna la condensazione tratta correttamente anche le forze termiche, che passano dallo stesso vettore delle forze d'incastro | bassa | aperto: manca un caso di prova con cerniera e ΔT a farfalla |
+| 42 | `02-FRONTEND-3D/proprieta.js` | I residui numerici erano mostrati con 16 cifre (D16) | bassa | corretto |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C18: superati;
+- `test_app.py`: 22 prove superate;
+- scenari S1–S30 nel navigatore: superati.

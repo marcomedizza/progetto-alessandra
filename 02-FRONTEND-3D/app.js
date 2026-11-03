@@ -11,7 +11,7 @@ const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 function casoEffettivo(m, valore) {
   if (!valore?.startsWith('comb:')) return m.casi_di_carico.find((c) => c.id === valore) || m.casi_di_carico[0];
   const comb = (m.combinazioni || []).find((c) => c.id === valore.slice(5));
-  const out = { id: comb.id, nome: comb.nome, _combinazione: true, carichi_nodali: [], carichi_aste: [], cedimenti: [], peso_proprio: false };
+  const out = { id: comb.id, nome: comb.nome, _combinazione: true, carichi_nodali: [], carichi_aste: [], cedimenti: [], carichi_termici: [], peso_proprio: false };
   for (const [cid, f] of Object.entries(comb.coefficienti)) {
     const c = m.casi_di_carico.find((x) => x.id === cid);
     if (!c) continue;
@@ -20,6 +20,7 @@ function casoEffettivo(m, valore) {
       out.carichi_aste.push(q.tipo === 'concentrato' ? { ...q, P: f * q.P }
         : q.tipo === 'distribuito_trapezio' ? { ...q, q_i: f * q.q_i, q_j: f * q.q_j } : { ...q, q: f * q.q });
     }
+    for (const t of c.carichi_termici || []) out.carichi_termici.push({ asta: t.asta, dT_u: f * (t.dT_u || 0), dT_g: f * (t.dT_g || 0) });
     for (const d of c.cedimenti || []) out.cedimenti.push({ nodo: d.nodo, ux: f * (d.ux || 0), uy: f * (d.uy || 0), rz: f * (d.rz || 0) });
     if (c.peso_proprio) {   // peso proprio come carico uniforme equivalente su ogni asta
       for (const a of m.aste) {

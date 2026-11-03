@@ -2,7 +2,8 @@
 // I campi seguono 01-ARCHITETTURA/DATA_SCHEMA.json v1.0. Ogni modifica chiama onCambio().
 
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const num = (v, d = 4) => Number(v).toLocaleString('it-IT', { maximumSignificantDigits: d });
+// residui numerici (|v| < 1e-9) mostrati come zero (D16)
+const num = (v, d = 4) => (Math.abs(Number(v)) < 1e-9 ? 0 : Number(v)).toLocaleString('it-IT', { maximumSignificantDigits: d });
 
 export function pannelloProprieta(el, modello, caso, selezione, ris, onCambio) {
   if (!selezione) { el.innerHTML = '<p class="vuoto">Nessun elemento selezionato.</p>'; return; }
@@ -33,6 +34,9 @@ function pannelloAsta(el, modello, caso, id, ris, onCambio) {
     <tr><td>Cerniere</td><td><label><input type="checkbox" id="p-rzi"${a.svincoli?.rz_i ? ' checked' : ''}> in i</label> <label><input type="checkbox" id="p-rzj"${a.svincoli?.rz_j ? ' checked' : ''}> in j</label></td></tr>
   </table>`;
   h += `<p class="nota">Carichi sull'asta, caso ${esc(caso?.id)}:</p>`;
+  for (const t of (caso?.carichi_termici || []).filter((x) => x.asta === id)) {   // v1.2: solo lettura
+    h += `<p class="nota">Distorsione termica: ΔT uniforme ${num(t.dT_u || 0)} °C · ΔT a farfalla ${num(t.dT_g || 0)} °C (lato −y meno lato +y)</p>`;
+  }
   if (!carichi.length) h += '<p class="vuoto">Nessuno.</p>';
   carichi.forEach((q, k) => {
     if (q.tipo === 'distribuito_trapezio') {   // v1.1: mostrato, modificabile solo nel file del modello

@@ -202,6 +202,14 @@ def test_cedimento_su_molla_rifiutato():
     assert not v["valido"] and "non ha uy vincolato" in " ".join(v["coerenza"])
 
 
+def test_trapezio_normale_asta_inclinata():
+    # punto 32 (03/11): carico normale all'asta (locale_y) su asta inclinata, C17 contro la statica
+    r = client.post("/api/calcola", json=modello("C17_inclinata_normale")).json()["risultati"][0]
+    reaz = {x["nodo"]: x for x in r["reazioni"]}
+    assert abs(reaz[1]["Rx"] + 18) < 1e-9 and abs(reaz[2]["Ry"] - 18.75) < 1e-9
+    assert max(abs(n - 11.25) for n in r["sollecitazioni"][0]["N"]) < 1e-9
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

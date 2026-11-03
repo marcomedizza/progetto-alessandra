@@ -482,6 +482,40 @@ def c16():
     return m, atteso
 
 
+def c17():
+    q, a, b = 10.0, 1.0, 4.0
+    m = v11(trave("C17", "Asta inclinata, carico parziale normale all'asta",
+                  "Geometria e vincoli di C15; carico di 10 kN/m normale all'asta (direzione locale_y, verso −y locale) da 1 a 4 m lungo l'asta "
+                  "(punto 32 della revisione, Daniela).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 3}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+                  {"id": "Q", "nome": "Carico normale parziale", "categoria": "Q", "carichi_aste": [
+                      {"asta": 1, "tipo": "distribuito_trapezio", "direzione": "locale_y", "q_i": -q, "q_j": -q, "a": a, "b": b}]}, 11))
+    c, s = 0.8, 0.6
+    W = q * (b - a)
+    Fx, Fy = W * s, -W * c                        # risultante: verso −y locale = (sin α, −cos α)
+    xg, yg = (a + b) / 2 * c, (a + b) / 2 * s     # punto di applicazione
+    R2 = -(xg * Fy - yg * Fx) / 4.0               # momento nullo attorno al piede; il carrello in (4; 3) reagisce solo in Y
+    R1y, R1x = -Fy - R2, -Fx
+    T1 = -R1x * s + R1y * c                       # componente trasversale locale della reazione al piede
+    M = T1 * 2.5 - q * (2.5 - a) ** 2 / 2
+    N = -(R1x * c + R1y * s)
+    atteso = {"caso": "Q", "formule": {
+        "risultante": "W = q·(b − a) normale all'asta, applicata in s = (a + b)/2",
+        "reazioni": "R2 da equilibrio alla rotazione attorno al piede (carrello verticale); R1x = −Wx; R1y = −Wy − R2",
+        "momento in s = 2,5 m": "M = T1·s − q·(s − a)²/2, T1 = componente trasversale di R1",
+        "sforzo normale": "costante (nessun carico assiale): N = −(R1x·cos α + R1y·sin α)"},
+        "valori": [
+            {"grandezza": "Rx nodo 1", "valore": R1x, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": R1y, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": R2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=2.5", "valore": M, "unita": "kNm"},
+            {"grandezza": "N asta 1 x=0", "valore": N, "unita": "kN"},
+            {"grandezza": "N asta 1 x=5", "valore": N, "unita": "kN"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -489,7 +523,8 @@ if __name__ == "__main__":
                     ("C9_portale_tre_cerniere_molla", c9),
                     ("C10_combinazione_slu", c10), ("C11_cedimento_appoggio", c11),
                     ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13),
-                    ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16)):
+                    ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
+                    ("C17_inclinata_normale", c17)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

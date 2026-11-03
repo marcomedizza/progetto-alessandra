@@ -19,6 +19,7 @@
 | C13 | Trave incastrata L = 6 m, carico triangolare da 0 a 20 kN/m (v1.1) | formule chiuse | RA = 3qL/20 = 18 kN; RB = 7qL/20 = 42 kN; MA = −qL²/30 = −24; MB = −qL²/20 = −36 kNm |
 | C15 | Asta inclinata (0; 0)–(4; 3), cerniera e carrello, q = 10 kN/m verticale da 1 a 4 m lungo l'asta (v1.1) | statica | R1 = R2 = 15 kN; Rx = 0; M(2,5) = 21,0 kNm; N(0) = −9 kN; N(5) = +9 kN |
 | C16 | Geometria di C6, nessun carico, cedimento di 10 mm dell'appoggio (v1.1) | isostatica | reazioni e momenti nulli; cerniera ferma; tratto 4–6 ruota di −δ/2 = −5 mrad |
+| C17 | Geometria di C15, q = 10 kN/m normale all'asta (locale_y) da 1 a 4 m (v1.1, punto 32) | statica | Rx1 = −18 kN; Ry1 = 5,25 kN; Ry2 = 18,75 kN; M(2,5) = 26,25 kNm; N = +11,25 kN costante |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -112,6 +113,15 @@ Stessa geometria di C6, senza carichi; l'appoggio a 6 m cede di δ = 10 mm.
 - Il tratto 4–6 ruota rigidamente attorno alla cerniera di −δ/2 = −5 mrad.
 
 Il caso controlla insieme cerniera interna, rotazioni d'estremità e cedimenti.
+
+## C17 · carico normale all'asta inclinata (Daniela, 03/11)
+
+Geometria e vincoli di C15; carico q = 10 kN/m perpendicolare all'asta, verso −y locale, cioè (sin α; −cos α) = (0,6; −0,8), da s = 1 a s = 4 m.
+1. Risultante W = 30 kN, con componenti (18; −24) kN, applicata in s = 2,5 m, cioè nel punto (2; 1,5).
+2. Momento attorno al piede: 4·R2 + (2 × (−24) − 1,5 × 18) = 0, quindi R2 = 75/4 = 18,75 kN.
+3. Reazioni al piede: R1y = 24 − 18,75 = 5,25 kN; R1x = −18 kN.
+4. Componente trasversale di R1: T1 = 18 × 0,6 + 5,25 × 0,8 = 15 kN. M(2,5) = 15 × 2,5 − 10 × 1,5²/2 = 26,25 kNm.
+5. Sforzo normale costante, perché il carico non ha componente assiale: N = −(R1x·cos α + R1y·sin α) = −(−14,4 + 3,15) = +11,25 kN (trazione).
 
 ## File
 

@@ -61,14 +61,15 @@ export function aggiungiCaricoUniforme(m, caso, asta, q) {
 
 // Carico lineare su un tratto dell'asta (D15, Lucia e Daniela): parziale, trapezoidale o triangolare.
 // Porta il modello alla versione 1.1 dello schema, che lo prevede.
-export function aggiungiCaricoTrapezio(m, caso, asta, qi, qj, a, b) {
+export function aggiungiCaricoTrapezio(m, caso, asta, qi, qj, a, b, direzione = 'globale_y') {
   if (!caso || caso._combinazione) return 'Scegliere un caso di carico, non una combinazione';
   const el = m.aste.find((x) => x.id === asta);
   const ni = m.nodi.find((n) => n.id === el.nodo_i), nj = m.nodi.find((n) => n.id === el.nodo_j);
   const L = Math.hypot(nj.x - ni.x, nj.y - ni.y);
   if (![qi, qj, a, b].every(Number.isFinite)) return 'Valori del trapezio non validi';
   if (!(a >= 0 && a < b && b <= L + 1e-9)) return `Il tratto deve stare dentro l'asta: 0 ≤ a < b ≤ ${+L.toFixed(3)} m`;
-  (caso.carichi_aste ||= []).push({ asta, tipo: 'distribuito_trapezio', direzione: 'globale_y', q_i: qi, q_j: qj, a, b: Math.min(b, L) });
+  if (!['globale_y', 'globale_x', 'locale_y'].includes(direzione)) return 'Direzione del carico non valida';
+  (caso.carichi_aste ||= []).push({ asta, tipo: 'distribuito_trapezio', direzione, q_i: qi, q_j: qj, a, b: Math.min(b, L) });
   m.schema_version = '1.1';
   return true;
 }
@@ -107,7 +108,9 @@ export function pannelloModifica(el, m, caso, selezione, onCambio, onErrore) {
     const L = +Math.hypot(nj.x - ni.x, nj.y - ni.y).toFixed(6);
     h += `<div class="riga-campo"><span class="nota">q [kN/m] su asta ${selezione.id}</span>
       <span class="gruppo"><input type="number" step="any" id="m-q" value="-10" aria-label="Carico uniforme"><button id="m-add-q">+ carico</button></span></div>
-    <div class="riga-campo"><span class="nota">Trapezio q_i, q_j [kN/m] (verticale)</span>
+    <div class="riga-campo"><span class="nota">Trapezio, direzione</span>
+      <span class="gruppo"><select id="m-tdir" aria-label="Direzione del trapezio"><option value="globale_y">verticale (Y)</option><option value="globale_x">orizzontale (X)</option><option value="locale_y">normale all'asta</option></select></span></div>
+    <div class="riga-campo"><span class="nota">q_i, q_j [kN/m]</span>
       <span class="gruppo"><input type="number" step="any" id="m-qi" value="-10" aria-label="q iniziale"><input type="number" step="any" id="m-qj" value="-20" aria-label="q finale"></span></div>
     <div class="riga-campo"><span class="nota">da a, a b [m]</span>
       <span class="gruppo"><input type="number" step="any" id="m-ta" value="0" aria-label="Inizio del tratto"><input type="number" step="any" id="m-tb" value="${L}" aria-label="Fine del tratto"><button id="m-add-trap">+ trapezio</button></span></div>`;
@@ -140,7 +143,7 @@ export function pannelloModifica(el, m, caso, selezione, onCambio, onErrore) {
   });
   el.querySelector('#m-add-trap')?.addEventListener('click', () => {
     const val = (id) => Number(el.querySelector(id).value);
-    const r = aggiungiCaricoTrapezio(m, caso, selezione.id, val('#m-qi'), val('#m-qj'), val('#m-ta'), val('#m-tb'));
+    const r = aggiungiCaricoTrapezio(m, caso, selezione.id, val('#m-qi'), val('#m-qj'), val('#m-ta'), val('#m-tb'), el.querySelector('#m-tdir').value);
     esito(r, `Carico trapezoidale aggiunto all'asta ${selezione.id} (schema 1.1)`);
   });
   el.querySelector('#m-ced')?.addEventListener('click', () => {

@@ -1,0 +1,41 @@
+{
+  "caso": "Q",
+  "formule": {
+    "risultante": "W = q·(b − a) normale all'asta, applicata in s = (a + b)/2",
+    "reazioni": "R2 da equilibrio alla rotazione attorno al piede (carrello verticale); R1x = −Wx; R1y = −Wy − R2",
+    "momento in s = 2,5 m": "M = T1·s − q·(s − a)²/2, T1 = componente trasversale di R1",
+    "sforzo normale": "costante (nessun carico assiale): N = −(R1x·cos α + R1y·sin α)"
+  },
+  "valori": [
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -18.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 5.25,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 18.75,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=2.5",
+      "valore": 26.25,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "N asta 1 x=0",
+      "valore": 11.25,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "N asta 1 x=5",
+      "valore": 11.25,
+      "unita": "kN"
+    }
+  ]
+}

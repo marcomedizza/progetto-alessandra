@@ -1,4 +1,4 @@
-"""Genera i casi di prova (modelli secondo DATA_SCHEMA.json v1.0; C11–C13 v1.1) e i valori attesi
+"""Genera i casi di prova (modelli secondo DATA_SCHEMA.json v1.0; C11–C13, C15–C17 v1.1; C14, C18 v1.2) e i valori attesi
 calcolati con formule chiuse di scienza delle costruzioni.
 
 Uso:  python3 genera_casi.py      (scrive i file C*.json e C*.atteso.json in questa cartella)
@@ -516,6 +516,69 @@ def c17():
     return m, atteso
 
 
+def v12(m):
+    """Schema v1.2: acciaio con alfa_t, IPE 300 con altezza h (distorsioni termiche)."""
+    m["schema_version"] = "1.2"
+    m["progetto"]["data"] = "2026-11-03"
+    m["materiali"] = [dict(ACC, alfa_t=ALFA)]
+    m["sezioni"] = [dict(IPE300, h=0.300)]
+    return m
+
+
+ALFA = 1.2e-5   # 1/°C, acciaio
+
+
+def c14():
+    L, dTu, dTg = 6.0, 20.0, 10.0
+    m = v12(trave("C14", "Trave incastrata, distorsioni termiche",
+                  "IPE 300, L = 6 m, incastri alle estremità; ΔT uniforme +20 °C e ΔT a farfalla +10 °C (lato inferiore più caldo) (schema v1.2, Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+                  {"id": "T", "nome": "Distorsioni termiche", "categoria": "temperatura",
+                   "carichi_termici": [{"asta": 1, "dT_u": dTu, "dT_g": dTg}]}, 7))
+    EA, EI = E_ACC * IPE300["A"], E_ACC * IPE300["I"]
+    N = -EA * ALFA * dTu
+    M = -EI * ALFA * dTg / 0.300
+    atteso = {"caso": "T", "formule": {
+        "ΔT uniforme impedito": "N = −E·A·α·ΔTu (compressione); Rx1 = +E·A·α·ΔTu, Rx2 = −Rx1",
+        "ΔT a farfalla impedito": "curvatura libera κ = α·ΔTg/h; M = −E·I·κ costante (fibre tese in alto)",
+        "nessuno spostamento": "estremi incastrati, nessun carico: reazioni verticali nulle"},
+        "valori": [
+            {"grandezza": "N asta 1 x=0", "valore": N, "unita": "kN"},
+            {"grandezza": "N asta 1 x=6", "valore": N, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0", "valore": M, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=3", "valore": M, "unita": "kNm"},
+            {"grandezza": "Rx nodo 1", "valore": -N, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": 0.0, "unita": "kN"}]}
+    return m, atteso
+
+
+def c18():
+    L, dTg = 6.0, 10.0
+    m = v12(trave("C18", "Trave appoggiata, ΔT a farfalla",
+                  "IPE 300, L = 6 m con nodo in mezzeria, cerniera e carrello; ΔT a farfalla +10 °C (lato inferiore più caldo) su tutta la trave (schema v1.2, Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 3, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 3, "uy": True}],
+                  {"id": "T", "nome": "Gradiente termico", "categoria": "temperatura",
+                   "carichi_termici": [{"asta": 1, "dT_g": dTg}, {"asta": 2, "dT_g": dTg}]}, 4))
+    k = ALFA * dTg / 0.300
+    atteso = {"caso": "T", "formule": {
+        "struttura isostatica": "nessuna reazione né sollecitazione",
+        "curvatura libera": "κ = α·ΔTg/h; il lato inferiore si allunga e la trave si inflette verso il basso: v(x) = κ·x·(x − L)/2",
+        "freccia in mezzeria": "v(L/2) = −κ·L²/8",
+        "rotazioni agli appoggi": "φ(0) = −κ·L/2, φ(L) = +κ·L/2"},
+        "valori": [
+            {"grandezza": "uy nodo 2", "valore": -k * L ** 2 / 8, "unita": "m"},
+            {"grandezza": "rz nodo 1", "valore": -k * L / 2, "unita": "rad"},
+            {"grandezza": "rz nodo 3", "valore": k * L / 2, "unita": "rad"},
+            {"grandezza": "Ry nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=3", "valore": 0.0, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -524,7 +587,8 @@ if __name__ == "__main__":
                     ("C10_combinazione_slu", c10), ("C11_cedimento_appoggio", c11),
                     ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13),
                     ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
-                    ("C17_inclinata_normale", c17)):
+                    ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
+                    ("C18_termica_appoggiata", c18)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

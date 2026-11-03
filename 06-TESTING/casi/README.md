@@ -20,6 +20,8 @@
 | C15 | Asta inclinata (0; 0)–(4; 3), cerniera e carrello, q = 10 kN/m verticale da 1 a 4 m lungo l'asta (v1.1) | statica | R1 = R2 = 15 kN; Rx = 0; M(2,5) = 21,0 kNm; N(0) = −9 kN; N(5) = +9 kN |
 | C16 | Geometria di C6, nessun carico, cedimento di 10 mm dell'appoggio (v1.1) | isostatica | reazioni e momenti nulli; cerniera ferma; tratto 4–6 ruota di −δ/2 = −5 mrad |
 | C17 | Geometria di C15, q = 10 kN/m normale all'asta (locale_y) da 1 a 4 m (v1.1, punto 32) | statica | Rx1 = −18 kN; Ry1 = 5,25 kN; Ry2 = 18,75 kN; M(2,5) = 26,25 kNm; N = +11,25 kN costante |
+| C14 | Trave incastrata L = 6 m, ΔT uniforme +20 °C e a farfalla +10 °C (v1.2) | formule chiuse | N = −EAαΔTu = −271,2 kN; M = −EIαΔTg/h = −7,02 kNm costante; Rx1 = +271,2 kN |
+| C18 | Trave appoggiata L = 6 m, ΔT a farfalla +10 °C (v1.2) | formule chiuse | nessuna reazione; uy(3) = −κL²/8 = −1,80 mm; φ = ∓κL/2 = ∓1,20 mrad |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -122,6 +124,19 @@ Geometria e vincoli di C15; carico q = 10 kN/m perpendicolare all'asta, verso �
 3. Reazioni al piede: R1y = 24 − 18,75 = 5,25 kN; R1x = −18 kN.
 4. Componente trasversale di R1: T1 = 18 × 0,6 + 5,25 × 0,8 = 15 kN. M(2,5) = 15 × 2,5 − 10 × 1,5²/2 = 26,25 kNm.
 5. Sforzo normale costante, perché il carico non ha componente assiale: N = −(R1x·cos α + R1y·sin α) = −(−14,4 + 3,15) = +11,25 kN (trazione).
+
+## C14 e C18 · distorsioni termiche (Valentina, 03/11)
+
+Acciaio α = 1,2·10⁻⁵ /°C, IPE 300 con h = 0,300 m, EA = 1,130·10⁶ kN, EI = 17 547,6 kNm².
+
+**C14, trave incastrata, ΔTu = +20 °C, ΔTg = +10 °C**
+- Dilatazione impedita: N = −EA·α·ΔTu = −1,130·10⁶ × 1,2·10⁻⁵ × 20 = −271,2 kN (compressione). Gli incastri spingono verso l'interno: Rx1 = +271,2 kN, Rx2 = −271,2 kN.
+- Curvatura impedita: κ = α·ΔTg/h = 1,2·10⁻⁵ × 10/0,3 = 4,0·10⁻⁴ 1/m. M = −EI·κ = −7,02 kNm costante, fibre tese in alto.
+
+**C18, trave appoggiata, ΔTg = +10 °C**
+- Struttura isostatica: nessuna reazione e nessun momento.
+- Il lato inferiore, più caldo, si allunga e diventa il lato convesso: la trave si inflette verso il basso con v(x) = κ·x·(x − L)/2.
+- v(3) = −κL²/8 = −4·10⁻⁴ × 36/8 = −1,80 mm; φ(0) = −κL/2 = −1,20 mrad; φ(6) = +1,20 mrad.
 
 ## File
 

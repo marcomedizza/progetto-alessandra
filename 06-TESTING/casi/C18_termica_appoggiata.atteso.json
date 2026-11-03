@@ -1,0 +1,36 @@
+{
+  "caso": "T",
+  "formule": {
+    "struttura isostatica": "nessuna reazione né sollecitazione",
+    "curvatura libera": "κ = α·ΔTg/h; il lato inferiore si allunga e la trave si inflette verso il basso: v(x) = κ·x·(x − L)/2",
+    "freccia in mezzeria": "v(L/2) = −κ·L²/8",
+    "rotazioni agli appoggi": "φ(0) = −κ·L/2, φ(L) = +κ·L/2"
+  },
+  "valori": [
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.0018000000000000002,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 1",
+      "valore": -0.0012000000000000001,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "rz nodo 3",
+      "valore": 0.0012000000000000001,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=3",
+      "valore": 0.0,
+      "unita": "kNm"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-# Rapporto di confronto del solutore — 02/11/2026
+# Rapporto di confronto del solutore — 03/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 31/10
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 02/11
 
-**Solutore**: telaio2d v0.3, schema v1.1. **Comandi**: `verifica_casi.py --fortran` e `verifica_casi.py --api`.
+**Solutore**: telaio2d v0.4, schema v1.2. **Comandi**: `verifica_casi.py --fortran` e `verifica_casi.py --api`.
 
 **Tolleranze**:
 - valori attesi: 0,5 % relativa, minimo 1·10⁻⁶ assoluto;
@@ -23,14 +23,14 @@
 | C11 Trave continua, cedimento dell'appoggio centrale | 6 superati, 0 non superati | 0 | 0 |
 | C12 Trave appoggiata, carico trapezoidale parziale | 5 superati, 0 non superati | 0 | 0 |
 | C13 Trave incastrata, carico triangolare | 4 superati, 0 non superati | 0 | 0 |
+| C14 Trave incastrata, distorsioni termiche | 6 superati, 0 non superati | 0 | 0 |
 | C15 Asta inclinata, carico verticale parziale | 6 superati, 0 non superati | 0 | 0 |
 | C16 Trave Gerber, cedimento dell'appoggio | 6 superati, 0 non superati | 0 | 0 |
+| C17 Asta inclinata, carico parziale normale all'asta | 6 superati, 0 non superati | 0 | 0 |
+| C18 Trave appoggiata, ΔT a farfalla | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità del 02/11**
-- **C15, carico parziale su asta inclinata**: controlla le componenti locali del carico verticale, cioè la trasversale nel momento e l'assiale nello sforzo normale.
-- **C16, struttura con cerniera e cedimento**: controlla che un cedimento su struttura isostatica non produca sollecitazioni e che il tratto oltre la cerniera ruoti rigidamente.
-- **Modello grande a banda con cedimenti**: telaio di 6363 gdl con reazioni autoequilibrate; prova del servizio `test_modello_grande_con_cedimenti`.
+**Novità del 03/11**
+- **C17, carico normale all'asta inclinata (punto 32)**: controlla la direzione locale del carico, con sforzo normale costante perché il carico non ha componente assiale.
+- **C14 e C18, distorsioni termiche (v1.2)**: il caso incastrato controlla le forze impedite N = −EAαΔT e M = −EIκ; quello appoggiato la curvatura libera, cioè freccia −κL²/8 e rotazioni ±κL/2. Il secondo conferma anche il segno della convenzione: il lato inferiore più caldo abbassa la mezzeria.
 
-**Altre prove**: `03-BACKEND/servizio/test_app.py`, 20 prove superate. Le 2 nuove sono il modello grande con cedimenti e il rifiuto del cedimento su una molla.
-
-**Numerazione**: C14 resta riservato alle distorsioni termiche (schema v1.2), non ancora iniziate.
+**Altre prove**: `03-BACKEND/servizio/test_app.py`, 22 prove superate. Le 2 nuove sono C17, e C14 e C18 con le regole di coerenza della v1.2: versione dichiarata, h mancante, ΔT uniforme con deformabilità assiale trascurata.

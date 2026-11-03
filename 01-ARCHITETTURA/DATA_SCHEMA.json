@@ -7,7 +7,7 @@
   "required": ["schema_version", "progetto", "nodi", "materiali", "sezioni", "aste", "vincoli", "casi_di_carico"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "enum": ["1.0", "1.1"], "description": "1.1 (31/10/2026) aggiunge carichi trapezoidali sulle aste e cedimenti vincolari; un modello che li usa deve dichiarare 1.1" },
+    "schema_version": { "enum": ["1.0", "1.1", "1.2"], "description": "1.1 (31/10/2026) aggiunge carichi trapezoidali sulle aste e cedimenti vincolari; 1.2 (03/11/2026) le distorsioni termiche. Un modello che usa queste voci deve dichiarare la versione corrispondente o una successiva" },
     "progetto": {
       "type": "object",
       "required": ["id", "nome", "tipo_modello", "unita"],
@@ -58,7 +58,8 @@
           "tipo": { "enum": ["acciaio", "calcestruzzo", "legno", "alluminio", "muratura", "altro"] },
           "E": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo elastico [kN/m²]. Acciaio: 2.10e8" },
           "G": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo di taglio [kN/m²] (riservato, non usato nella v1.0)" },
-          "peso_specifico": { "type": "number", "minimum": 0, "description": "[kN/m³]" }
+          "peso_specifico": { "type": "number", "minimum": 0, "description": "[kN/m³]" },
+          "alfa_t": { "type": "number", "exclusiveMinimum": 0, "description": "v1.2: coefficiente di dilatazione termica [1/°C]; acciaio 1,2·10⁻⁵" }
         }
       }
     },
@@ -75,7 +76,8 @@
           "A": { "type": "number", "exclusiveMinimum": 0, "description": "Area [m²]" },
           "I": { "type": "number", "exclusiveMinimum": 0, "description": "Momento d'inerzia per flessione nel piano del telaio [m⁴]" },
           "W": { "type": "number", "exclusiveMinimum": 0, "description": "Modulo di resistenza elastico [m³] (per le tensioni, facoltativo)" },
-          "fonte": { "type": "string", "description": "Origine dei valori (sagomario, calcolo)" }
+          "fonte": { "type": "string", "description": "Origine dei valori (sagomario, calcolo)" },
+          "h": { "type": "number", "exclusiveMinimum": 0, "description": "v1.2: altezza della sezione nel piano del telaio [m], per il ΔT a farfalla" }
         }
       }
     },
@@ -198,6 +200,20 @@
                   }
                 }
               ]
+            }
+          },
+          "carichi_termici": {
+            "type": "array",
+            "description": "v1.2: distorsioni termiche sulle aste",
+            "items": {
+              "type": "object",
+              "required": ["asta"],
+              "additionalProperties": false,
+              "properties": {
+                "asta": { "$ref": "#/$defs/id_intero" },
+                "dT_u": { "type": "number", "default": 0, "description": "Variazione uniforme di temperatura [°C], positiva se l'asta si scalda" },
+                "dT_g": { "type": "number", "default": 0, "description": "Variazione a farfalla [°C]: T sul lato −y locale meno T sul lato +y locale; richiede alfa_t del materiale e h della sezione" }
+              }
             }
           },
           "cedimenti": {

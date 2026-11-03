@@ -80,6 +80,33 @@ La v1.1 è promossa insieme alle modifiche del solutore (v0.3) che la rendono ca
 
 I modelli v1.0 restano validi senza modifiche.
 
+## Schema v1.2 in vigore dal 03/11/2026 (Benedetta, Elisa, Paola, Valentina)
+
+Distorsioni termiche sulle aste: `casi_di_carico[].carichi_termici[]` con `asta`, `dT_u` (ΔT uniforme, °C) e `dT_g` (ΔT a farfalla, °C).
+
+| Campo nuovo | Dove | Uso |
+|---|---|---|
+| `alfa_t` [1/°C] | materiali | obbligatorio per le aste con distorsioni termiche (acciaio 1,2·10⁻⁵) |
+| `h` [m] | sezioni | altezza nel piano del telaio, obbligatoria per `dT_g` |
+| `dT_g` | carichi_termici | T sul lato −y locale meno T sul lato +y locale: positivo se il lato inferiore di un'asta orizzontale (verso nodo_i → nodo_j a destra) è più caldo |
+
+**Modello di calcolo**: l'asta a estremi bloccati ha dilatazione e curvatura impedite.
+- Il ΔT uniforme dà N = −E·A·α·ΔTu.
+- La farfalla dà curvatura libera κ = α·ΔTg/h e momento M = −E·I·κ costante.
+- Il solutore riceve queste forze d'incastro come carico di tipo 4 e le distribuisce con la soluzione del telaio.
+- La deformata resta esatta: sull'asta incastrata la curvatura termica è compensata dal momento costante, quindi non c'è inflessione particolare.
+
+**Casi**:
+- C14: trave incastrata, N = −271,2 kN, M = −7,02 kNm;
+- C18: trave appoggiata, freccia −1,8 mm, rotazioni ±1,2 mrad.
+
+**Regole di coerenza**:
+- le distorsioni termiche richiedono `schema_version` «1.2»;
+- servono `alfa_t` del materiale e, per la farfalla, `h` della sezione;
+- il ΔT uniforme è rifiutato con deformabilità assiale trascurata, perché la forza assiale sarebbe infinita.
+
+Le distorsioni si inseriscono solo da file; il pannello le mostra.
+
 ## Prossime estensioni (v2)
 
 P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.

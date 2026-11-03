@@ -80,6 +80,9 @@ def errori_coerenza(modello):
         if v["nodo"] not in nodi:
             err.append(f"vincolo sul nodo {v['nodo']} inesistente")
     vincoli = {v["nodo"]: v for v in modello.get("vincoli", [])}
+    aste_per_id = {a["id"]: a for a in modello.get("aste", [])}
+    materiali = {m["id"]: m for m in modello.get("materiali", [])}
+    sezioni = {x["id"]: x for x in modello.get("sezioni", [])}
     coord = {n["id"]: (n["x"], n["y"]) for n in modello.get("nodi", [])}
     lunghezze = {a["id"]: math.dist(coord[a["nodo_i"]], coord[a["nodo_j"]]) for a in modello.get("aste", [])
                  if a["nodo_i"] in coord and a["nodo_j"] in coord}
@@ -99,8 +102,23 @@ def errori_coerenza(modello):
                 if d.get(k) and not v.get(k):
                     err.append(f"caso {c['id']}: cedimento {k} sul nodo {d['nodo']}, che non ha {k} vincolato")
         usa_v11 = c.get("cedimenti") or any(q["tipo"] == "distribuito_trapezio" for q in c.get("carichi_aste", []))
-        if usa_v11 and modello.get("schema_version") != "1.1":
-            err.append(f"caso {c['id']}: carichi trapezoidali e cedimenti richiedono schema_version 1.1")
+        if usa_v11 and modello.get("schema_version") not in ("1.1", "1.2"):
+            err.append(f"caso {c['id']}: carichi trapezoidali e cedimenti richiedono schema_version 1.1 o successiva")
+        # distorsioni termiche (v1.2, Benedetta): servono alfa_t del materiale e, per la farfalla, h della sezione
+        if c.get("carichi_termici") and modello.get("schema_version") != "1.2":
+            err.append(f"caso {c['id']}: le distorsioni termiche richiedono schema_version 1.2")
+        rigida = not modello.get("analisi", {}).get("deformabilita_assiale", True)
+        for t in c.get("carichi_termici", []):
+            el = aste_per_id.get(t["asta"])
+            if el is None:
+                err.append(f"caso {c['id']}: distorsione termica sull'asta {t['asta']} inesistente")
+                continue
+            if not materiali.get(el["materiale"], {}).get("alfa_t"):
+                err.append(f"caso {c['id']}: asta {t['asta']}: manca alfa_t del materiale {el['materiale']}")
+            if t.get("dT_g") and not sezioni.get(el["sezione"], {}).get("h"):
+                err.append(f"caso {c['id']}: asta {t['asta']}: il ΔT a farfalla richiede h della sezione {el['sezione']}")
+            if t.get("dT_u") and rigida:
+                err.append(f"caso {c['id']}: asta {t['asta']}: il ΔT uniforme non è calcolabile con deformabilità assiale trascurata")
     return err
 
 

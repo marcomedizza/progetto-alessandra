@@ -237,6 +237,21 @@ def test_cerniera_e_termica():
     assert max(abs(v) for s in r["sollecitazioni"] for v in s["M"]) < 1e-9
 
 
+def test_termica_dal_pannello():
+    # D17 (04/11): modello come lo produce «Nuovo» + «+ ΔT»: alfa_t e h presenti, schema 1.2
+    m = modello("C1_trave_appoggiata")
+    m["schema_version"] = "1.2"
+    m["materiali"][0]["alfa_t"] = 1.2e-5
+    m["sezioni"][0]["h"] = 0.300
+    m["casi_di_carico"][0]["carichi_aste"] = []
+    m["casi_di_carico"][0]["carichi_termici"] = [{"asta": 1, "dT_u": 0, "dT_g": 10}, {"asta": 2, "dT_u": 0, "dT_g": 10}]
+    r = client.post("/api/calcola", json=m)
+    assert r.status_code == 200
+    assert abs(next(u["uy"] for u in r.json()["risultati"][0]["spostamenti"] if u["nodo"] == 2) + 1.8e-3) < 1e-12
+    m["materiali"][0].pop("alfa_t")
+    assert "manca alfa_t" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

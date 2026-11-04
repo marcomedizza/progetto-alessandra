@@ -135,3 +135,26 @@
 - `verifica_casi.py` nei tre percorsi su C1–C18: superati;
 - `test_app.py`: 22 prove superate;
 - scenari S1–S30 nel navigatore: superati.
+
+
+## Aggiornamento del 04/11/2026 (Marisa)
+
+**Punti aperti precedenti**
+- 40 **chiuso**: convenzione documentata in SCHEMA_DATI; il pannello indica il lato per l'asta selezionata.
+- 41 **chiuso**: caso C19, condensazione delle forze termiche alla cerniera verificata.
+- 34 e 37 restano aperti.
+
+**Revisione del codice nuovo del 04/11**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 43 | `02-FRONTEND-3D/modifica.js` | L'aggiunta di trapezi o cedimenti portava sempre lo schema a 1.1, anche da 1.2: un modello con distorsioni termiche sarebbe stato poi rifiutato | media | corretto prima della consegna: la versione sale soltanto, da 1.0 a 1.1 |
+| 44 | `02-FRONTEND-3D/modifica.js` | «Nuovo» assegna ora α = 1,2·10⁻⁵ all'acciaio e h ai due profili da sagomario (IPE 300 = 300 mm, HE 200 A = 190 mm) | — | nessun intervento |
+| 45 | `02-FRONTEND-3D/proprieta.js` | Cambiare h non cancella W né la fonte del sagomario, a differenza di A e I: corretto, perché h non entra in W del sagomario | — | nessun intervento |
+| 46 | `04-FORTRAN-SOLVER/prova_prestazioni.py` | Su C3 banda e piena differiscono di 1,2·10⁻¹⁰ m per il cattivo condizionamento della deformabilità assiale trascurata (A × 10⁶). Resta sotto la tolleranza, ma è un limite del metodo | bassa | aperto: valutare vincoli di inestensibilità al posto di A × 10⁶ |
+| 47 | `05-RICERCA/licenze_componenti.md` | Due dubbi dichiarati: licenze delle librerie Rust incluse in rpds-py e pydantic-core; origine di opentelemetry-api | bassa | aperto |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C19: superati;
+- `test_app.py`: 24 prove superate;
+- scenari S1–S33 nel navigatore: superati.

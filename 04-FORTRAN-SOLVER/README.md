@@ -26,6 +26,23 @@ I file della v0.2 restano validi. Verifica sui casi C11–C13 con soluzione a ma
 
 **v0.4 (03/11, Elisa e Paola)**: distorsioni termiche, carico di tipo 4 `asta 4 NT MT 0`. Il convertitore calcola NT = E·A·α·ΔTu e MT = E·I·α·ΔTg/h; il solutore li applica come forze d'incastro: f1 = +NT, f4 = −NT, f3 = +MT, f6 = −MT. Verifica: C14 (trave incastrata) e C18 (trave appoggiata) contro le formule chiuse. Il costo della soluzione non cambia, perché agisce solo sul secondo membro.
 
+**Banda contro matrice piena con cedimenti e distorsioni** (Carla, Ottavia, 04/11): `prova_prestazioni.py --v04` aggiunge ai telai regolari un cedimento di 10 mm di un piede e ΔT = +20 °C uniforme e +10 °C a farfalla sulle travi.
+
+| Telaio | gdl | Banda | Piena | Scarto |
+|---|---|---|---|---|
+| 10 × 40 | 1353 | 0,026 s | 0,088 s | 5·10⁻¹⁴ |
+| 12 × 50 | 1989 | 0,027 s | 0,200 s | 2·10⁻¹² |
+| 20 × 100 | 6363 | 0,232 s | — | — |
+| 30 × 150 | 14 043 | 0,598 s | — | — |
+
+Le reazioni verticali equilibrano sempre il carico: cedimento e distorsioni producono reazioni autoequilibrate. I tempi sono dello stesso ordine della prova senza cedimenti; le differenze rientrano nella variabilità della macchina.
+
+**Tutti i casi di prova con banda e con matrice piena** (Elisa, 04/11, `prova_prestazioni.py --casi`): scarto massimo sugli spostamenti ≤ 1,2·10⁻¹⁶ m in tutti i casi tranne due.
+- C3: scarto 1,2·10⁻¹⁰ m. È l'unico caso con deformabilità assiale trascurata (A × 10⁶): la matrice è mal condizionata e i due metodi differiscono di circa 10⁻⁸ in termini relativi, sotto la tolleranza delle verifiche.
+- C9: scarto 9·10⁻¹⁵ m.
+
+In particolare C6 (cerniera) dà 1,2·10⁻¹⁶ m e C8 (molla) 5·10⁻¹⁸ m.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

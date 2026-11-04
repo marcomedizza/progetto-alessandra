@@ -5,7 +5,9 @@ solutore, con la matrice a banda (predefinita) e con la matrice piena (opzione �
 Controlla che i due metodi diano gli stessi spostamenti. Serve a fissare il limite di dimensione
 del modello accettato dal servizio.
 
-Uso:  python3 04-FORTRAN-SOLVER/prova_prestazioni.py
+Uso:  python3 04-FORTRAN-SOLVER/prova_prestazioni.py           telai regolari, carichi verticali e orizzontali
+      python3 04-FORTRAN-SOLVER/prova_prestazioni.py --v04     gli stessi con cedimento e distorsioni termiche
+      python3 04-FORTRAN-SOLVER/prova_prestazioni.py --casi    casi di prova C1–C19 con banda e con matrice piena
 """
 
 import os
@@ -56,11 +58,48 @@ def cronometra(testo, opzioni=()):
     return time.perf_counter() - t0, converti.leggi_output(out)
 
 
+def con_v04(m, campate):
+    """Stesso telaio con cedimento di 10 mm di un piede e ΔT (+20 °C uniforme, +10 °C a farfalla) sulle travi (v0.4)."""
+    m["schema_version"] = "1.2"
+    m["materiali"][0]["alfa_t"] = 1.2e-5
+    for x in m["sezioni"]:
+        x["h"] = 0.300 if x["id"] == "IPE300" else 0.190
+    c = m["casi_di_carico"][0]
+    c["cedimenti"] = [{"nodo": campate + 1, "uy": -0.01}]
+    c["carichi_termici"] = [{"asta": q["asta"], "dT_u": 20.0, "dT_g": 10.0} for q in c["carichi_aste"]]
+    return m
+
+
+def casi_banda_piena():
+    """Elisa (04/11): tutti i casi di prova risolti con banda e con matrice piena; scarto massimo sugli spostamenti."""
+    import glob
+    import json
+    righe = []
+    for f in sorted(glob.glob(os.path.join(RADICE, "06-TESTING", "casi", "C*.json"))):
+        if f.endswith((".atteso.json", ".riferimento.json")):
+            continue
+        m = json.load(open(f))
+        for caso in m["casi_di_carico"]:
+            testo = converti.scrivi_input(m, caso["id"])
+            rb = converti.leggi_output(esegui(testo))
+            rp = converti.leggi_output(esegui(testo, opzioni=("piena",)))
+            sc = max(abs(a[k] - b[k]) for a, b in zip(rb["spostamenti"], rp["spostamenti"]) for k in ("ux", "uy", "rz"))
+            righe.append((os.path.basename(f)[:-5], caso["id"], sc))
+    return righe
+
+
 if __name__ == "__main__":
+    if "--casi" in sys.argv:
+        for nome, caso, sc in casi_banda_piena():
+            print(f"{nome:32} {caso:5} scarto massimo banda/piena {sc:.1e}")
+        sys.exit(0)
+    v04 = "--v04" in sys.argv
     PIENA_FINO_A = 2000  # oltre questi gdl la matrice piena richiede troppa memoria e tempo
     print(f"{'telaio':>10} {'nodi':>6} {'aste':>6} {'gdl':>6} {'banda [s]':>10} {'piena [s]':>10} {'scarto':>9} {'ΣRy/carico':>12}")
     for campate, piani in ((1, 10), (3, 10), (5, 20), (8, 25), (10, 40), (12, 50), (20, 100), (30, 150)):
         m = telaio(campate, piani)
+        if v04:
+            m = con_v04(m, campate)
         testo = converti.scrivi_input(m, "C")
         gdl = 3 * len(m["nodi"])
         tb, rb = cronometra(testo)

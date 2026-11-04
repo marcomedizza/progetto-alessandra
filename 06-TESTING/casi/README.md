@@ -22,6 +22,7 @@
 | C17 | Geometria di C15, q = 10 kN/m normale all'asta (locale_y) da 1 a 4 m (v1.1, punto 32) | statica | Rx1 = −18 kN; Ry1 = 5,25 kN; Ry2 = 18,75 kN; M(2,5) = 26,25 kNm; N = +11,25 kN costante |
 | C14 | Trave incastrata L = 6 m, ΔT uniforme +20 °C e a farfalla +10 °C (v1.2) | formule chiuse | N = −EAαΔTu = −271,2 kN; M = −EIαΔTg/h = −7,02 kNm costante; Rx1 = +271,2 kN |
 | C18 | Trave appoggiata L = 6 m, ΔT a farfalla +10 °C (v1.2) | formule chiuse | nessuna reazione; uy(3) = −κL²/8 = −1,80 mm; φ = ∓κL/2 = ∓1,20 mrad |
+| C19 | Geometria di C6, ΔT a farfalla +10 °C sulla mensola con cerniera in j (v1.2, punto 41) | isostatica | nessuna sollecitazione; uy cerniera = κa²/2 = +3,20 mm; φ mensola = κa = +1,60 mrad; tratto 4–6 −1,60 mrad |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -137,6 +138,15 @@ Acciaio α = 1,2·10⁻⁵ /°C, IPE 300 con h = 0,300 m, EA = 1,130·10⁶ kN, 
 - Struttura isostatica: nessuna reazione e nessun momento.
 - Il lato inferiore, più caldo, si allunga e diventa il lato convesso: la trave si inflette verso il basso con v(x) = κ·x·(x − L)/2.
 - v(3) = −κL²/8 = −4·10⁻⁴ × 36/8 = −1,80 mm; φ(0) = −κL/2 = −1,20 mrad; φ(6) = +1,20 mrad.
+
+## C19 · cerniera interna e ΔT a farfalla (Valentina e Daniela, 04/11)
+
+Geometria di C6; ΔTg = +10 °C (lato inferiore più caldo) solo sulla mensola 0–4 m, che ha la cerniera all'estremità j. κ = α·ΔTg/h = 4,0·10⁻⁴ 1/m.
+- La struttura è isostatica: la distorsione non produce reazioni né momenti.
+- Mensola: curvatura libera senza momento, quindi v(x) = κx²/2. Il lato inferiore, più lungo, rende la mensola concava verso l'alto e la punta sale: v(4) = 4·10⁻⁴ × 16/2 = +3,20 mm. Rotazione alla cerniera φ = κ·4 = +1,60 mrad.
+- Tratto 4–6: ruota rigidamente attorno all'appoggio, φ = −3,20/2000 = −1,60 mrad. La rotazione è discontinua alla cerniera: +1,60 sulla mensola, −1,60 sul tratto appoggiato.
+
+Il caso controlla che la condensazione statica della cerniera tratti anche le forze d'incastro termiche (punto 41 della revisione).
 
 ## File
 

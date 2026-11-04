@@ -579,6 +579,32 @@ def c18():
     return m, atteso
 
 
+def c19():
+    dTg = 10.0
+    m = v12(trave("C19", "Trave Gerber, ΔT a farfalla sulla mensola",
+                  "Geometria di C6 (incastro, cerniera interna a 4 m, appoggio a 6 m), nessun carico; ΔT a farfalla +10 °C "
+                  "(lato inferiore più caldo) sulla sola mensola 0–4 m, che ha la cerniera all'estremità j (punto 41, Valentina e Daniela).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 3, "uy": True}],
+                  {"id": "T", "nome": "Gradiente sulla mensola", "categoria": "temperatura",
+                   "carichi_termici": [{"asta": 1, "dT_g": dTg}]}, 5))
+    k, a = ALFA * dTg / 0.300, 4.0
+    atteso = {"caso": "T", "formule": {
+        "struttura isostatica": "la distorsione non produce reazioni né sollecitazioni",
+        "mensola con curvatura libera": "v(x) = κ·x²/2 verso l'alto (lato inferiore più lungo): v(4) = κ·a²/2; rotazione alla cerniera φ = κ·a",
+        "tratto 4–6": "rotazione rigida attorno all'appoggio: φ = −v(4)/2"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=0", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cerniera)", "valore": k * a ** 2 / 2, "unita": "m"},
+            {"grandezza": "φj asta 1 (mensola alla cerniera)", "valore": k * a, "unita": "rad"},
+            {"grandezza": "rz nodo 2 (tratto appoggiato)", "valore": -k * a ** 2 / 2 / 2, "unita": "rad"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -588,7 +614,7 @@ if __name__ == "__main__":
                     ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13),
                     ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
-                    ("C18_termica_appoggiata", c18)):
+                    ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

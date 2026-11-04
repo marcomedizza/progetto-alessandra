@@ -228,6 +228,15 @@ def test_v12_distorsioni_termiche():
     assert "deformabilità assiale" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
 
 
+def test_cerniera_e_termica():
+    # punto 41 (04/11): condensazione della cerniera con forze termiche, C19 contro la cinematica
+    r = client.post("/api/calcola", json=modello("C19_gerber_termica")).json()["risultati"][0]
+    k = 1.2e-5 * 10 / 0.3
+    assert abs(next(u["uy"] for u in r["spostamenti"] if u["nodo"] == 2) - k * 8) < 1e-12
+    assert abs(next(x["phi_j"] for x in r["rotazioni_aste"] if x["asta"] == 1) - 4 * k) < 1e-12
+    assert max(abs(v) for s in r["sollecitazioni"] for v in s["M"]) < 1e-9
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

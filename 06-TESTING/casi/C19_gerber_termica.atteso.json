@@ -1,0 +1,40 @@
+{
+  "caso": "T",
+  "formule": {
+    "struttura isostatica": "la distorsione non produce reazioni né sollecitazioni",
+    "mensola con curvatura libera": "v(x) = κ·x²/2 verso l'alto (lato inferiore più lungo): v(4) = κ·a²/2; rotazione alla cerniera φ = κ·a",
+    "tratto 4–6": "rotazione rigida attorno all'appoggio: φ = −v(4)/2"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2 (cerniera)",
+      "valore": 0.0032,
+      "unita": "m"
+    },
+    {
+      "grandezza": "φj asta 1 (mensola alla cerniera)",
+      "valore": 0.0016,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "rz nodo 2 (tratto appoggiato)",
+      "valore": -0.0016,
+      "unita": "rad"
+    }
+  ]
+}

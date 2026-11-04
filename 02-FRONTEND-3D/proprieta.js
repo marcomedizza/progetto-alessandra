@@ -26,10 +26,12 @@ function pannelloAsta(el, modello, caso, id, ris, onCambio) {
     <tr><td>Lunghezza</td><td class="num">${num(L)} m</td></tr>
     <tr><td>Materiale</td><td><select id="p-materiale">${modello.materiali.map((m) => `<option value="${esc(m.id)}"${m.id === a.materiale ? ' selected' : ''}>${esc(m.nome)}</option>`).join('')}</select> <button id="p-nuovo-mat" title="Copia del materiale, da modificare">+</button></td></tr>
     <tr><td></td><td><span class="riga-campo"><span class="nota">E [MPa]</span><input type="number" step="any" min="0" data-valore="mat.E" value="${mat.E / 1000}"></span>
+      <span class="riga-campo"><span class="nota">α [10⁻⁶/°C]</span><input type="number" step="any" min="0" data-valore="mat.alfa_t" value="${mat.alfa_t ? +(mat.alfa_t * 1e6).toPrecision(10) : ''}" placeholder="non dato"></span>
       <span class="nota">${usi('materiale', a.materiale)}</span></td></tr>
     <tr><td>Sezione</td><td><select id="p-sezione">${modello.sezioni.map((s) => `<option value="${esc(s.id)}"${s.id === a.sezione ? ' selected' : ''}>${esc(s.nome)}</option>`).join('')}</select> <button id="p-nuova-sez" title="Copia della sezione, da modificare">+</button></td></tr>
     <tr><td></td><td><span class="riga-campo"><span class="nota">A [cm²]</span><input type="number" step="any" min="0" data-valore="sez.A" value="${+(sez.A * 1e4).toPrecision(10)}"></span>
       <span class="riga-campo"><span class="nota">I [cm⁴]</span><input type="number" step="any" min="0" data-valore="sez.I" value="${+(sez.I * 1e8).toPrecision(10)}"></span>
+      <span class="riga-campo"><span class="nota">h [mm]</span><input type="number" step="any" min="0" data-valore="sez.h" value="${sez.h ? +(sez.h * 1e3).toPrecision(10) : ''}" placeholder="non data"></span>
       <span class="nota">${sez.W ? 'W = ' + num(sez.W * 1e6) + ' cm³ · ' : ''}${usi('sezione', a.sezione)}${sez.fonte ? ' · ' + esc(sez.fonte) : ''}</span></td></tr>
     <tr><td>Cerniere</td><td><label><input type="checkbox" id="p-rzi"${a.svincoli?.rz_i ? ' checked' : ''}> in i</label> <label><input type="checkbox" id="p-rzj"${a.svincoli?.rz_j ? ' checked' : ''}> in j</label></td></tr>
   </table>`;
@@ -58,12 +60,12 @@ function pannelloAsta(el, modello, caso, id, ris, onCambio) {
   el.querySelector('#p-materiale').addEventListener('change', (e) => { a.materiale = e.target.value; onCambio(); });
   // Revisione 14 (Lucia, 30/10): valori di materiale e sezione inseribili; valgono per tutte le aste che li usano.
   // Un valore non positivo è rifiutato qui; il resto lo valida il servizio al calcolo.
-  const fattori = { 'mat.E': [mat, 'E', 1000], 'sez.A': [sez, 'A', 1e-4], 'sez.I': [sez, 'I', 1e-8] };
+  const fattori = { 'mat.E': [mat, 'E', 1000], 'mat.alfa_t': [mat, 'alfa_t', 1e-6], 'sez.A': [sez, 'A', 1e-4], 'sez.I': [sez, 'I', 1e-8], 'sez.h': [sez, 'h', 1e-3] };
   el.querySelectorAll('[data-valore]').forEach((inp) => inp.addEventListener('change', (e) => {
     const [ogg, campo, f] = fattori[e.target.dataset.valore], v = Number(e.target.value);
     if (!(v > 0)) { e.target.value = ogg[campo] / f; return; }
     ogg[campo] = v * f;
-    if (ogg === sez) { delete sez.W; sez.fonte = 'valori inseriti dall\'utente'; }
+    if (ogg === sez && campo !== 'h') { delete sez.W; sez.fonte = 'valori inseriti dall\'utente'; }
     onCambio();
   }));
   const copia = (lista, orig, campoAsta) => {

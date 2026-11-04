@@ -4,8 +4,8 @@
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const SEZIONI_BASE = [
-  { id: 'IPE300', nome: 'IPE 300', A: 53.81e-4, I: 8356e-8, W: 557.1e-6, fonte: 'sagomario profili IPE, asse forte' },
-  { id: 'HEA200', nome: 'HE 200 A', A: 53.83e-4, I: 3692e-8, W: 388.6e-6, fonte: 'sagomario profili HE A, asse forte' },
+  { id: 'IPE300', nome: 'IPE 300', A: 53.81e-4, I: 8356e-8, W: 557.1e-6, h: 0.300, fonte: 'sagomario profili IPE, asse forte' },
+  { id: 'HEA200', nome: 'HE 200 A', A: 53.83e-4, I: 3692e-8, W: 388.6e-6, h: 0.190, fonte: 'sagomario profili HE A, asse forte' },
 ];
 
 export function modelloNuovo() {
@@ -13,7 +13,7 @@ export function modelloNuovo() {
     schema_version: '1.0',
     progetto: { id: 'nuovo', nome: 'Nuovo modello', tipo_modello: 'telaio_piano', unita: { lunghezza: 'm', forza: 'kN' } },
     nodi: [{ id: 1, x: 0, y: 0 }, { id: 2, x: 6, y: 0 }],
-    materiali: [{ id: 'S275', nome: 'Acciaio S275', tipo: 'acciaio', E: 2.1e8, peso_specifico: 78.5 }],
+    materiali: [{ id: 'S275', nome: 'Acciaio S275', tipo: 'acciaio', E: 2.1e8, peso_specifico: 78.5, alfa_t: 1.2e-5 }],
     sezioni: SEZIONI_BASE.map((s) => ({ ...s })),
     aste: [{ id: 1, nodo_i: 1, nodo_j: 2, materiale: 'S275', sezione: 'IPE300' }],
     vincoli: [{ nodo: 1, ux: true, uy: true }, { nodo: 2, uy: true }],
@@ -70,7 +70,7 @@ export function aggiungiCaricoTrapezio(m, caso, asta, qi, qj, a, b, direzione = 
   if (!(a >= 0 && a < b && b <= L + 1e-9)) return `Il tratto deve stare dentro l'asta: 0 ≤ a < b ≤ ${+L.toFixed(3)} m`;
   if (!['globale_y', 'globale_x', 'locale_y'].includes(direzione)) return 'Direzione del carico non valida';
   (caso.carichi_aste ||= []).push({ asta, tipo: 'distribuito_trapezio', direzione, q_i: qi, q_j: qj, a, b: Math.min(b, L) });
-  m.schema_version = '1.1';
+  if (m.schema_version === '1.0') m.schema_version = '1.1';   // non abbassa una 1.2
   return true;
 }
 
@@ -87,7 +87,22 @@ export function impostaCedimento(m, caso, nodo, valori) {
   for (const k of ['ux', 'uy', 'rz']) if (valori[k]) d[k] = valori[k];
   if (Object.keys(d).length > 1) caso.cedimenti.push(d);
   if (!caso.cedimenti.length) delete caso.cedimenti;
-  m.schema_version = '1.1';
+  if (m.schema_version === '1.0') m.schema_version = '1.1';   // non abbassa una 1.2
+  return true;
+}
+
+// Distorsione termica (D17, Lucia e Irene; schema v1.2). dT_g = T sul lato −y locale meno T sul lato +y:
+// percorrendo l'asta da nodo_i a nodo_j il lato −y è a destra (sotto, per un'asta orizzontale verso destra).
+export function aggiungiTermico(m, caso, asta, dTu, dTg) {
+  if (!caso || caso._combinazione) return 'Scegliere un caso di carico, non una combinazione';
+  if (!Number.isFinite(dTu) || !Number.isFinite(dTg) || (!dTu && !dTg)) return 'Indicare ΔT uniforme o a farfalla diversi da zero';
+  const el = m.aste.find((x) => x.id === asta);
+  const mat = m.materiali.find((x) => x.id === el.materiale), sez = m.sezioni.find((x) => x.id === el.sezione);
+  if (!mat.alfa_t) return `Manca α del materiale ${mat.nome}: inserirlo nel pannello proprietà`;
+  if (dTg && !sez.h) return `Manca l'altezza h della sezione ${sez.nome}: inserirla nel pannello proprietà`;
+  if (dTu && m.analisi?.deformabilita_assiale === false) return 'Il ΔT uniforme richiede la deformabilità assiale delle aste';
+  (caso.carichi_termici ||= []).push({ asta, dT_u: dTu, dT_g: dTg });
+  m.schema_version = '1.2';
   return true;
 }
 
@@ -113,7 +128,10 @@ export function pannelloModifica(el, m, caso, selezione, onCambio, onErrore) {
     <div class="riga-campo"><span class="nota">q_i, q_j [kN/m]</span>
       <span class="gruppo"><input type="number" step="any" id="m-qi" value="-10" aria-label="q iniziale"><input type="number" step="any" id="m-qj" value="-20" aria-label="q finale"></span></div>
     <div class="riga-campo"><span class="nota">da a, a b [m]</span>
-      <span class="gruppo"><input type="number" step="any" id="m-ta" value="0" aria-label="Inizio del tratto"><input type="number" step="any" id="m-tb" value="${L}" aria-label="Fine del tratto"><button id="m-add-trap">+ trapezio</button></span></div>`;
+      <span class="gruppo"><input type="number" step="any" id="m-ta" value="0" aria-label="Inizio del tratto"><input type="number" step="any" id="m-tb" value="${L}" aria-label="Fine del tratto"><button id="m-add-trap">+ trapezio</button></span></div>
+    <div class="riga-campo"><span class="nota">ΔT uniforme, a farfalla [°C]</span>
+      <span class="gruppo"><input type="number" step="any" id="m-dtu" value="0" aria-label="ΔT uniforme"><input type="number" step="any" id="m-dtg" value="0" aria-label="ΔT a farfalla"><button id="m-add-dt">+ ΔT</button></span></div>
+    <p class="nota">ΔT a farfalla = T del lato destro meno T del lato sinistro, percorrendo l'asta dal nodo ${a.nodo_i} al nodo ${a.nodo_j}${Math.abs(nj.y - ni.y) < 1e-9 ? (nj.x > ni.x ? ' (qui: lato inferiore meno superiore)' : ' (qui: lato superiore meno inferiore)') : ''}.</p>`;
   }
   if (selezione?.tipo === 'nodo' && caso && !caso._combinazione) {
     const v = m.vincoli.find((x) => x.nodo === selezione.id) || {};
@@ -145,6 +163,10 @@ export function pannelloModifica(el, m, caso, selezione, onCambio, onErrore) {
     const val = (id) => Number(el.querySelector(id).value);
     const r = aggiungiCaricoTrapezio(m, caso, selezione.id, val('#m-qi'), val('#m-qj'), val('#m-ta'), val('#m-tb'), el.querySelector('#m-tdir').value);
     esito(r, `Carico trapezoidale aggiunto all'asta ${selezione.id} (schema 1.1)`);
+  });
+  el.querySelector('#m-add-dt')?.addEventListener('click', () => {
+    const r = aggiungiTermico(m, caso, selezione.id, Number(el.querySelector('#m-dtu').value), Number(el.querySelector('#m-dtg').value));
+    esito(r, `Distorsione termica aggiunta all'asta ${selezione.id} (schema 1.2)`);
   });
   el.querySelector('#m-ced')?.addEventListener('click', () => {
     const valori = { ux: 0, uy: 0, rz: 0 };

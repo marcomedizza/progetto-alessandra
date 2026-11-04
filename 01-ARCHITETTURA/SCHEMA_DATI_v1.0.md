@@ -105,7 +105,13 @@ Distorsioni termiche sulle aste: `casi_di_carico[].carichi_termici[]` con `asta`
 - servono `alfa_t` del materiale e, per la farfalla, `h` della sezione;
 - il ΔT uniforme è rifiutato con deformabilità assiale trascurata, perché la forza assiale sarebbe infinita.
 
-Le distorsioni si inseriscono solo da file; il pannello le mostra.
+**Segno di `dT_g` (punto 40 della revisione, Benedetta, 04/11)**: il lato −y locale è quello a destra di chi percorre l'asta da `nodo_i` a `nodo_j`.
+- Per un'asta orizzontale percorsa verso destra è il lato inferiore.
+- Invertendo i nodi dell'asta il segno di `dT_g` va invertito per descrivere la stessa situazione fisica.
+
+Lo schema non può controllarlo, perché entrambe le scelte sono valide. Il pannello mostra per l'asta selezionata quale lato è quale.
+
+Dal 04/11 le distorsioni termiche si inseriscono anche dal pannello (D17), come α del materiale e h della sezione.
 
 ## Prossime estensioni (v2)
 

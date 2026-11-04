@@ -33,6 +33,37 @@ Testi letti nei file di licenza distribuiti con i pacchetti installati nell'ambi
 
 Per il servizio installato in rete (uso come SaaS, senza distribuire il codice) non c'è nessun obbligo ulteriore. Le versioni sono quelle dell'ambiente di prova: per il rilascio vanno fissate in un file dei requisiti.
 
+### Dipendenze indirette del servizio (Veronica, 04/11/2026)
+
+Albero delle dipendenze di FastAPI, Uvicorn e jsonschema, ricavato dai metadati dei pacchetti installati. Ogni testo è stato letto nel file di licenza distribuito con il pacchetto.
+
+| Pacchetto | Versione | Licenza (testo letto) | Titolare |
+|---|---|---|---|
+| annotated-doc | 0.0.5 | MIT | Sebastián Ramírez |
+| annotated-types | 0.8.0 | MIT | i collaboratori |
+| anyio | 4.15.1 | MIT | Alex Grönholm |
+| attrs | 26.1.0 | MIT | Hynek Schlawack e collaboratori |
+| click | 8.5.0 | BSD 3 clausole | Pallets |
+| h11 | 0.16.0 | MIT | Nathaniel J. Smith e collaboratori |
+| idna | 3.20 | BSD 3 clausole | Kim Davies e collaboratori |
+| jsonschema-specifications | 2025.9.1 | MIT | Julian Berman |
+| opentelemetry-api | 1.45.1 | Apache 2.0 | OpenTelemetry Authors |
+| pydantic-core | 2.50.1 | MIT | Samuel Colvin |
+| referencing | 0.37.0 | MIT | Julian Berman |
+| rpds-py | 2026.9.1 | MIT | Julian Berman |
+| typing-extensions | 4.16.0 | PSF 2.0 (licenza di Python) | Python Software Foundation |
+| typing-inspection | 0.4.4 | MIT | Pydantic Services Inc. |
+
+**Esito**: tutte compatibili con la distribuzione, anche commerciale.
+- Apache 2.0 (opentelemetry-api) richiede in più di conservare il file NOTICE, se presente, e di indicare le modifiche ai sorgenti.
+- PSF 2.0 richiede di conservare l'avviso di copyright.
+
+**Dubbi dichiarati**:
+- rpds-py e pydantic-core contengono codice Rust compilato: le licenze delle librerie Rust incluse nel binario non sono state verificate.
+- Non ho accertato quale pacchetto richieda opentelemetry-api: risulta nei requisiti dichiarati dell'albero, ma va confermato con un ambiente pulito.
+
+**Interfaccia (02-FRONTEND-3D)**: l'unica dipendenza è Three.js 0.160.0, `three.module.min.js` e `OrbitControls.js`, MIT, già verificata il 02/11. Playwright serve solo alle prove automatiche e non si distribuisce.
+
 ## Componenti previsti
 
 | Componente | Uso previsto | Licenza | Nota | Esito |

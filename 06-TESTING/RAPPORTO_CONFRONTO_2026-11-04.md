@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 03/11/2026
+# Rapporto di confronto del solutore — 04/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 02/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 03/11
 
 **Solutore**: telaio2d v0.4, schema v1.2. **Comandi**: `verifica_casi.py --fortran` e `verifica_casi.py --api`.
 
@@ -28,9 +28,10 @@
 | C16 Trave Gerber, cedimento dell'appoggio | 6 superati, 0 non superati | 0 | 0 |
 | C17 Asta inclinata, carico parziale normale all'asta | 6 superati, 0 non superati | 0 | 0 |
 | C18 Trave appoggiata, ΔT a farfalla | 5 superati, 0 non superati | 0 | 0 |
+| C19 Trave Gerber, ΔT a farfalla sulla mensola | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità del 03/11**
-- **C17, carico normale all'asta inclinata (punto 32)**: controlla la direzione locale del carico, con sforzo normale costante perché il carico non ha componente assiale.
-- **C14 e C18, distorsioni termiche (v1.2)**: il caso incastrato controlla le forze impedite N = −EAαΔT e M = −EIκ; quello appoggiato la curvatura libera, cioè freccia −κL²/8 e rotazioni ±κL/2. Il secondo conferma anche il segno della convenzione: il lato inferiore più caldo abbassa la mezzeria.
+**Novità del 04/11**
+- **C19, cerniera interna e ΔT a farfalla (punto 41)**: la condensazione della cerniera tratta le forze d'incastro termiche. Cerniera +3,20 mm, rotazioni +1,60 e −1,60 mrad, nessuna sollecitazione.
+- **Banda contro matrice piena su tutti i casi** (`prova_prestazioni.py --casi`): scarto ≤ 1,2·10⁻¹⁶ m, tranne C3 (deformabilità assiale trascurata, 1,2·10⁻¹⁰ m) e C9 (9·10⁻¹⁵ m).
 
-**Altre prove**: `03-BACKEND/servizio/test_app.py`, 22 prove superate. Le 2 nuove sono C17, e C14 e C18 con le regole di coerenza della v1.2: versione dichiarata, h mancante, ΔT uniforme con deformabilità assiale trascurata.
+**Altre prove**: `03-BACKEND/servizio/test_app.py`, 24 prove superate. Le 2 nuove sono C19 e le distorsioni termiche come le crea il pannello, con il rifiuto quando manca α.

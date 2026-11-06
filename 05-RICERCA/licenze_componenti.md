@@ -64,6 +64,20 @@ Albero delle dipendenze di FastAPI, Uvicorn e jsonschema, ricavato dai metadati 
 
 **Interfaccia (02-FRONTEND-3D)**: l'unica dipendenza è Three.js 0.160.0, `three.module.min.js` e `OrbitControls.js`, MIT, già verificata il 02/11. Playwright serve solo alle prove automatiche e non si distribuisce.
 
+### Chiusura dei dubbi del 04/11 (punto 47, Veronica, 06/11)
+
+- **opentelemetry-api** è un requisito diretto di FastAPI 0.162: `opentelemetry-api>=1.44.0`, secondo i metadati del pacchetto. Starlette lo richiede solo nella variante opzionale «full». Licenza Apache 2.0, già verificata.
+- **Librerie Rust incluse**: lette negli elenchi dei materiali (SBOM CycloneDX) distribuiti dentro i pacchetti.
+
+| Pacchetto | Componenti Rust | Licenze |
+|---|---|---|
+| rpds-py 2026.9.1 | 17 | 13 «MIT o Apache 2.0», 2 MIT, 1 Apache 2.0 con eccezione LLVM, 1 «(MIT o Apache 2.0) e Unicode 3.0» |
+| pydantic-core 2.50.1 | 99 | 51 «MIT o Apache 2.0», 19 Unicode 3.0, 12 MIT, 7 «Apache 2.0 o MIT», e inoltre Unlicense/MIT, BSD 2 clausole/Apache/MIT, Zlib, Unicode-DFS-2016 |
+
+Un componente di pydantic-core offre la scelta «MIT o Apache 2.0 o LGPL 2.1+»: si sceglie MIT e la LGPL non si applica.
+
+**Esito**: tutte licenze permissive, compatibili con la distribuzione commerciale. Gli avvisi vanno riportati nel file `LICENZE_TERZE_PARTI.md`, che si può generare da questi SBOM. Il punto 47 è chiuso.
+
 ## Componenti previsti
 
 | Componente | Uso previsto | Licenza | Nota | Esito |

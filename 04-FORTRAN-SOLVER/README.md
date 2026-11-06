@@ -43,6 +43,21 @@ Le reazioni verticali equilibrano sempre il carico: cedimento e distorsioni prod
 
 In particolare C6 (cerniera) dà 1,2·10⁻¹⁶ m e C8 (molla) 5·10⁻¹⁸ m.
 
+**Deformabilità assiale trascurata (punto 46, Carla ed Elisa, 06/11)**: oggi si ottiene moltiplicando l'area per 10⁶. Ho studiato il fattore su C3 confrontando il momento al piede con la soluzione chiusa ad assiale rigida (21,9894 kNm) e i due metodi di soluzione tra loro.
+
+| Fattore su A | Errore sul momento | Banda contro piena (relativo) |
+|---|---|---|
+| 1 (assiale deformabile) | 3·10⁻³ | 4·10⁻¹⁹ |
+| 10² | 3·10⁻⁵ | 2·10⁻¹² |
+| 10⁴ | 3·10⁻⁷ | 1·10⁻¹⁰ |
+| 10⁶ (in uso) | 6·10⁻⁹ | 1·10⁻⁸ |
+| 10⁸ | 3·10⁻⁶ | 2·10⁻⁶ |
+| 10¹⁰ | — | matrice dichiarata singolare |
+
+L'errore di modello scende come 1/fattore; l'arrotondamento cresce con il fattore e oltre 10⁸ prevale. Il fattore 10⁶ è vicino all'ottimo per la doppia precisione, con errore 10⁻⁸: sei ordini sotto qualunque tolleranza di progetto.
+
+**Proposta**: mantenere la penalità e non introdurre ora vincoli esatti di inestensibilità. Questi richiederebbero l'eliminazione di gradi di libertà dipendenti con il riconoscimento dei vincoli ridondanti nei telai a più campate: lavoro e rischio non giustificati da un guadagno di precisione di 10⁻⁸. Per robustezza conviene invece rendere il fattore relativo all'asta, cioè EA/L pari a circa 10⁶ volte la rigidezza flessionale 12EI/L³, così il condizionamento non dipende dalle dimensioni. Da fare nella v0.5, con nuova verifica di C3, C4 e del telaio di prova; la versione sperimentale senza A × 10⁶ non è stata scritta, per i motivi detti.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

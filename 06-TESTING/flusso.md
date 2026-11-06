@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 04/11/2026
+# Prova del flusso utente — prototipo del 06/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -114,6 +114,11 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S32 | superato |
 | S33 | superato: reazioni 0 · 40 · 50 kN, dovute solo al trapezio |
 
+| Scenario | 06/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
+| C14, C18, C19 (leggibilità, Mariana) | deformata corretta: su C19 mensola incurvata verso l'alto fino alla cerniera e tratto appoggiato rettilineo. Su C19 il diagramma M nullo mostrava due etichette «0» da rumore numerico (D18), corretto |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -136,4 +141,5 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D15 | 31/10 | S21 | I carichi trapezoidali si vedono nel pannello ma non si possono inserire dall'interfaccia (solo da file) | media | **chiuso 02/11**: «+ trapezio» sull'asta selezionata e «imposta» cedimento sul nodo, solo sulle componenti vincolate; il modello passa allo schema 1.1 | Lucia, Irene, Daniela |
 | D16 | 03/11 | S30 | Nel pannello proprietà i residui numerici comparivano come 0,000000000000003887 kNm | bassa | **chiuso 03/11**: valori sotto 10⁻⁹ mostrati come 0 | Lucia |
 | D17 | 03/11 | — | Le distorsioni termiche si vedono nel pannello ma si inseriscono solo da file | bassa | **chiuso 04/11**: «+ ΔT» sull'asta selezionata, α e h modificabili, avviso sul lato del ΔT a farfalla | Lucia, Irene |
+| D18 | 06/11 | C19 | Diagramma di grandezze nulle disegnato con etichette «0» dovute a residui di arrotondamento (10⁻¹⁴) | bassa | **chiuso 06/11**: sotto 10⁻⁶ kN o kNm il diagramma non si disegna | Mariana |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

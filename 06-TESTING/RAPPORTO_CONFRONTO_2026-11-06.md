@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 04/11/2026
+# Rapporto di confronto del solutore — 06/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 03/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 04/11 (il 05/11 l'esecuzione si è interrotta)
 
 **Solutore**: telaio2d v0.4, schema v1.2. **Comandi**: `verifica_casi.py --fortran` e `verifica_casi.py --api`.
 
@@ -29,9 +29,12 @@
 | C17 Asta inclinata, carico parziale normale all'asta | 6 superati, 0 non superati | 0 | 0 |
 | C18 Trave appoggiata, ΔT a farfalla | 5 superati, 0 non superati | 0 | 0 |
 | C19 Trave Gerber, ΔT a farfalla sulla mensola | 6 superati, 0 non superati | 0 | 0 |
+| C20 Trave Gerber, trapezio parziale sul tratto appoggiato | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità del 04/11**
-- **C19, cerniera interna e ΔT a farfalla (punto 41)**: la condensazione della cerniera tratta le forze d'incastro termiche. Cerniera +3,20 mm, rotazioni +1,60 e −1,60 mrad, nessuna sollecitazione.
-- **Banda contro matrice piena su tutti i casi** (`prova_prestazioni.py --casi`): scarto ≤ 1,2·10⁻¹⁶ m, tranne C3 (deformabilità assiale trascurata, 1,2·10⁻¹⁰ m) e C9 (9·10⁻¹⁵ m).
+**Novità**
+- **C20, trapezio parziale oltre una cerniera interna**: controlla la forza trasmessa dalla cerniera (7,5 kN) e il momento sul tratto caricato (6,11 kNm a 1 m dalla cerniera).
+- **Identificativi non consecutivi su C14, C18 e C19** (prova del servizio): rinumerati e in ordine inverso, danno gli stessi spostamenti e le stesse rotazioni d'estremità.
 
-**Altre prove**: `03-BACKEND/servizio/test_app.py`, 24 prove superate. Le 2 nuove sono C19 e le distorsioni termiche come le crea il pannello, con il rifiuto quando manca α.
+**Altre prove**:
+- `03-BACKEND/servizio/test_app.py`: 26 prove superate;
+- `02-FRONTEND-3D/prove_modifica.mjs`: 5 prove superate. È nuova e prova le funzioni di modifica dell'interfaccia senza navigatore: versione dello schema, trapezi, cedimenti, distorsioni termiche, doppioni.

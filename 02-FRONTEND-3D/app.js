@@ -33,10 +33,16 @@ function casoEffettivo(m, valore) {
 }
 const stato = { modello: null, caso: null, ris: null, selezione: null, servizio: false, disegno: null, storia: [] };
 
-// Annulla (D13, Lucia): copie del modello dopo ogni modifica, al massimo 50
+// Annulla (D13, Lucia): copie del modello dopo ogni modifica, al massimo 50 e al massimo 20 milioni di
+// caratteri in tutto (circa 40 MB in memoria). Punto 34: un modello da 4681 nodi occupa 1,4 milioni di
+// caratteri, quindi ne restano circa 14 annullamenti; si conservano comunque le ultime due copie.
+const STORIA_MAX_COPIE = 50, STORIA_MAX_CARATTERI = 20e6;
 function memorizza() {
   stato.storia.push(JSON.stringify(stato.modello));
-  if (stato.storia.length > 50) stato.storia.shift();
+  let tot = stato.storia.reduce((n, c) => n + c.length, 0);
+  while (stato.storia.length > 2 && (stato.storia.length > STORIA_MAX_COPIE || tot > STORIA_MAX_CARATTERI)) {
+    tot -= stato.storia.shift().length;
+  }
 }
 function annulla() {
   if (stato.storia.length < 2) { messaggio('Niente da annullare'); return; }

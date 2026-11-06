@@ -67,6 +67,8 @@ function inflessioneIncastrata(X, L, EI, car) {
 
 function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   const max = Math.max(1e-12, ...ris.sollecitazioni.flatMap((s) => s[comp].map(Math.abs)));
+  // diagramma nullo (D18, Mariana): sotto 10⁻⁶ kN o kNm i valori sono solo residui di arrotondamento
+  if (max < 1e-6) return [];
   const k = (S * 0.15) / max;
   const segno = comp === 'M' ? -1 : 1;
   const matRiemp = new THREE.MeshBasicMaterial({ color: COLORI[comp], transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false });

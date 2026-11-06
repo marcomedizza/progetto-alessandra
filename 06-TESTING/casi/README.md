@@ -23,6 +23,7 @@
 | C14 | Trave incastrata L = 6 m, ΔT uniforme +20 °C e a farfalla +10 °C (v1.2) | formule chiuse | N = −EAαΔTu = −271,2 kN; M = −EIαΔTg/h = −7,02 kNm costante; Rx1 = +271,2 kN |
 | C18 | Trave appoggiata L = 6 m, ΔT a farfalla +10 °C (v1.2) | formule chiuse | nessuna reazione; uy(3) = −κL²/8 = −1,80 mm; φ = ∓κL/2 = ∓1,20 mrad |
 | C19 | Geometria di C6, ΔT a farfalla +10 °C sulla mensola con cerniera in j (v1.2, punto 41) | isostatica | nessuna sollecitazione; uy cerniera = κa²/2 = +3,20 mm; φ mensola = κa = +1,60 mrad; tratto 4–6 −1,60 mrad |
+| C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -147,6 +148,18 @@ Geometria di C6; ΔTg = +10 °C (lato inferiore più caldo) solo sulla mensola 0
 - Tratto 4–6: ruota rigidamente attorno all'appoggio, φ = −3,20/2000 = −1,60 mrad. La rotazione è discontinua alla cerniera: +1,60 sulla mensola, −1,60 sul tratto appoggiato.
 
 Il caso controlla che la condensazione statica della cerniera tratti anche le forze d'incastro termiche (punto 41 della revisione).
+
+## C20 · trapezio parziale con cerniera interna (Daniela e Valentina, 05/11)
+
+Geometria di C6. Sul tratto appoggiato 4–6 m c'è un carico verso il basso da q1 = 10 kN/m a q2 = 20 kN/m, tra a = 0,5 e b = 2,0 m dal nodo 2, cioè dalla cerniera.
+1. Risultante W = 1,5 × 15 = 22,5 kN.
+2. Baricentro xg = 0,5 + 1,5 × (10 + 40)/(3 × 30) = 1,333 m dalla cerniera.
+3. Tratto appoggiato: R3 = 22,5 × 1,333/2 = 15,0 kN; forza trasmessa dalla cerniera Rs = 7,5 kN.
+4. Mensola caricata in punta da Rs:
+   - R1 = 7,5 kN;
+   - M incastro = −7,5 × 4 = −30,0 kNm;
+   - abbassamento della cerniera = Rs·4³/(3EI) = 7,5 × 64/(3 × 17 547,6) = 9,12 mm.
+5. Momento a 1 m dalla cerniera, con t = 0,5: M = 7,5 × 1 − (10 × 0,5²/2 + 10/1,5 × 0,5³/6) = 7,5 − 1,389 = 6,11 kNm.
 
 ## File
 

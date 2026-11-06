@@ -252,6 +252,13 @@ def test_termica_dal_pannello():
     assert "manca alfa_t" in " ".join(client.post("/api/valida", json=m).json()["coerenza"])
 
 
+def test_trapezio_con_cerniera():
+    # C20 (05/11): trapezio parziale sul tratto oltre la cerniera; forza trasmessa e momento contro la statica
+    r = client.post("/api/calcola", json=modello("C20_gerber_trapezio")).json()["risultati"][0]
+    reaz = {x["nodo"]: x for x in r["reazioni"]}
+    assert abs(reaz[3]["Ry"] - 15) < 1e-9 and abs(reaz[1]["Ry"] - 7.5) < 1e-9 and abs(reaz[1]["Mz"] - 30) < 1e-9
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

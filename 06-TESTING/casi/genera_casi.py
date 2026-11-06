@@ -605,6 +605,39 @@ def c19():
     return m, atteso
 
 
+def c20():
+    a, b, q1, q2 = 0.5, 2.0, 10.0, 20.0
+    m = v11(trave("C20", "Trave Gerber, trapezio parziale sul tratto appoggiato",
+                  "Geometria di C6 (incastro, cerniera interna a 4 m, appoggio a 6 m); carico verso il basso da 10 kN/m a 20 kN/m "
+                  "sul tratto appoggiato, da 0,5 a 2,0 m dal suo nodo iniziale (Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 3, "uy": True}],
+                  {"id": "Q", "nome": "Trapezio parziale", "categoria": "Q", "carichi_aste": [
+                      {"asta": 2, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -q1, "q_j": -q2, "a": a, "b": b}]}, 5))
+    c = b - a
+    W = c * (q1 + q2) / 2
+    xg = a + c * (q1 + 2 * q2) / (3 * (q1 + q2))   # baricentro sul tratto appoggiato (luce 2 m)
+    R3 = W * xg / 2.0
+    Rs = W - R3                                  # forza trasmessa dalla cerniera alla mensola
+    t = 1.0 - a
+    M1 = Rs * 1.0 - (q1 * t ** 2 / 2 + (q2 - q1) / c * t ** 3 / 6)
+    EI = E_ACC * IPE300["I"]
+    atteso = {"caso": "Q", "formule": {
+        "tratto appoggiato (2 m)": "W = (b − a)(q1 + q2)/2; xg = a + (b − a)(q1 + 2q2)/(3(q1 + q2)); R3 = W·xg/2; Rs = W − R3",
+        "mensola (4 m)": "carico Rs in punta: R1 = Rs; M1 = −Rs·4; abbassamento della cerniera Rs·4³/(3EI)",
+        "momento a 1 m dalla cerniera": "M = Rs·1 − [q1·t²/2 + (q2 − q1)/(b − a)·t³/6], t = 1 − a"},
+        "valori": [
+            {"grandezza": "Ry nodo 3", "valore": R3, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": Rs, "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": Rs * 4, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=4 (cerniera)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 2 x=1", "valore": M1, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cerniera)", "valore": -Rs * 4 ** 3 / (3 * EI), "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -614,7 +647,8 @@ if __name__ == "__main__":
                     ("C12_trapezio_parziale", c12), ("C13_triangolare_incastrata", c13),
                     ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
-                    ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19)):
+                    ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
+                    ("C20_gerber_trapezio", c20)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

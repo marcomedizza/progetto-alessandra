@@ -123,6 +123,9 @@ LETTURE = {
         "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"), "M asta 1 x=0": S(1, "M", 0.0),
         "uy nodo 2 (cerniera)": U(2, "uy"), "φj asta 1 (mensola alla cerniera)": ROT(1, "phi_j"),
         "rz nodo 2 (tratto appoggiato)": U(2, "rz")},
+    "C20": {
+        "Ry nodo 3": R(3, "Ry"), "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"),
+        "M asta 1 x=4 (cerniera)": S(1, "M", 4.0), "M asta 2 x=1": S(2, "M", 1.0), "uy nodo 2 (cerniera)": U(2, "uy")},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

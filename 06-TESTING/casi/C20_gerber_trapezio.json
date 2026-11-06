@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C20",
+    "nome": "Trave Gerber, trapezio parziale sul tratto appoggiato",
+    "descrizione": "Geometria di C6 (incastro, cerniera interna a 4 m, appoggio a 6 m); carico verso il basso da 10 kN/m a 20 kN/m sul tratto appoggiato, da 0,5 a 2,0 m dal suo nodo iniziale (Daniela e Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-31",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_j": true
+      }
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 3,
+      "uy": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Trapezio parziale",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 2,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_y",
+          "q_i": -10.0,
+          "q_j": -20.0,
+          "a": 0.5,
+          "b": 2.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 5
+  }
+}

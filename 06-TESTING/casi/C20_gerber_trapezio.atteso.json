@@ -1,0 +1,40 @@
+{
+  "caso": "Q",
+  "formule": {
+    "tratto appoggiato (2 m)": "W = (b − a)(q1 + q2)/2; xg = a + (b − a)(q1 + 2q2)/(3(q1 + q2)); R3 = W·xg/2; Rs = W − R3",
+    "mensola (4 m)": "carico Rs in punta: R1 = Rs; M1 = −Rs·4; abbassamento della cerniera Rs·4³/(3EI)",
+    "momento a 1 m dalla cerniera": "M = Rs·1 − [q1·t²/2 + (q2 − q1)/(b − a)·t³/6], t = 1 − a"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 3",
+      "valore": 15.000000000000002,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 7.499999999999998,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 29.999999999999993,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=4 (cerniera)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=1",
+      "valore": 6.111111111111109,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2 (cerniera)",
+      "valore": -0.009118056030454305,
+      "unita": "m"
+    }
+  ]
+}

@@ -259,6 +259,29 @@ def test_trapezio_con_cerniera():
     assert abs(reaz[3]["Ry"] - 15) < 1e-9 and abs(reaz[1]["Ry"] - 7.5) < 1e-9 and abs(reaz[1]["Mz"] - 30) < 1e-9
 
 
+def test_identificativi_non_consecutivi_v12():
+    # Paola (06/11): C14, C18, C19 con nodi e aste rinumerati e in ordine inverso danno gli stessi risultati
+    for nome in ("C14_termica_incastrata", "C18_termica_appoggiata", "C19_gerber_termica"):
+        m = modello(nome)
+        base = client.post("/api/calcola", json=m).json()["risultati"][0]
+        n2 = {n["id"]: 10 * n["id"] + 7 for n in m["nodi"]}
+        a2 = {a["id"]: a["id"] + 40 for a in m["aste"]}
+        r = copy.deepcopy(m)
+        r["nodi"] = [dict(n, id=n2[n["id"]]) for n in reversed(m["nodi"])]
+        r["aste"] = [dict(a, id=a2[a["id"]], nodo_i=n2[a["nodo_i"]], nodo_j=n2[a["nodo_j"]]) for a in reversed(m["aste"])]
+        r["vincoli"] = [dict(v, nodo=n2[v["nodo"]]) for v in m["vincoli"]]
+        for c in r["casi_di_carico"]:
+            for t in c.get("carichi_termici", []):
+                t["asta"] = a2[t["asta"]]
+        ris = client.post("/api/calcola", json=r).json()["risultati"][0]
+        sp = {u["nodo"]: u for u in ris["spostamenti"]}
+        for u in base["spostamenti"]:
+            assert all(abs(u[k] - sp[n2[u["nodo"]]][k]) < 1e-12 for k in ("ux", "uy", "rz")), nome
+        rot = {x["asta"]: x for x in ris["rotazioni_aste"]}
+        for x in base["rotazioni_aste"]:
+            assert abs(x["phi_j"] - rot[a2[x["asta"]]]["phi_j"]) < 1e-12, nome
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

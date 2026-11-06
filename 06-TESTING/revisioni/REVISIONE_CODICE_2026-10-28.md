@@ -158,3 +158,29 @@
 - `verifica_casi.py` nei tre percorsi su C1–C19: superati;
 - `test_app.py`: 24 prove superate;
 - scenari S1–S33 nel navigatore: superati.
+
+
+## Aggiornamento del 06/11/2026 (Marisa)
+
+Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro dopo la generazione di C20, che è stato completato e salvato oggi.
+
+**Punti aperti precedenti**
+- 34 **chiuso**: «Annulla» limitato a 50 copie e 20 milioni di caratteri, circa 14 annullamenti su un modello da 4681 nodi; restano sempre le ultime due copie.
+- 46 **chiuso come studio**: il fattore 10⁶ è vicino all'ottimo, errore 6·10⁻⁹. Proposta per la v0.5: fattore relativo all'asta.
+- 47 **chiuso**: licenze Rust da SBOM, opentelemetry-api richiesto da FastAPI.
+- 37 resta aperto: D12 da provare a mano.
+
+**Revisione del codice nuovo**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 48 | `02-FRONTEND-3D/prove_modifica.mjs` | Prima prova automatica dell'interfaccia eseguibile con node, senza navigatore: copre il punto 43 e le regole dei pannelli | — | nessun intervento |
+| 49 | `02-FRONTEND-3D/risultati.js` | La soglia di 10⁻⁶ per i diagrammi nulli è assoluta (kN, kNm): adatta alle unità del progetto; con unità diverse andrebbe resa relativa | bassa | aperto, da ricordare se cambiano le unità |
+| 50 | `02-FRONTEND-3D/app.js` | Il limite dell'«Annulla» conta i caratteri della stringa JSON, non i byte: in JavaScript ogni carattere occupa 2 byte, quindi 20 milioni di caratteri sono circa 40 MB | — | nessun intervento, scritto nel commento |
+| 51 | `03-BACKEND/servizio/test_app.py` | La prova sugli identificativi non consecutivi copre ora anche distorsioni termiche e rotazioni alle cerniere (C14, C18, C19) | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C20: superati;
+- `test_app.py`: 26 prove superate;
+- `prove_modifica.mjs`: 5 prove superate;
+- scenari S1–S33 nel navigatore: superati.

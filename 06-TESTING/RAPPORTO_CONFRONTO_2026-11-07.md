@@ -1,12 +1,12 @@
-# Rapporto di confronto del solutore — 06/11/2026
+# Rapporto di confronto del solutore — 07/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 04/11 (il 05/11 l'esecuzione si è interrotta)
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 06/11
 
-**Solutore**: telaio2d v0.4, schema v1.2. **Comandi**: `verifica_casi.py --fortran` e `verifica_casi.py --api`.
+**Calcolo**: telaio2d v0.4 con il convertitore v0.5, che usa il fattore relativo all'asta per l'assiale rigida (punto 46). Schema v1.2.
 
 **Tolleranze**:
 - valori attesi: 0,5 % relativa, minimo 1·10⁻⁶ assoluto;
-- confronto completo con il riferimento: 1·10⁻⁶ relativa, per identificativo, su spostamenti, reazioni, rotazioni d'estremità e N, V, M.
+- confronto completo con il riferimento: 1·10⁻⁶ relativa, per identificativo.
 
 | Caso | Valori attesi (servizio) | Scostamenti Fortran / riferimento | Scostamenti servizio / riferimento |
 |---|---|---|---|
@@ -31,10 +31,8 @@
 | C19 Trave Gerber, ΔT a farfalla sulla mensola | 6 superati, 0 non superati | 0 | 0 |
 | C20 Trave Gerber, trapezio parziale sul tratto appoggiato | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità**
-- **C20, trapezio parziale oltre una cerniera interna**: controlla la forza trasmessa dalla cerniera (7,5 kN) e il momento sul tratto caricato (6,11 kNm a 1 m dalla cerniera).
-- **Identificativi non consecutivi su C14, C18 e C19** (prova del servizio): rinumerati e in ordine inverso, danno gli stessi spostamenti e le stesse rotazioni d'estremità.
+**Novità del 07/11**
+- **Assiale rigida, fattore relativo all'asta**: su C3 e C4 l'errore rispetto alla soluzione chiusa scende a circa 2·10⁻⁹ (era 6·10⁻⁹). Su C3 con luci da 0,05 a 25 volte l'errore resta sotto 1·10⁻⁸, contro un massimo di 9·10⁻⁶ con A × 10⁶. La nuova prova `test_assiale_rigida_indipendente_dalla_scala` copre il caso con luci × 25.
+- **Caso «cerniera + ΔT» chiesto oggi a Daniela e Valentina (punto 41)**: esiste già, è C19, consegnato il 04/11. Non è stato duplicato.
 
-**Altre prove**:
-- `03-BACKEND/servizio/test_app.py`: 26 prove superate;
-- `02-FRONTEND-3D/prove_modifica.mjs`: 5 prove superate. È nuova e prova le funzioni di modifica dell'interfaccia senza navigatore: versione dello schema, trapezi, cedimenti, distorsioni termiche, doppioni.
+**Altre prove**: `test_app.py` 27 superate; `prove_modifica.mjs` 5 superate.

@@ -72,6 +72,8 @@ Verifica su C3 al variare delle luci, con la forza orizzontale fissa. Errore rel
 
 Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l'errore di modello, per aste lunghe l'arrotondamento. Con il fattore relativo resta tra 2·10⁻⁹ e 1·10⁻⁸. C1–C20 restano superati nei tre percorsi; banda contro piena su C3 6,8·10⁻⁹ e su C4 2,8·10⁻⁹. Il punto 46 è chiuso.
 
+**Build dopo la v0.5** (Ottavia, 07/11): la v0.5 cambia solo il convertitore. `build.sh` ricompila il solutore v0.4 senza avvisi nuovi, e C1–C20 e le prestazioni restano invariati.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

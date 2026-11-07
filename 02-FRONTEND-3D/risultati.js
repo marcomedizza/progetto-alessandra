@@ -5,8 +5,10 @@ import * as THREE from 'three';
 
 const COLORI = { M: 0x2f5fa7, V: 0x2d7a46, N: 0xc07a1a };
 
-function geometriaAsta(modello, a) {
-  const nodi = new Map(modello.nodi.map((n) => [n.id, n]));
+// nodi: mappa id → nodo, costruita una volta per disegno (D19: prima era ricostruita per ogni asta,
+// 43 milioni di inserimenti su un modello da 4681 nodi e 9150 aste)
+const mappaNodi = (modello) => new Map(modello.nodi.map((n) => [n.id, n]));
+function geometriaAsta(nodi, a) {
   const ni = nodi.get(a.nodo_i), nj = nodi.get(a.nodo_j);
   const dx = nj.x - ni.x, dy = nj.y - ni.y, L = Math.hypot(dx, dy);
   return { ni, nj, L, c: dx / L, s: dy / L };
@@ -74,24 +76,21 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   const matRiemp = new THREE.MeshBasicMaterial({ color: COLORI[comp], transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false });
   const matLinea = new THREE.LineBasicMaterial({ color: COLORI[comp] });
   const etichette = [];
+  const nodi = mappaNodi(modello);
+  const aste = new Map(modello.aste.map((a) => [a.id, a]));
+  // D19: tutte le aste in una sola geometria di riempimento e una sola di contorno
+  const pos = [], curva = [];
   for (const s of ris.sollecitazioni) {
-    const a = modello.aste.find((x) => x.id === s.asta);
-    const { ni, c, s: sn } = geometriaAsta(modello, a);
+    const a = aste.get(s.asta);
+    const { ni, c, s: sn } = geometriaAsta(nodi, a);
     const asse = (x) => [ni.x + c * x, ni.y + sn * x];
     const punto = (x, v) => { const [px, py] = asse(x); const o = segno * k * v; return [px - sn * o, py + c * o]; };
-    const pos = [], curva = [];
     for (let i = 0; i < s.x.length - 1; i++) {
       const a0 = asse(s.x[i]), a1 = asse(s.x[i + 1]);
       const d0 = punto(s.x[i], s[comp][i]), d1 = punto(s.x[i + 1], s[comp][i + 1]);
       pos.push(...a0, 0, ...d0, 0, ...d1, 0, ...a0, 0, ...d1, 0, ...a1, 0);
     }
-    for (let i = 0; i < s.x.length; i++) curva.push(...punto(s.x[i], s[comp][i]), 0);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    gruppo.add(new THREE.Mesh(g, matRiemp));
-    const gl = new THREE.BufferGeometry();
-    gl.setAttribute('position', new THREE.Float32BufferAttribute(curva, 3));
-    gruppo.add(new THREE.Line(gl, matLinea));
+    for (let i = 0; i < s.x.length - 1; i++) curva.push(...punto(s.x[i], s[comp][i]), 0, ...punto(s.x[i + 1], s[comp][i + 1]), 0);
     // valori alle estremità e, se maggiore, il massimo interno (D3)
     const n = s.x.length, val = s[comp];
     const indici = [0, n - 1];
@@ -102,9 +101,18 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
       if (Math.abs(val[i]) < max * 0.02) continue;
       const [px, py] = punto(s.x[i], val[i] * 1.15);
       // M in valore assoluto: il lato del diagramma indica già le fibre tese; N e V con il segno
-      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]) });
+      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]), v: Math.abs(val[i]) });
     }
   }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  gruppo.add(new THREE.Mesh(g, matRiemp));
+  const gl = new THREE.BufferGeometry();
+  gl.setAttribute('position', new THREE.Float32BufferAttribute(curva, 3));
+  gruppo.add(new THREE.LineSegments(gl, matLinea));
+  // D19: sui modelli grandi solo le 150 etichette di valore assoluto maggiore (ogni etichetta è un elemento
+  // della pagina riposizionato a ogni fotogramma)
+  if (etichette.length > 150) etichette.sort((p, q) => q.v - p.v).length = 150;
   return etichette;
 }
 
@@ -113,8 +121,9 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
 function deformataAste(modello, ris, caso) {
   const sp = new Map(ris.spostamenti.map((u) => [u.nodo, u]));
   const rot = new Map((ris.rotazioni_aste || []).map((r) => [r.asta, r]));
+  const nodi = mappaNodi(modello);
   return modello.aste.map((a) => {
-    const geo = geometriaAsta(modello, a), { L, c, s } = geo;
+    const geo = geometriaAsta(nodi, a), { L, c, s } = geo;
     const ui = sp.get(a.nodo_i), uj = sp.get(a.nodo_j);
     // spostamenti locali d'estremità
     const ui_x = c * ui.ux + s * ui.uy, vi = -s * ui.ux + c * ui.uy;
@@ -144,15 +153,17 @@ function disegnaDeformata(gruppo, modello, ris, S, caso) {
   const max = Math.max(1e-12, ...ris.spostamenti.map((u) => Math.max(Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1)));
   const k = (S * 0.08) / max;
   const mat = new THREE.LineDashedMaterial({ color: 0x2f5fa7, dashSize: S * 0.015, gapSize: S * 0.01 });
+  // D19: tutte le aste in una sola geometria a segmenti
+  const pts = [];
   for (const { geo: { ni, c, s }, punti } of deformataAste(modello, ris, caso)) {
-    const pts = [];
-    for (const { X, u, v } of punti) pts.push(ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v, 0);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-    const l = new THREE.Line(g, mat);
-    l.computeLineDistances();
-    gruppo.add(l);
+    const xy = punti.map(({ X, u, v }) => [ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v]);
+    for (let i = 0; i < xy.length - 1; i++) pts.push(...xy[i], 0, ...xy[i + 1], 0);
   }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  const l = new THREE.LineSegments(g, mat);
+  l.computeLineDistances();
+  gruppo.add(l);
   return k;
 }
 

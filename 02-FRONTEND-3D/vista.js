@@ -98,6 +98,22 @@ export class Vista {
     this.S = Math.max(maxx - minx, maxy - miny, 1);
     this.centro.set((minx + maxx) / 2, (miny + maxy) / 2, 0);
     const S = this.S;
+    // geometrie e materiali condivisi (D19, Irene e Mariana): un cilindro di altezza 1 scalato sulla lunghezza
+    // di ogni asta e una sfera per tutti i nodi, invece di una geometria e un materiale per elemento
+    const G = {
+      asta: new THREE.CylinderGeometry(S * 0.006, S * 0.006, 1, 8),
+      presaAsta: new THREE.CylinderGeometry(S * 0.025, S * 0.025, 1, 6, 1, false, Math.PI / 6),
+      anello: new THREE.RingGeometry(S * 0.008, S * 0.013, 20),
+      nodo: new THREE.SphereGeometry(S * 0.012, 16, 12),
+      nodoSel: new THREE.SphereGeometry(S * 0.018, 16, 12),
+      presaNodo: new THREE.SphereGeometry(S * 0.035, 8, 6),
+    };
+    const M = {
+      asta: new THREE.MeshBasicMaterial({ color: COL.asta }),
+      sel: new THREE.MeshBasicMaterial({ color: COL.astaSel }),
+      nodo: new THREE.MeshBasicMaterial({ color: COL.nodo }),
+      invisibile: new THREE.MeshBasicMaterial({ visible: false }),
+    };
 
     // aste
     for (const a of modello.aste) {
@@ -105,21 +121,21 @@ export class Vista {
       const p1 = new THREE.Vector3(ni.x, ni.y, 0), p2 = new THREE.Vector3(nj.x, nj.y, 0);
       const L = p1.distanceTo(p2);
       const sel = selezione?.tipo === 'asta' && selezione.id === a.id;
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(S * 0.006, S * 0.006, L, 8),
-        new THREE.MeshBasicMaterial({ color: sel ? COL.astaSel : COL.asta }));
+      const m = new THREE.Mesh(G.asta, sel ? M.sel : M.asta);
+      m.scale.set(1, L, 1);
       m.position.copy(p1).add(p2).multiplyScalar(0.5);
       m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
       this.gruppoModello.add(m);
       // cilindro invisibile più largo per la selezione col mouse, ruotato di 30° perché nessuno spigolo cada sul piano del telaio
-      const presa = new THREE.Mesh(new THREE.CylinderGeometry(S * 0.025, S * 0.025, L, 6, 1, false, Math.PI / 6), new THREE.MeshBasicMaterial({ visible: false }));
-      presa.position.copy(m.position); presa.quaternion.copy(m.quaternion);
+      const presa = new THREE.Mesh(G.presaAsta, M.invisibile);
+      presa.position.copy(m.position); presa.quaternion.copy(m.quaternion); presa.scale.copy(m.scale);
       presa.userData = { tipo: 'asta', id: a.id };
       this.gruppoModello.add(presa);
       this.selezionabili.push(presa);
       for (const [lato, rel] of [['i', a.svincoli?.rz_i], ['j', a.svincoli?.rz_j]]) {
         if (!rel) continue;
         const p = lato === 'i' ? p1.clone().lerp(p2, 0.04) : p2.clone().lerp(p1, 0.04);
-        const c = new THREE.Mesh(new THREE.RingGeometry(S * 0.008, S * 0.013, 20), new THREE.MeshBasicMaterial({ color: COL.asta }));
+        const c = new THREE.Mesh(G.anello, M.asta);
         c.position.copy(p);
         this.gruppoModello.add(c);
       }
@@ -127,12 +143,11 @@ export class Vista {
     // nodi
     for (const n of modello.nodi) {
       const sel = selezione?.tipo === 'nodo' && selezione.id === n.id;
-      const m = new THREE.Mesh(new THREE.SphereGeometry(S * (sel ? 0.018 : 0.012), 16, 12),
-        new THREE.MeshBasicMaterial({ color: sel ? COL.astaSel : COL.nodo }));
+      const m = new THREE.Mesh(sel ? G.nodoSel : G.nodo, sel ? M.sel : M.nodo);
       m.position.set(n.x, n.y, 0);
       this.gruppoModello.add(m);
       // sfera invisibile più grande per facilitare la selezione col mouse
-      const presa = new THREE.Mesh(new THREE.SphereGeometry(S * 0.035, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
+      const presa = new THREE.Mesh(G.presaNodo, M.invisibile);
       presa.position.set(n.x, n.y, 0);
       presa.userData = { tipo: 'nodo', id: n.id };
       this.gruppoModello.add(presa);
@@ -203,9 +218,11 @@ export class Vista {
         : q.direzione === 'globale_x' ? new THREE.Vector3(1, 0, 0) : ny;
       const L = p1.distanceTo(p2);
       // [posizione relativa, valore] di ogni freccia; trapezio (v1.1): frecce da a a b, lunghe in proporzione
-      let frecce, l = Lf * 0.6, qmax = 1;
-      if (q.tipo === 'distribuito_uniforme') frecce = [...Array(9).keys()].map((k) => [k / 8, q.q]);
-      else if (q.tipo === 'concentrato') { frecce = [[q.a / L, q.P]]; l = Lf; }
+      // lunghezza = l·|valore|/qmax: frecce uguali per uniformi e concentrati, proporzionali nel trapezio
+      // (D20, 07/11: con qmax = 1 le frecce degli uniformi risultavano lunghe |q| volte il dovuto)
+      let frecce, l = Lf * 0.6, qmax;
+      if (q.tipo === 'distribuito_uniforme') { frecce = [...Array(9).keys()].map((k) => [k / 8, q.q]); qmax = Math.abs(q.q) || 1; }
+      else if (q.tipo === 'concentrato') { frecce = [[q.a / L, q.P]]; l = Lf; qmax = Math.abs(q.P) || 1; }
       else {
         frecce = [...Array(7).keys()].map((k) => [(q.a + (q.b - q.a) * k / 6) / L, q.q_i + (q.q_j - q.q_i) * k / 6]);
         qmax = Math.max(Math.abs(q.q_i), Math.abs(q.q_j)) || 1;

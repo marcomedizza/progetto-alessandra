@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 06/11/2026
+# Prova del flusso utente — prototipo del 07/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -119,6 +119,15 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | S1–S33, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
 | C14, C18, C19 (leggibilità, Mariana) | deformata corretta: su C19 mensola incurvata verso l'alto fino alla cerniera e tratto appoggiato rettilineo. Su C19 il diagramma M nullo mostrava due etichette «0» da rumore numerico (D18), corretto |
 
+| Scenario | 07/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati di nuovo dopo le modifiche del giorno (S10 con la prova dedicata) |
+| C20 | etichette 30 e 6,1 kNm, spostamento massimo −9,12 mm alla cerniera |
+| Modello grande (4681 nodi, 9150 aste) da file | prima delle correzioni di D19: apertura 1,5 s, calcolo e disegno 12,7 s, 1,2 GB di memoria. Dopo: apertura 1,0 s, calcolo e disegno 4,7 s, 0,79 GB; modifica 1,7 s e «Annulla» 1,7 s |
+| Controllo a vista (C5, C7, C12) | trovato D20 (frecce dei carichi 25 volte troppo lunghe su C5), corretto e ricontrollato |
+
+**Lezione del 07/11**: le prove automatiche controllano i valori, non l'aspetto. D20 era presente dal 31/10 e nessuno scenario l'aveva rilevato. Da oggi ogni consegna dell'interfaccia include il controllo a vista delle schermate di C4, C5, C7 e C12.
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -142,4 +151,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D16 | 03/11 | S30 | Nel pannello proprietà i residui numerici comparivano come 0,000000000000003887 kNm | bassa | **chiuso 03/11**: valori sotto 10⁻⁹ mostrati come 0 | Lucia |
 | D17 | 03/11 | — | Le distorsioni termiche si vedono nel pannello ma si inseriscono solo da file | bassa | **chiuso 04/11**: «+ ΔT» sull'asta selezionata, α e h modificabili, avviso sul lato del ΔT a farfalla | Lucia, Irene |
 | D18 | 06/11 | C19 | Diagramma di grandezze nulle disegnato con etichette «0» dovute a residui di arrotondamento (10⁻¹⁴) | bassa | **chiuso 06/11**: sotto 10⁻⁶ kN o kNm il diagramma non si disegna | Mariana |
+| D19 | 07/11 | modello grande | Calcolo e disegno di 4681 nodi e 9150 aste in 12,7 s con 1,2 GB di memoria | media | **ridotto il 07/11** a 4,7 s e 0,79 GB: mappa dei nodi costruita una volta, geometrie e materiali condivisi, diagrammi e deformata in un'unica geometria, al massimo 150 etichette. Restano 1,3 s di validazione dello schema nel servizio e la tabella di 9150 righe | Irene, Mariana |
+| D20 | 07/11 | C5 | Frecce dei carichi uniformi e concentrati lunghe |q| volte il dovuto (introdotto il 31/10 con i trapezi) | alta (leggibilità) | **chiuso 07/11**, ricontrollato a vista | Irene |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

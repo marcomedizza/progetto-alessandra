@@ -184,3 +184,28 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `test_app.py`: 26 prove superate;
 - `prove_modifica.mjs`: 5 prove superate;
 - scenari S1–S33 nel navigatore: superati.
+
+
+## Aggiornamento del 07/11/2026 (Marisa)
+
+**Punti aperti precedenti**
+- 46 **chiuso con modifica**: fattore relativo all'asta (v0.5 del convertitore), verificato sulla scala delle luci.
+- 49 **chiuso senza modifica**: le unità sono fissate dallo schema (m, kN), quindi la soglia assoluta di 10⁻⁶ kN o kNm è coerente. Una soglia relativa ai risultati fallirebbe proprio sui casi da distorsione su struttura isostatica come C19, dove tutte le grandezze sono residui di arrotondamento.
+- 41: già chiuso con C19; il compito ripetuto oggi era un doppione.
+- 37 resta aperto (D12 a mano).
+
+**Revisione del codice nuovo del 07/11**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 52 | `03-BACKEND/converter/converti.py` | `area_di_calcolo` prende il massimo tra A e 10⁸·12I/L²: non riduce mai l'area reale, quindi un'asta tozza resta con la sua EA | — | nessun intervento |
+| 53 | `02-FRONTEND-3D/vista.js` | Frecce dei carichi con lunghezza divisa per un riferimento pari a 1 (D20, dal 31/10): errore di presentazione grave, non rilevato dalle prove automatiche | alta | corretto; aggiunto il controllo a vista alla procedura di consegna |
+| 54 | `02-FRONTEND-3D/risultati.js` | `geometriaAsta` ricostruiva la mappa dei nodi a ogni chiamata: costo n_aste × n_nodi (D19) | media | corretto |
+| 55 | `02-FRONTEND-3D/vista.js` | Geometrie condivise e scalate: la selezione col mouse usa la geometria scalata ed è stata riprovata negli scenari S6, S9 e S17 | — | nessun intervento |
+| 56 | `03-BACKEND/servizio/app.py` | La validazione con jsonschema costa 1,3 s sul modello da 9150 aste: è la parte più lenta del servizio | bassa | aperto: valutare un validatore compilato o la validazione per parti |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C20: superati;
+- `test_app.py`: 27 prove superate; `prove_modifica.mjs`: 5 superate;
+- scenari S1–S33 nel navigatore: superati;
+- controllo a vista di C5, C7, C12, C19 e C20.

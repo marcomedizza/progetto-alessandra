@@ -58,6 +58,20 @@ L'errore di modello scende come 1/fattore; l'arrotondamento cresce con il fattor
 
 **Proposta**: mantenere la penalità e non introdurre ora vincoli esatti di inestensibilità. Questi richiederebbero l'eliminazione di gradi di libertà dipendenti con il riconoscimento dei vincoli ridondanti nei telai a più campate: lavoro e rischio non giustificati da un guadagno di precisione di 10⁻⁸. Per robustezza conviene invece rendere il fattore relativo all'asta, cioè EA/L pari a circa 10⁶ volte la rigidezza flessionale 12EI/L³, così il condizionamento non dipende dalle dimensioni. Da fare nella v0.5, con nuova verifica di C3, C4 e del telaio di prova; la versione sperimentale senza A × 10⁶ non è stata scritta, per i motivi detti.
 
+**v0.5 (07/11, Carla, Elisa, Paola): fattore relativo all'asta.** Con deformabilità assiale trascurata l'area di calcolo è ora max(A, 10⁸·12I/L²): la rigidezza assiale di ogni asta vale 10⁸ volte quella flessionale. La regola è nel convertitore (`area_di_calcolo`) e nel risolutore di riferimento; il solutore Fortran non cambia.
+
+Verifica su C3 al variare delle luci, con la forza orizzontale fissa. Errore relativo sul momento al piede rispetto alla soluzione chiusa ad assiale rigida:
+
+| Luci × | A × 10⁶ (fino al 06/11) | Fattore relativo (v0.5) |
+|---|---|---|
+| 0,05 | 1,2·10⁻⁶ | 1,0·10⁻⁸ |
+| 0,25 | 4,9·10⁻⁸ | 2,4·10⁻⁹ |
+| 1 | 6,2·10⁻⁹ | 2,4·10⁻⁹ |
+| 5 | 3,0·10⁻⁷ | 7,2·10⁻⁹ |
+| 25 | 8,9·10⁻⁶ | 6,9·10⁻⁹ |
+
+Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l'errore di modello, per aste lunghe l'arrotondamento. Con il fattore relativo resta tra 2·10⁻⁹ e 1·10⁻⁸. C1–C20 restano superati nei tre percorsi; banda contro piena su C3 6,8·10⁻⁹ e su C4 2,8·10⁻⁹. Il punto 46 è chiuso.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

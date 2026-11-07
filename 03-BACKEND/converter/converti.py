@@ -105,6 +105,17 @@ def semibanda(modello, ordine=None):
     return max((3 * abs(pos[a["nodo_i"]] - pos[a["nodo_j"]]) + 2 for a in modello["aste"]), default=0)
 
 
+# Deformabilità assiale trascurata (punto 46, v0.5 del 07/11, Carla ed Elisa): area di calcolo tale che la
+# rigidezza assiale EA/L sia RAPPORTO_ASSIALE volte la flessionale 12EI/L³ della stessa asta. Lo studio su C3
+# (04-FORTRAN-SOLVER/README.md) mostra l'ottimo tra errore di modello e arrotondamento intorno a 10⁸; un
+# rapporto fisso per asta rende il condizionamento indipendente dalle dimensioni, a differenza di A × 10⁶.
+RAPPORTO_ASSIALE = 1e8
+
+
+def area_di_calcolo(A, I, L, rigida):
+    return max(A, RAPPORTO_ASSIALE * 12 * I / L ** 2) if rigida else A
+
+
 def scrivi_input(modello, caso_id):
     caso = next(c for c in modello["casi_di_carico"] if c["id"] == caso_id)
     mat = {m["id"]: m for m in modello["materiali"]}
@@ -114,8 +125,9 @@ def scrivi_input(modello, caso_id):
     nodi = {n["id"]: n for n in modello["nodi"]}
     righe += [f"{i} {nodi[i]['x']!r} {nodi[i]['y']!r}" for i in ordine_nodi(modello)]
     righe.append(f"ASTE {len(modello['aste'])}")
+    geo = _geometria(modello)
     for el in modello["aste"]:
-        A = sez[el["sezione"]]["A"] * (1e6 if rigida else 1.0)
+        A = area_di_calcolo(sez[el["sezione"]]["A"], sez[el["sezione"]]["I"], geo[el["id"]][0], rigida)
         sv = el.get("svincoli", {})
         righe.append(f"{el['id']} {el['nodo_i']} {el['nodo_j']} {mat[el['materiale']]['E']!r} {A!r} "
                      f"{sez[el['sezione']]['I']!r} {int(bool(sv.get('rz_i')))} {int(bool(sv.get('rz_j')))}")

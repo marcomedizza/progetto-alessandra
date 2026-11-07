@@ -282,6 +282,18 @@ def test_identificativi_non_consecutivi_v12():
             assert abs(x["phi_j"] - rot[a2[x["asta"]]]["phi_j"]) < 1e-12, nome
 
 
+def test_assiale_rigida_indipendente_dalla_scala():
+    # punto 46, v0.5 (07/11): con deformabilità assiale trascurata il momento al piede di C3 resta esatto
+    # anche con luci 25 volte maggiori (con A × 10⁶ l'errore saliva a 9·10⁻⁶)
+    m = modello("C3_portale_forza_orizzontale")
+    Mp = 21.98943851708158 * 25
+    for n in m["nodi"]:
+        n["x"] *= 25
+        n["y"] *= 25
+    r = client.post("/api/calcola", json=m).json()["risultati"][0]
+    assert abs(next(x["Mz"] for x in r["reazioni"] if x["nodo"] == 1) - Mp) / Mp < 1e-7
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo del 07/11/2026
+# Prova del flusso utente — prototipo dell'08/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -127,6 +127,12 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | Controllo a vista (C5, C7, C12) | trovato D20 (frecce dei carichi 25 volte troppo lunghe su C5), corretto e ricontrollato |
 
 **Lezione del 07/11**: le prove automatiche controllano i valori, non l'aspetto. D20 era presente dal 31/10 e nessuno scenario l'aveva rilevato. Da oggi ogni consegna dell'interfaccia include il controllo a vista delle schermate di C4, C5, C7 e C12.
+
+| Scenario | 08/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati di nuovo (S10 con la prova dedicata) |
+| Modello grande | calcolo e disegno 3,5 s (4,7 il 07/11, grazie alla validazione rapida), apertura 0,9 s, Annulla 1,5 s, 0,84 GB |
+| Controllo a vista | C4, C5, C7, C12, C21: frecce proporzionate, diagrammi dal lato teso, deformate coerenti |
 
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 

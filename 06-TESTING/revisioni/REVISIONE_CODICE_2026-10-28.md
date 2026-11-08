@@ -209,3 +209,21 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `test_app.py`: 27 prove superate; `prove_modifica.mjs`: 5 superate;
 - scenari S1–S33 nel navigatore: superati;
 - controllo a vista di C5, C7, C12, C19 e C20.
+
+
+## Aggiornamento dell'08/11/2026 (Marisa)
+
+**Punti aperti precedenti**: 56 **chiuso** con la validazione rapida; 37 resta aperto (D12 a mano).
+
+**Revisione del codice nuovo dell'08/11**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 57 | `03-BACKEND/servizio/app.py` | La via rapida decide solo se il modello è valido. Se non lo è, si torna a jsonschema per i messaggi, quindi l'utente vede gli stessi errori di prima. Concordanza provata su 120 modelli e in una prova del servizio | — | nessun intervento |
+| 58 | `03-BACKEND/servizio/app.py` | Se due validatori discordassero su un modello valido per jsonschema e non per la via rapida, la risposta conterrebbe un elenco di errori vuoto ma non validato. Va escluso con un controllo | bassa | aperto: se la via rapida dice «non valido» e jsonschema non trova errori, accettare il modello e registrare l'anomalia |
+| 59 | `03-BACKEND/servizio/requirements.txt` | Primo file dei requisiti con versioni fissate: risolve l'indicazione di Veronica del 02/11 | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C21: superati;
+- `test_app.py`: 29 superate; `prove_modifica.mjs`: 5 superate;
+- scenari S1–S33 e controllo a vista di 5 casi.

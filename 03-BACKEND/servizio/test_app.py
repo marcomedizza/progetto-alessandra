@@ -294,6 +294,29 @@ def test_assiale_rigida_indipendente_dalla_scala():
     assert abs(next(x["Mz"] for x in r["reazioni"] if x["nodo"] == 1) - Mp) / Mp < 1e-7
 
 
+def test_validatore_rapido_concorde():
+    # punto 56 (08/11): la via rapida e jsonschema danno lo stesso esito; un modello non valido ha i messaggi completi
+    if servizio.VALIDATORE_RAPIDO is None:
+        return
+    for nome in ("C1_trave_appoggiata", "C14_termica_incastrata", "C20_gerber_trapezio"):
+        m = modello(nome)
+        assert servizio.VALIDATORE_RAPIDO.is_valid(m) and servizio.VALIDATORE.is_valid(m)
+        m["sezioni"][0]["A"] = -1
+        assert not servizio.VALIDATORE_RAPIDO.is_valid(m) and not servizio.VALIDATORE.is_valid(m)
+        v = client.post("/api/valida", json=m).json()
+        assert not v["valido"] and any("sezioni" in e["percorso"] for e in v["schema"])
+
+
+def test_limite_nodi_accettato():
+    # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
+    m = modello("C20_gerber_trapezio")
+    m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 1)]
+    m["aste"] = [{"id": i, "nodo_i": i, "nodo_j": i + 1, "materiale": "S275", "sezione": "IPE300"} for i in range(1, 4)]
+    assert not any("troppo grande" in e for e in servizio.errori_coerenza(m))
+    m["nodi"].append({"id": servizio.MAX_NODI + 1, "x": -1.0, "y": 0.0})
+    assert any("troppo grande" in e for e in servizio.errori_coerenza(m))
+
+
 def test_limite_dimensione():
     m = modello("C1_trave_appoggiata")
     m["nodi"] = [{"id": i, "x": float(i), "y": 0.0} for i in range(1, servizio.MAX_NODI + 2)]

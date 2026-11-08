@@ -33,9 +33,20 @@ import converti  # noqa: E402
 try:
     import jsonschema
     with open(os.path.join(RADICE, "01-ARCHITETTURA", "DATA_SCHEMA.json"), encoding="utf-8") as fh:
-        VALIDATORE = jsonschema.Draft202012Validator(json.load(fh))
+        SCHEMA = json.load(fh)
+    VALIDATORE = jsonschema.Draft202012Validator(SCHEMA)
 except ImportError:  # validazione disattivata solo se manca la libreria
     VALIDATORE = None
+
+# Via rapida (punto 56, Natalia e Ottavia, 08/11): jsonschema-rs, compilato, dice solo se il modello è valido;
+# sul modello da 9150 aste impiega 3 ms invece di 1,0 s. Se non è valido, i messaggi d'errore restano quelli
+# di jsonschema. Concordanza verificata su 120 modelli validi e volutamente errati. Facoltativo: senza la
+# libreria si usa solo jsonschema.
+try:
+    import jsonschema_rs
+    VALIDATORE_RAPIDO = jsonschema_rs.validator_for(SCHEMA) if VALIDATORE is not None else None
+except ImportError:
+    VALIDATORE_RAPIDO = None
 
 CASI = os.path.join(RADICE, "06-TESTING", "casi")
 
@@ -50,6 +61,8 @@ app = FastAPI(title="Progetto Alessandra — servizio di calcolo", version="0.1"
 
 def errori_schema(modello):
     if VALIDATORE is None:
+        return []
+    if VALIDATORE_RAPIDO is not None and VALIDATORE_RAPIDO.is_valid(modello):
         return []
     return [{"percorso": "/".join(str(p) for p in e.path) or "(radice)", "messaggio": e.message}
             for e in sorted(VALIDATORE.iter_errors(modello), key=str)]

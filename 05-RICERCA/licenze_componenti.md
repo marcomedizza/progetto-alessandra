@@ -78,6 +78,14 @@ Un componente di pydantic-core offre la scelta «MIT o Apache 2.0 o LGPL 2.1+»:
 
 **Esito**: tutte licenze permissive, compatibili con la distribuzione commerciale. Gli avvisi vanno riportati nel file `LICENZE_TERZE_PARTI.md`, che si può generare da questi SBOM. Il punto 47 è chiuso.
 
+### Validatore rapido (Veronica, 08/11/2026)
+
+**jsonschema-rs 0.60.3**, facoltativo, introdotto per il punto 56.
+- Licenza MIT dichiarata nei metadati. Il pacchetto non contiene un file di licenza: il testo andrà preso dal repository sorgente prima di una distribuzione.
+- Contiene 205 componenti Rust, elencati nell'SBOM incluso, tutti con licenze permissive: MIT, Apache 2.0, ISC, BSD 3 clausole, Unicode 3.0, Zlib, CC0 o MIT-0, Unlicense. Nessuna licenza copyleft.
+
+Le versioni delle dipendenze sono ora fissate in `03-BACKEND/servizio/requirements.txt`.
+
 ## Componenti previsti
 
 | Componente | Uso previsto | Licenza | Nota | Esito |

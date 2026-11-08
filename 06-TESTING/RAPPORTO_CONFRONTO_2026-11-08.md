@@ -1,8 +1,8 @@
-# Rapporto di confronto del solutore — 07/11/2026
+# Rapporto di confronto del solutore — 08/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 06/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 07/11
 
-**Calcolo**: telaio2d v0.4 con il convertitore v0.5, che usa il fattore relativo all'asta per l'assiale rigida (punto 46). Schema v1.2.
+**Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
 **Tolleranze**:
 - valori attesi: 0,5 % relativa, minimo 1·10⁻⁶ assoluto;
@@ -30,9 +30,10 @@
 | C18 Trave appoggiata, ΔT a farfalla | 5 superati, 0 non superati | 0 | 0 |
 | C19 Trave Gerber, ΔT a farfalla sulla mensola | 6 superati, 0 non superati | 0 | 0 |
 | C20 Trave Gerber, trapezio parziale sul tratto appoggiato | 6 superati, 0 non superati | 0 | 0 |
+| C21 Asta inclinata, trapezio verticale e cedimento | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità del 07/11**
-- **Assiale rigida, fattore relativo all'asta**: su C3 e C4 l'errore rispetto alla soluzione chiusa scende a circa 2·10⁻⁹ (era 6·10⁻⁹). Su C3 con luci da 0,05 a 25 volte l'errore resta sotto 1·10⁻⁸, contro un massimo di 9·10⁻⁶ con A × 10⁶. La nuova prova `test_assiale_rigida_indipendente_dalla_scala` copre il caso con luci × 25.
-- **Caso «cerniera + ΔT» chiesto oggi a Daniela e Valentina (punto 41)**: esiste già, è C19, consegnato il 04/11. Non è stato duplicato.
+**Novità dell'08/11**
+- **C21**, trapezio verticale su asta inclinata con cedimento del carrello: reazioni 21 e 24 kN, M = 31,5 kNm, cedimento −10 mm, come nella soluzione a mano.
+- **Banda contro piena su tutti i casi con la v0.5** (`prova_prestazioni.py --casi`): scarto massimo 6,1·10⁻¹¹ m, su C3; prima della v0.5 era 1,2·10⁻¹⁰ m. Tutti gli altri casi sono ≤ 9·10⁻¹⁵ m.
 
-**Altre prove**: `test_app.py` 27 superate; `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 29 superate; `prove_modifica.mjs` 5 superate. Le 2 nuove del servizio coprono la concordanza della validazione rapida (punto 56) e il limite esatto di 5000 nodi.

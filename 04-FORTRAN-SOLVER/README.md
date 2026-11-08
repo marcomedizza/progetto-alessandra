@@ -74,6 +74,12 @@ Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l
 
 **Build dopo la v0.5** (Ottavia, 07/11): la v0.5 cambia solo il convertitore. `build.sh` ricompila il solutore v0.4 senza avvisi nuovi, e C1–C20 e le prestazioni restano invariati.
 
+**Limiti residui della v0.5** (Carla, 08/11): banda contro piena su C1–C21, scarto massimo 6,1·10⁻¹¹ m su C3, prima 1,2·10⁻¹⁰ m. Restano due limiti:
+- con molle molto cedevoli accanto ad aste assialmente rigide, la soglia di labilità (10⁻¹² del massimo termine diagonale) può ancora dare un falso «labile» (punto 19, non ancora coperto da un caso);
+- il fattore 10⁸ è stato provato su telai in acciaio: per aste in cemento armato molto tozze vale comunque max(A, …), quindi l'area reale non viene mai ridotta.
+
+**Punto 56 (Natalia, Ottavia, 08/11)**: la richiesta di calcolo sul modello da 9150 aste scende da 2,0 a 0,77 s con la validazione rapida (jsonschema-rs). Nel navigatore calcolo e disegno passano da 4,7 a 3,5 s.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

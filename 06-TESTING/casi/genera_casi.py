@@ -638,6 +638,38 @@ def c20():
     return m, atteso
 
 
+def c21():
+    a, b, q1, q2, d = 1.0, 4.0, 10.0, 20.0, 0.010
+    m = v11(trave("C21", "Asta inclinata, trapezio verticale e cedimento",
+                  "Geometria e vincoli di C15 (cerniera al piede, carrello verticale in testa); carico verticale da 10 a 20 kN/m "
+                  "di lunghezza dell'asta tra 1 e 4 m lungo l'asta; il carrello cede di 10 mm (Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 3}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}],
+                  {"id": "Q", "nome": "Trapezio e cedimento", "categoria": "Q",
+                   "carichi_aste": [{"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -q1, "q_j": -q2, "a": a, "b": b}],
+                   "cedimenti": [{"nodo": 2, "uy": -d}]}, 11))
+    c = 0.8
+    W = (b - a) * (q1 + q2) / 2
+    sg = a + (b - a) * (q1 + 2 * q2) / (3 * (q1 + q2))   # baricentro lungo l'asta
+    R2 = W * sg * c / 4.0
+    R1 = W - R2
+    t = 2.5 - a
+    M = R1 * c * 2.5 - c * (q1 * t ** 2 / 2 + (q2 - q1) / (b - a) * t ** 3 / 6)
+    atteso = {"caso": "Q", "formule": {
+        "struttura isostatica": "il cedimento non cambia reazioni né sollecitazioni: solo spostamenti",
+        "reazioni": "W = (b − a)(q1 + q2)/2; baricentro sg = a + (b − a)(q1 + 2q2)/(3(q1 + q2)); R2 = W·sg·cosα/4; R1 = W − R2",
+        "momento in s = 2,5 m": "M = R1·cosα·s − cosα·[q1·t²/2 + (q2 − q1)/(b − a)·t³/6], t = s − a",
+        "cedimento": "uy del carrello = −δ"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": R1, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": R2, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=2.5", "valore": M, "unita": "kNm"},
+            {"grandezza": "uy nodo 2 (cedimento)", "valore": -d, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -648,7 +680,7 @@ if __name__ == "__main__":
                     ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
                     ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
-                    ("C20_gerber_trapezio", c20)):
+                    ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

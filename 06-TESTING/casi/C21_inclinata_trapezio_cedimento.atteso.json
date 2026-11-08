@@ -1,0 +1,36 @@
+{
+  "caso": "Q",
+  "formule": {
+    "struttura isostatica": "il cedimento non cambia reazioni né sollecitazioni: solo spostamenti",
+    "reazioni": "W = (b − a)(q1 + q2)/2; baricentro sg = a + (b − a)(q1 + 2q2)/(3(q1 + q2)); R2 = W·sg·cosα/4; R1 = W − R2",
+    "momento in s = 2,5 m": "M = R1·cosα·s − cosα·[q1·t²/2 + (q2 − q1)/(b − a)·t³/6], t = s − a",
+    "cedimento": "uy del carrello = −δ"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 20.999999999999996,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 24.000000000000004,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=2.5",
+      "valore": 31.499999999999993,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2 (cedimento)",
+      "valore": -0.01,
+      "unita": "m"
+    }
+  ]
+}

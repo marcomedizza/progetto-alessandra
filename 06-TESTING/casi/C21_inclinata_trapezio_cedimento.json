@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C21",
+    "nome": "Asta inclinata, trapezio verticale e cedimento",
+    "descrizione": "Geometria e vincoli di C15 (cerniera al piede, carrello verticale in testa); carico verticale da 10 a 20 kN/m di lunghezza dell'asta tra 1 e 4 m lungo l'asta; il carrello cede di 10 mm (Daniela e Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-10-31",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 4,
+      "y": 3
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true
+    },
+    {
+      "nodo": 2,
+      "uy": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Trapezio e cedimento",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_y",
+          "q_i": -10.0,
+          "q_j": -20.0,
+          "a": 1.0,
+          "b": 4.0
+        }
+      ],
+      "cedimenti": [
+        {
+          "nodo": 2,
+          "uy": -0.01
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  }
+}

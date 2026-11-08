@@ -24,6 +24,7 @@
 | C18 | Trave appoggiata L = 6 m, ΔT a farfalla +10 °C (v1.2) | formule chiuse | nessuna reazione; uy(3) = −κL²/8 = −1,80 mm; φ = ∓κL/2 = ∓1,20 mrad |
 | C19 | Geometria di C6, ΔT a farfalla +10 °C sulla mensola con cerniera in j (v1.2, punto 41) | isostatica | nessuna sollecitazione; uy cerniera = κa²/2 = +3,20 mm; φ mensola = κa = +1,60 mrad; tratto 4–6 −1,60 mrad |
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
+| C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -160,6 +161,20 @@ Geometria di C6. Sul tratto appoggiato 4–6 m c'è un carico verso il basso da 
    - M incastro = −7,5 × 4 = −30,0 kNm;
    - abbassamento della cerniera = Rs·4³/(3EI) = 7,5 × 64/(3 × 17 547,6) = 9,12 mm.
 5. Momento a 1 m dalla cerniera, con t = 0,5: M = 7,5 × 1 − (10 × 0,5²/2 + 10/1,5 × 0,5³/6) = 7,5 − 1,389 = 6,11 kNm.
+
+## C21 · trapezio su asta inclinata con cedimento (Daniela e Valentina, 08/11)
+
+Geometria e vincoli di C15: asta da (0; 0) a (4; 3), cos α = 0,8. Carico verticale da q1 = 10 a q2 = 20 kN/m per metro d'asta, tra s = 1 e s = 4 m; il carrello in testa cede di δ = 10 mm.
+1. W = 3 × 15 = 45 kN.
+2. Baricentro lungo l'asta: sg = 1 + 3 × 50/90 = 2,667 m, cioè x = 2,133 m.
+3. Reazioni: R2 = 45 × 2,133/4 = 24,0 kN; R1 = 21,0 kN; nessuna reazione orizzontale.
+4. Momento in s = 2,5, con t = 1,5:
+   - componente trasversale di R1: 21 × 0,8 = 16,8 kN;
+   - carico trasversale: 0,8 × (10 × 1,5²/2 + 10/3 × 1,5³/6) = 0,8 × 13,125 = 10,5 kNm;
+   - M = 16,8 × 2,5 − 10,5 = 31,5 kNm.
+5. La struttura è isostatica, quindi il cedimento non cambia reazioni né momenti: compare solo come spostamento imposto, uy del carrello = −10 mm.
+
+Il caso unisce asta inclinata, trapezio e cedimento, già provati separatamente in C15, C12 e C16.
 
 ## File
 

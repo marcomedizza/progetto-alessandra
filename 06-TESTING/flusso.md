@@ -1,4 +1,4 @@
-# Prova del flusso utente — prototipo dell'08/11/2026
+# Prova del flusso utente — prototipo del 09/11/2026
 
 **Autrice**: Renata (validazione flussi) · **Data**: 27/10/2026
 **Oggetto**: percorso completo dell'utente: apertura del modello, modifica, calcolo, lettura dei risultati.
@@ -134,6 +134,12 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 | Modello grande | calcolo e disegno 3,5 s (4,7 il 07/11, grazie alla validazione rapida), apertura 0,9 s, Annulla 1,5 s, 0,84 GB |
 | Controllo a vista | C4, C5, C7, C12, C21: frecce proporzionate, diagrammi dal lato teso, deformate coerenti |
 
+| Scenario | 09/11 (Renata, Vittoria, Mariana, Lucia; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati di nuovo (S10 con la prova dedicata) |
+| Soglia dei diagrammi nulli (Lucia) | C19 senza etichette, C20 con 30 e 6,1 kNm, C21 con 31,5 kNm: la soglia non nasconde valori reali |
+| Controllo a vista | C4, C5, C7, C12, C21, C22 corretti; su C22 la molla è disegnata come un anello, poco riconoscibile (D21) |
+
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
 ## Difetti
@@ -159,4 +165,5 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D18 | 06/11 | C19 | Diagramma di grandezze nulle disegnato con etichette «0» dovute a residui di arrotondamento (10⁻¹⁴) | bassa | **chiuso 06/11**: sotto 10⁻⁶ kN o kNm il diagramma non si disegna | Mariana |
 | D19 | 07/11 | modello grande | Calcolo e disegno di 4681 nodi e 9150 aste in 12,7 s con 1,2 GB di memoria | media | **ridotto il 07/11** a 4,7 s e 0,79 GB: mappa dei nodi costruita una volta, geometrie e materiali condivisi, diagrammi e deformata in un'unica geometria, al massimo 150 etichette. Restano 1,3 s di validazione dello schema nel servizio e la tabella di 9150 righe | Irene, Mariana |
 | D20 | 07/11 | C5 | Frecce dei carichi uniformi e concentrati lunghe |q| volte il dovuto (introdotto il 31/10 con i trapezi) | alta (leggibilità) | **chiuso 07/11**, ricontrollato a vista | Irene |
+| D21 | 09/11 | C22 | Le molle sono disegnate come un anello, simbolo poco riconoscibile; quello consueto è una molla a zig-zag | bassa | aperto | Irene |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

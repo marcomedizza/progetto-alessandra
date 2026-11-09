@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 08/11/2026
+# Rapporto di confronto del solutore — 09/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 07/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto dell'08/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -31,9 +31,10 @@
 | C19 Trave Gerber, ΔT a farfalla sulla mensola | 6 superati, 0 non superati | 0 | 0 |
 | C20 Trave Gerber, trapezio parziale sul tratto appoggiato | 6 superati, 0 non superati | 0 | 0 |
 | C21 Asta inclinata, trapezio verticale e cedimento | 5 superati, 0 non superati | 0 | 0 |
+| C22 Trave Gerber su molla, trapezio parziale | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità dell'08/11**
-- **C21**, trapezio verticale su asta inclinata con cedimento del carrello: reazioni 21 e 24 kN, M = 31,5 kNm, cedimento −10 mm, come nella soluzione a mano.
-- **Banda contro piena su tutti i casi con la v0.5** (`prova_prestazioni.py --casi`): scarto massimo 6,1·10⁻¹¹ m, su C3; prima della v0.5 era 1,2·10⁻¹⁰ m. Tutti gli altri casi sono ≤ 9·10⁻¹⁵ m.
+**Novità del 09/11**
+- **C22**, trave Gerber su molla con trapezio parziale: reazioni come in C20, molla abbassata di R3/ky = 7,5 mm, cerniera −9,12 mm.
+- **Identificativi non consecutivi** (prova del servizio): estesa a C20 e C21, con carichi d'asta e cedimenti rinumerati.
 
-**Altre prove**: `test_app.py` 29 superate; `prove_modifica.mjs` 5 superate. Le 2 nuove del servizio coprono la concordanza della validazione rapida (punto 56) e il limite esatto di 5000 nodi.
+**Altre prove**: `test_app.py` 30 superate (nuova: validatori discordi, punto 58); `prove_modifica.mjs` 5 superate.

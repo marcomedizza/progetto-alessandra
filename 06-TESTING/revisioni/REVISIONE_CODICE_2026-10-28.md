@@ -227,3 +227,20 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C21: superati;
 - `test_app.py`: 29 superate; `prove_modifica.mjs`: 5 superate;
 - scenari S1–S33 e controllo a vista di 5 casi.
+
+
+## Aggiornamento del 09/11/2026 (Marisa)
+
+**Punti aperti precedenti**: 58 **chiuso**. Se la via rapida rifiuta e jsonschema non trova errori, fa fede jsonschema: il modello è accettato e la discordanza è registrata nel log e in `ANOMALIE_VALIDAZIONE`; c'è una prova con una via rapida simulata. Il punto 37 resta aperto (D12 a mano).
+
+**Revisione del codice nuovo del 09/11**
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 60 | `03-BACKEND/servizio/app.py` | `ANOMALIE_VALIDAZIONE` è una lista in memoria: si azzera al riavvio e cresce senza limite in un servizio sempre acceso | bassa | aperto: tenere solo le ultime 100 voci o affidarsi al solo log |
+| 61 | `03-BACKEND/servizio/test_app.py` | La prova degli identificativi non consecutivi rinumera ora anche carichi d'asta e cedimenti: copre C20 e C21 | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C22: superati;
+- `test_app.py`: 30 prove; `prove_modifica.mjs`: 5;
+- scenari S1–S33 e controllo a vista di 6 casi.

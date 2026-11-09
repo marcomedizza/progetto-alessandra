@@ -17,6 +17,7 @@ Interfaccia:
 
 import glob
 import json
+import logging
 import math
 import os
 import sys
@@ -47,6 +48,7 @@ try:
     VALIDATORE_RAPIDO = jsonschema_rs.validator_for(SCHEMA) if VALIDATORE is not None else None
 except ImportError:
     VALIDATORE_RAPIDO = None
+ANOMALIE_VALIDAZIONE = []   # modelli su cui i due validatori non concordano (punto 58)
 
 CASI = os.path.join(RADICE, "06-TESTING", "casi")
 
@@ -64,8 +66,14 @@ def errori_schema(modello):
         return []
     if VALIDATORE_RAPIDO is not None and VALIDATORE_RAPIDO.is_valid(modello):
         return []
-    return [{"percorso": "/".join(str(p) for p in e.path) or "(radice)", "messaggio": e.message}
-            for e in sorted(VALIDATORE.iter_errors(modello), key=str)]
+    errori = [{"percorso": "/".join(str(p) for p in e.path) or "(radice)", "messaggio": e.message}
+              for e in sorted(VALIDATORE.iter_errors(modello), key=str)]
+    if not errori and VALIDATORE_RAPIDO is not None:
+        # punto 58 (Natalia, 09/11): la via rapida rifiuta ma jsonschema non trova errori. Fa fede jsonschema, che
+        # dà i messaggi all'utente: il modello è accettato e la discordanza resta registrata per l'analisi
+        ANOMALIE_VALIDAZIONE.append(modello.get("progetto", {}).get("id", "?"))
+        logging.getLogger("servizio").warning("validatori discordi sul modello %s", ANOMALIE_VALIDAZIONE[-1])
+    return errori
 
 
 def errori_coerenza(modello):

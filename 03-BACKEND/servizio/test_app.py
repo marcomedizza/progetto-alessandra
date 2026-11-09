@@ -260,8 +260,9 @@ def test_trapezio_con_cerniera():
 
 
 def test_identificativi_non_consecutivi_v12():
-    # Paola (06/11): C14, C18, C19 con nodi e aste rinumerati e in ordine inverso danno gli stessi risultati
-    for nome in ("C14_termica_incastrata", "C18_termica_appoggiata", "C19_gerber_termica"):
+    # Paola (06/11, esteso il 09/11 a C20 e C21): nodi e aste rinumerati e in ordine inverso danno gli stessi risultati
+    for nome in ("C14_termica_incastrata", "C18_termica_appoggiata", "C19_gerber_termica",
+                 "C20_gerber_trapezio", "C21_inclinata_trapezio_cedimento"):
         m = modello(nome)
         base = client.post("/api/calcola", json=m).json()["risultati"][0]
         n2 = {n["id"]: 10 * n["id"] + 7 for n in m["nodi"]}
@@ -271,8 +272,10 @@ def test_identificativi_non_consecutivi_v12():
         r["aste"] = [dict(a, id=a2[a["id"]], nodo_i=n2[a["nodo_i"]], nodo_j=n2[a["nodo_j"]]) for a in reversed(m["aste"])]
         r["vincoli"] = [dict(v, nodo=n2[v["nodo"]]) for v in m["vincoli"]]
         for c in r["casi_di_carico"]:
-            for t in c.get("carichi_termici", []):
+            for t in c.get("carichi_termici", []) + c.get("carichi_aste", []):
                 t["asta"] = a2[t["asta"]]
+            for d in c.get("cedimenti", []):
+                d["nodo"] = n2[d["nodo"]]
         ris = client.post("/api/calcola", json=r).json()["risultati"][0]
         sp = {u["nodo"]: u for u in ris["spostamenti"]}
         for u in base["spostamenti"]:
@@ -305,6 +308,21 @@ def test_validatore_rapido_concorde():
         assert not servizio.VALIDATORE_RAPIDO.is_valid(m) and not servizio.VALIDATORE.is_valid(m)
         v = client.post("/api/valida", json=m).json()
         assert not v["valido"] and any("sezioni" in e["percorso"] for e in v["schema"])
+
+
+def test_validatori_discordi():
+    # punto 58 (09/11): se la via rapida rifiutasse un modello valido per jsonschema, il modello è accettato
+    # e la discordanza registrata. Si simula con una via rapida che rifiuta tutto
+    class Rifiuta:
+        def is_valid(self, m):
+            return False
+    originale, servizio.VALIDATORE_RAPIDO = servizio.VALIDATORE_RAPIDO, Rifiuta()
+    try:
+        n = len(servizio.ANOMALIE_VALIDAZIONE)
+        r = client.post("/api/calcola", json=modello("C1_trave_appoggiata"))
+        assert r.status_code == 200 and len(servizio.ANOMALIE_VALIDAZIONE) == n + 1
+    finally:
+        servizio.VALIDATORE_RAPIDO = originale
 
 
 def test_limite_nodi_accettato():

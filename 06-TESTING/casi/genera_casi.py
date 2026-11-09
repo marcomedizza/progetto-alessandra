@@ -670,6 +670,37 @@ def c21():
     return m, atteso
 
 
+def c22():
+    a, b, q1, q2, k = 0.5, 2.0, 10.0, 20.0, 2000.0
+    m = v11(trave("C22", "Trave Gerber su molla, trapezio parziale",
+                  "Geometria e carico di C20; l'appoggio a 6 m è sostituito da una molla verticale ky = 2000 kN/m (Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 0}, {"id": 3, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 3, "molle": {"ky": k}}],
+                  {"id": "Q", "nome": "Trapezio parziale", "categoria": "Q", "carichi_aste": [
+                      {"asta": 2, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -q1, "q_j": -q2, "a": a, "b": b}]}, 5))
+    c = b - a
+    W = c * (q1 + q2) / 2
+    xg = a + c * (q1 + 2 * q2) / (3 * (q1 + q2))
+    R3 = W * xg / 2.0
+    Rs = W - R3
+    EI = E_ACC * IPE300["I"]
+    v2 = -Rs * 4 ** 3 / (3 * EI)
+    atteso = {"caso": "Q", "formule": {
+        "struttura isostatica": "la molla sostituisce l'appoggio ma non aggiunge vincoli sovrabbondanti: reazioni come in C20",
+        "abbassamento della molla": "v3 = −R3/ky",
+        "cerniera": "abbassamento come in C20: v2 = −Rs·4³/(3EI)",
+        "tratto 4–6": "rotazione rigida della corda più quella elastica: le sollecitazioni non cambiano"},
+        "valori": [
+            {"grandezza": "Ry nodo 3 (molla)", "valore": R3, "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": Rs, "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": Rs * 4, "unita": "kNm"},
+            {"grandezza": "uy nodo 3 (molla)", "valore": -R3 / k, "unita": "m"},
+            {"grandezza": "uy nodo 2 (cerniera)", "valore": v2, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -680,7 +711,8 @@ if __name__ == "__main__":
                     ("C15_inclinata_parziale", c15), ("C16_gerber_cedimento", c16),
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
                     ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
-                    ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21)):
+                    ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21),
+                    ("C22_gerber_trapezio_molla", c22)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

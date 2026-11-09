@@ -25,6 +25,7 @@
 | C19 | Geometria di C6, ΔT a farfalla +10 °C sulla mensola con cerniera in j (v1.2, punto 41) | isostatica | nessuna sollecitazione; uy cerniera = κa²/2 = +3,20 mm; φ mensola = κa = +1,60 mrad; tratto 4–6 −1,60 mrad |
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
+| C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -175,6 +176,13 @@ Geometria e vincoli di C15: asta da (0; 0) a (4; 3), cos α = 0,8. Carico vertic
 5. La struttura è isostatica, quindi il cedimento non cambia reazioni né momenti: compare solo come spostamento imposto, uy del carrello = −10 mm.
 
 Il caso unisce asta inclinata, trapezio e cedimento, già provati separatamente in C15, C12 e C16.
+
+## C22 · trapezio, cerniera e molla (Daniela e Valentina, 09/11)
+
+C20 con l'appoggio a 6 m sostituito da una molla verticale ky = 2000 kN/m. La struttura resta isostatica: la molla sostituisce un vincolo senza aggiungerne. Reazioni e sollecitazioni sono quindi quelle di C20: R3 = 15,0 kN, Rs = 7,5 kN, M incastro 30,0 kNm.
+- La molla si abbassa di R3/ky = 15/2000 = 7,5 mm.
+- La cerniera si abbassa come in C20, perché la mensola porta lo stesso carico in punta: −9,12 mm.
+- Il tratto 4–6 ha la stessa curvatura di C20, più una rotazione rigida diversa.
 
 ## File
 

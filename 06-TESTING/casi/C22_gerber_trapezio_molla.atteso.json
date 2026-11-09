@@ -1,0 +1,36 @@
+{
+  "caso": "Q",
+  "formule": {
+    "struttura isostatica": "la molla sostituisce l'appoggio ma non aggiunge vincoli sovrabbondanti: reazioni come in C20",
+    "abbassamento della molla": "v3 = −R3/ky",
+    "cerniera": "abbassamento come in C20: v2 = −Rs·4³/(3EI)",
+    "tratto 4–6": "rotazione rigida della corda più quella elastica: le sollecitazioni non cambiano"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 3 (molla)",
+      "valore": 15.000000000000002,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 7.499999999999998,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 29.999999999999993,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 3 (molla)",
+      "valore": -0.007500000000000001,
+      "unita": "m"
+    },
+    {
+      "grandezza": "uy nodo 2 (cerniera)",
+      "valore": -0.009118056030454305,
+      "unita": "m"
+    }
+  ]
+}

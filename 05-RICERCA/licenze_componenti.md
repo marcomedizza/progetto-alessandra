@@ -84,6 +84,8 @@ Un componente di pydantic-core offre la scelta «MIT o Apache 2.0 o LGPL 2.1+»:
 - Licenza MIT dichiarata nei metadati. Il pacchetto non contiene un file di licenza: il testo andrà preso dal repository sorgente prima di una distribuzione.
 - Contiene 205 componenti Rust, elencati nell'SBOM incluso, tutti con licenze permissive: MIT, Apache 2.0, ISC, BSD 3 clausole, Unicode 3.0, Zlib, CC0 o MIT-0, Unlicense. Nessuna licenza copyleft.
 
+**Testo di licenza recuperato il 09/11** dal pacchetto sorgente su PyPI (`jsonschema_rs-0.60.3.tar.gz`, file `crates/jsonschema/LICENSE` e `crates/jsonschema-referencing/LICENSE`): MIT License, Copyright (c) 2020-2026 Dmitry Dygalo. Il dubbio dell'08/11 è chiuso.
+
 Le versioni delle dipendenze sono ora fissate in `03-BACKEND/servizio/requirements.txt`.
 
 ## Componenti previsti

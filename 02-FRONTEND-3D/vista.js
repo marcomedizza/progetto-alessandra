@@ -94,7 +94,11 @@ export class Vista {
     this.selezionabili = [];
     const nodi = new Map(modello.nodi.map((n) => [n.id, n]));
     const xs = modello.nodi.map((n) => n.x), ys = modello.nodi.map((n) => n.y);
-    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    // cicli e non Math.min(...elenco), che supera il limite di argomenti sui modelli molto grandi
+    let minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+    for (let i = 0; i < xs.length; i++) {
+      minx = Math.min(minx, xs[i]); maxx = Math.max(maxx, xs[i]); miny = Math.min(miny, ys[i]); maxy = Math.max(maxy, ys[i]);
+    }
     this.S = Math.max(maxx - minx, maxy - miny, 1);
     this.centro.set((minx + maxx) / 2, (miny + maxy) / 2, 0);
     const S = this.S;
@@ -184,10 +188,29 @@ export class Vista {
         g.add(l);
       }
     }
-    if (v.molle && (v.molle.kx || v.molle.ky || v.molle.kr)) {
-      const m = new THREE.Mesh(new THREE.TorusGeometry(d * 0.6, d * 0.12, 6, 16), mat);
-      m.position.set(n.x + d * 1.2, n.y - d * 0.6, 0);
-      g.add(m);
+    // molle (D21, Irene, 10/11): zig-zag con tratto di terra per ky (sotto il nodo) e kx (a sinistra);
+    // per kr una spirale, il simbolo consueto della molla rotazionale
+    const linea = new THREE.LineBasicMaterial({ color: COL.vincolo });
+    const zigzag = (dx, dy) => {               // dx, dy: versore dal nodo verso terra
+      const nx = -dy, ny = dx, L = d * 2.6, pts = [];
+      pts.push(new THREE.Vector3(n.x, n.y, 0), new THREE.Vector3(n.x + dx * L * 0.15, n.y + dy * L * 0.15, 0));
+      for (let i = 1; i <= 6; i++) {
+        const t = 0.15 + (0.7 * i) / 7, w = (i % 2 ? 1 : -1) * d * 0.5;
+        pts.push(new THREE.Vector3(n.x + dx * L * t + nx * w, n.y + dy * L * t + ny * w, 0));
+      }
+      pts.push(new THREE.Vector3(n.x + dx * L * 0.85, n.y + dy * L * 0.85, 0), new THREE.Vector3(n.x + dx * L, n.y + dy * L, 0));
+      g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), linea));
+      const terra = new THREE.Mesh(new THREE.PlaneGeometry(d * 2, d * 0.15), mat);
+      terra.position.set(n.x + dx * L, n.y + dy * L, 0);
+      if (dx) terra.rotation.z = Math.PI / 2;
+      g.add(terra);
+    };
+    if (v.molle?.ky) zigzag(0, -1);
+    if (v.molle?.kx) zigzag(-1, 0);
+    if (v.molle?.kr) {
+      const pts = [];
+      for (let i = 0; i <= 48; i++) { const a = (i / 48) * Math.PI * 4, r = d * (0.2 + 0.9 * i / 48); pts.push(new THREE.Vector3(n.x + r * Math.cos(a), n.y + r * Math.sin(a), 0)); }
+      g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), linea));
     }
     return g;
   }

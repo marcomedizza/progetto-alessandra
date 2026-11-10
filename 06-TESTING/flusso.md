@@ -142,6 +142,12 @@ Aprire http://127.0.0.1:8000/ in un navigatore recente (Chrome, Edge, Firefox).
 
 Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente automatico): da fare a mano.
 
+| Scenario | 10/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati; S10 con la prova dedicata, perché il clic sul nodo 1 di C1 nello script complessivo non seleziona il nodo. Il comportamento è lo stesso con il codice del 09/11, quindi il problema è nello script e non nell'interfaccia |
+| Modello grande (4681 nodi, 9150 aste) | caricamento 0,9 s, calcolo e disegno 3,1 s, modifica 1,6 s, annulla 1,6 s, 792 MB, nessun errore |
+| Controllo a vista | C13 e C23 con deformata visibile (D22); C14 senza deformata, corretto perché gli spostamenti sono nulli; molle a zig-zag su C8, C9, C22 (D21) |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -165,5 +171,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D18 | 06/11 | C19 | Diagramma di grandezze nulle disegnato con etichette «0» dovute a residui di arrotondamento (10⁻¹⁴) | bassa | **chiuso 06/11**: sotto 10⁻⁶ kN o kNm il diagramma non si disegna | Mariana |
 | D19 | 07/11 | modello grande | Calcolo e disegno di 4681 nodi e 9150 aste in 12,7 s con 1,2 GB di memoria | media | **ridotto il 07/11** a 4,7 s e 0,79 GB: mappa dei nodi costruita una volta, geometrie e materiali condivisi, diagrammi e deformata in un'unica geometria, al massimo 150 etichette. Restano 1,3 s di validazione dello schema nel servizio e la tabella di 9150 righe | Irene, Mariana |
 | D20 | 07/11 | C5 | Frecce dei carichi uniformi e concentrati lunghe |q| volte il dovuto (introdotto il 31/10 con i trapezi) | alta (leggibilità) | **chiuso 07/11**, ricontrollato a vista | Irene |
-| D21 | 09/11 | C22 | Le molle sono disegnate come un anello, simbolo poco riconoscibile; quello consueto è una molla a zig-zag | bassa | aperto | Irene |
+| D21 | 09/11 | C22 | Le molle sono disegnate come un anello, simbolo poco riconoscibile; quello consueto è una molla a zig-zag | bassa | **chiuso 10/11**: zig-zag con tratto di terra per ky (sotto il nodo) e kx (a sinistra), spirale per kr; ricontrollato a vista su C8, C9 e C22 | Irene |
+| D22 | 10/11 | C13, C23 | Sulle travi doppiamente incastrate la deformata non compariva: la scala usava i soli spostamenti dei nodi, che sono nulli | media | **chiuso 10/11**: la scala considera i 21 punti per asta; sotto 10⁻⁹ m la deformata non si disegna (C14, spostamenti nulli). I massimi su elenchi lunghi sono calcolati con cicli, perché `Math.max(...elenco)` falliva sul modello da 9150 aste | Mariana |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

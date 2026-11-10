@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 09/11/2026
+# Rapporto di confronto del solutore — 10/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto dell'08/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 09/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -32,9 +32,10 @@
 | C20 Trave Gerber, trapezio parziale sul tratto appoggiato | 6 superati, 0 non superati | 0 | 0 |
 | C21 Asta inclinata, trapezio verticale e cedimento | 5 superati, 0 non superati | 0 | 0 |
 | C22 Trave Gerber su molla, trapezio parziale | 5 superati, 0 non superati | 0 | 0 |
+| C23 Trave incastrata, combinazione di carico triangolare e distorsione termica | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità del 09/11**
-- **C22**, trave Gerber su molla con trapezio parziale: reazioni come in C20, molla abbassata di R3/ky = 7,5 mm, cerniera −9,12 mm.
-- **Identificativi non consecutivi** (prova del servizio): estesa a C20 e C21, con carichi d'asta e cedimenti rinumerati.
+**Novità del 10/11**
+- **C23**, prima combinazione di un carico con una distorsione termica (1,3·G + 0,9·T): Ry 23,4 e 54,6 kN, M −37,52 e −53,12 kNm, N −244,08 kN, uguali nei tre percorsi.
+- **Punto 60**: le anomalie dei validatori sono limitate alle ultime 100 voci; la prova `test_validatori_discordi` lo controlla.
 
-**Altre prove**: `test_app.py` 30 superate (nuova: validatori discordi, punto 58); `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 30 superate; `prove_modifica.mjs` 5 superate.

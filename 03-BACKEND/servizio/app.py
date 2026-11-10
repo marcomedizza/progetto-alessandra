@@ -15,6 +15,7 @@ Interfaccia:
     POST /api/calcola?combinazione=ID → risultati della combinazione (sovrapposizione lineare dei casi)
 """
 
+import collections
 import glob
 import json
 import logging
@@ -48,7 +49,8 @@ try:
     VALIDATORE_RAPIDO = jsonschema_rs.validator_for(SCHEMA) if VALIDATORE is not None else None
 except ImportError:
     VALIDATORE_RAPIDO = None
-ANOMALIE_VALIDAZIONE = []   # modelli su cui i due validatori non concordano (punto 58)
+# modelli su cui i due validatori non concordano (punto 58); solo gli ultimi 100 (punto 60), il resto è nel log
+ANOMALIE_VALIDAZIONE = collections.deque(maxlen=100)
 
 CASI = os.path.join(RADICE, "06-TESTING", "casi")
 

@@ -320,7 +320,11 @@ def test_validatori_discordi():
     try:
         n = len(servizio.ANOMALIE_VALIDAZIONE)
         r = client.post("/api/calcola", json=modello("C1_trave_appoggiata"))
-        assert r.status_code == 200 and len(servizio.ANOMALIE_VALIDAZIONE) == n + 1
+        assert r.status_code == 200 and len(servizio.ANOMALIE_VALIDAZIONE) == min(n + 1, 100)
+        # punto 60 (10/11): l'elenco non supera le 100 voci
+        for _ in range(105):
+            servizio.errori_schema(modello("C1_trave_appoggiata"))
+        assert len(servizio.ANOMALIE_VALIDAZIONE) == 100
     finally:
         servizio.VALIDATORE_RAPIDO = originale
 

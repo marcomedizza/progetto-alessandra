@@ -68,7 +68,8 @@ function inflessioneIncastrata(X, L, EI, car) {
 }
 
 function disegnaDiagramma(gruppo, modello, ris, comp, S) {
-  const max = Math.max(1e-12, ...ris.sollecitazioni.flatMap((s) => s[comp].map(Math.abs)));
+  let max = 1e-12;
+  for (const s of ris.sollecitazioni) for (const v of s[comp]) max = Math.max(max, Math.abs(v));
   // diagramma nullo (D18, Mariana): sotto 10⁻⁶ kN o kNm i valori sono solo residui di arrotondamento
   if (max < 1e-6) return [];
   const k = (S * 0.15) / max;
@@ -148,14 +149,20 @@ function deformataAste(modello, ris, caso) {
 }
 
 function disegnaDeformata(gruppo, modello, ris, S, caso) {
-  // scala riferita a traslazioni e rotazioni (×S/10): evita amplificazioni enormi quando
-  // le traslazioni sono quasi nulle (aste assialmente indeformabili, schemi simmetrici)
-  const max = Math.max(1e-12, ...ris.spostamenti.map((u) => Math.max(Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1)));
+  const aste = deformataAste(modello, ris, caso);
+  // scala riferita a traslazioni e rotazioni (×S/10) dei nodi e allo spostamento lungo le aste (D22, 10/11:
+  // sulle travi doppiamente incastrate i nodi non si spostano, la scala divideva per 10⁻¹² e la deformata
+  // usciva dallo schermo). Sotto 10⁻⁹ m la deformata è solo rumore numerico e non si disegna
+  // cicli e non Math.max(...elenco): sui modelli grandi l'elenco supera il limite di argomenti di JavaScript
+  let max = 0;
+  for (const { punti } of aste) for (const { u, v } of punti) max = Math.max(max, Math.hypot(u, v));
+  for (const u of ris.spostamenti) max = Math.max(max, Math.hypot(u.ux, u.uy), Math.abs(u.rz) * S * 0.1);
+  if (max < 1e-9) return 0;
   const k = (S * 0.08) / max;
   const mat = new THREE.LineDashedMaterial({ color: 0x2f5fa7, dashSize: S * 0.015, gapSize: S * 0.01 });
   // D19: tutte le aste in una sola geometria a segmenti
   const pts = [];
-  for (const { geo: { ni, c, s }, punti } of deformataAste(modello, ris, caso)) {
+  for (const { geo: { ni, c, s }, punti } of aste) {
     const xy = punti.map(({ X, u, v }) => [ni.x + c * (X + k * u) - s * k * v, ni.y + s * (X + k * u) + c * k * v]);
     for (let i = 0; i < xy.length - 1; i++) pts.push(...xy[i], 0, ...xy[i + 1], 0);
   }

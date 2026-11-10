@@ -237,10 +237,24 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 60 | `03-BACKEND/servizio/app.py` | `ANOMALIE_VALIDAZIONE` è una lista in memoria: si azzera al riavvio e cresce senza limite in un servizio sempre acceso | bassa | aperto: tenere solo le ultime 100 voci o affidarsi al solo log |
+| 60 | `03-BACKEND/servizio/app.py` | `ANOMALIE_VALIDAZIONE` è una lista in memoria: si azzera al riavvio e cresce senza limite in un servizio sempre acceso | bassa | **chiuso 10/11** (Natalia): `deque` di 100 voci, il resto è nel log; prova in `test_validatori_discordi` |
 | 61 | `03-BACKEND/servizio/test_app.py` | La prova degli identificativi non consecutivi rinumera ora anche carichi d'asta e cedimenti: copre C20 e C21 | — | nessun intervento |
 
 **Verifiche eseguite**:
 - `verifica_casi.py` nei tre percorsi su C1–C22: superati;
 - `test_app.py`: 30 prove; `prove_modifica.mjs`: 5;
 - scenari S1–S33 e controllo a vista di 6 casi.
+
+**Revisione del codice nuovo del 10/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 62 | `02-FRONTEND-3D/risultati.js` | La prima correzione di D22 usava `Math.max(...flatMap(...))`: sul modello da 9150 aste supera il limite di argomenti e il disegno si interrompe | media | **chiuso 10/11**: cicli espliciti; modello grande riprovato |
+| 63 | `02-FRONTEND-3D/risultati.js`, `vista.js` | Lo stesso costrutto era nella scala dei diagrammi e nell'inquadratura; oggi non falliva, ma il limite dipende dal motore del browser | bassa | **chiuso 10/11**: sostituito con cicli |
+| 64 | `06-TESTING/casi/genera_casi.py` | C23 ereditava la data del 03/11 dalla funzione `v12`, e il commento presentava 0,9 come coefficiente normativo; con la temperatura come unica azione variabile il coefficiente normativo sarebbe 1,5 | bassa | **chiuso 10/11**: data corretta; commento e README chiariscono che il caso prova la sovrapposizione |
+| 65 | `02-FRONTEND-3D/vista.js` | Le molle creano un `LineBasicMaterial` per nodo invece di condividerlo come gli altri simboli (D19) | bassa | aperto: incide solo su modelli con molte molle |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C23: superati;
+- `test_app.py`: 30 prove; `prove_modifica.mjs`: 5;
+- scenari S1–S33, modello grande e controllo a vista.

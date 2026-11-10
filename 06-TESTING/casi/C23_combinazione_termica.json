@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.2",
+  "progetto": {
+    "id": "C23",
+    "nome": "Trave incastrata, combinazione di carico triangolare e distorsione termica",
+    "descrizione": "IPE 300, L = 6 m, incastri; caso G: carico triangolare da 0 a 20 kN/m (come C13); caso T: ΔT uniforme +20 °C e a farfalla +10 °C (come C14); combinazione 1,3·G + 0,9·T (Daniela e Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-10",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5,
+      "alfa_t": 1.2e-05
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte",
+      "h": 0.3
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 2,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "G",
+      "nome": "Carico triangolare",
+      "categoria": "G2",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_y",
+          "q_i": 0.0,
+          "q_j": -20.0,
+          "a": 0.0,
+          "b": 6.0
+        }
+      ]
+    },
+    {
+      "id": "T",
+      "nome": "Distorsioni termiche",
+      "categoria": "temperatura",
+      "carichi_termici": [
+        {
+          "asta": 1,
+          "dT_u": 20.0,
+          "dT_g": 10.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 7
+  },
+  "combinazioni": [
+    {
+      "id": "SLU1",
+      "nome": "1,3·G + 0,9·T",
+      "tipo": "SLU",
+      "coefficienti": {
+        "G": 1.3,
+        "T": 0.9
+      }
+    }
+  ]
+}

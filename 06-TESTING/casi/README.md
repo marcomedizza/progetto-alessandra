@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C23 | trave incastrata IPE 300, L = 6 m: caso G triangolare 0–20 kN/m (C13), caso T con ΔTu 20 °C e ΔTg 10 °C (C14), combinazione 1,3·G + 0,9·T (v1.2) | iperstatica | Ry = 23,4 e 54,6 kN; M = −37,52 e −53,12 kNm; N = −244,08 kN |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
 Materiale: acciaio, E = 210 000 MPa = 2,10·10⁸ kN/m². Profili: IPE 300 (A = 53,81 cm², I = 8356 cm⁴), HE 200 A (A = 53,83 cm², I = 3692 cm⁴), valori da sagomario da ricontrollare sulla tabella del produttore.
@@ -183,6 +184,15 @@ C20 con l'appoggio a 6 m sostituito da una molla verticale ky = 2000 kN/m. La st
 - La molla si abbassa di R3/ky = 15/2000 = 7,5 mm.
 - La cerniera si abbassa come in C20, perché la mensola porta lo stesso carico in punta: −9,12 mm.
 - Il tratto 4–6 ha la stessa curvatura di C20, più una rotazione rigida diversa.
+
+## C23 · combinazione di carico triangolare e distorsione termica (Daniela e Valentina, 10/11)
+
+Primo caso che combina un carico con una distorsione termica. Il servizio somma i risultati dei casi G e T con i coefficienti 1,3 e 0,9.
+- Caso G (come C13): MA = −qL²/30 = −24 kNm, MB = −qL²/20 = −36 kNm, RA = 3qL/20 = 18 kN, RB = 7qL/20 = 42 kN.
+- Caso T (come C14): N = −E·A·α·ΔTu = −271,2 kN; M = −E·I·α·ΔTg/h = −7,02 kNm costante; nessuna reazione verticale.
+- Combinazione: Ry = 1,3·18 = 23,4 kN e 1,3·42 = 54,6 kN; M = 1,3·(−24) + 0,9·(−7,02) = −37,52 kNm e 1,3·(−36) + 0,9·(−7,02) = −53,12 kNm; N = 0,9·(−271,2) = −244,08 kN.
+
+**Coefficienti**: 0,9 = 1,5·ψ0 con ψ0 = 0,6 per le variazioni termiche (NTC 2018, tab. 2.5.I; valore citato a memoria, da ricontrollare sul testo). Vale per la temperatura come azione di accompagnamento. In C23 la temperatura è l'unica azione variabile, quindi in una combinazione normativa sarebbe l'azione principale con γ = 1,5. Il caso prova la sovrapposizione con coefficienti diversi tra loro, non la scelta normativa dei coefficienti.
 
 ## File
 

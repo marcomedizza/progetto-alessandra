@@ -132,6 +132,9 @@ LETTURE = {
     "C22": {
         "Ry nodo 3 (molla)": R(3, "Ry"), "Ry nodo 1": R(1, "Ry"), "Mz nodo 1 (reazione)": R(1, "Mz"),
         "uy nodo 3 (molla)": U(3, "uy"), "uy nodo 2 (cerniera)": U(2, "uy")},
+    "C23": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=0": S(1, "M", 0.0), "M asta 1 x=6": S(1, "M", 6.0),
+        "N asta 1 x=3": S(1, "N", 3.0)},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

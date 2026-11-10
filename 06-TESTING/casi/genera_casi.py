@@ -701,6 +701,39 @@ def c22():
     return m, atteso
 
 
+def c23():
+    L, q, dTu, dTg = 6.0, 20.0, 20.0, 10.0
+    # 0,9 = 1,5 × ψ0, con ψ0 = 0,6 per le variazioni termiche (NTC 2018, tab. 2.5.I, da ricontrollare sul testo):
+    # vale per T azione di accompagnamento. Qui T è l'unica azione variabile, quindi in una combinazione normativa
+    # sarebbe la principale con 1,5; il caso prova la sovrapposizione con coefficienti diversi, non la norma
+    gG, gT = 1.3, 0.9
+    m = v12(trave("C23", "Trave incastrata, combinazione di carico triangolare e distorsione termica",
+                  "IPE 300, L = 6 m, incastri; caso G: carico triangolare da 0 a 20 kN/m (come C13); caso T: ΔT uniforme +20 °C e a farfalla +10 °C "
+                  "(come C14); combinazione 1,3·G + 0,9·T (Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 6, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+                  {"id": "G", "nome": "Carico triangolare", "categoria": "G2", "carichi_aste": [
+                      {"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": 0.0, "q_j": -q, "a": 0.0, "b": L}]}, 7))
+    m["progetto"]["data"] = "2026-11-10"
+    m["casi_di_carico"].append({"id": "T", "nome": "Distorsioni termiche", "categoria": "temperatura",
+                                "carichi_termici": [{"asta": 1, "dT_u": dTu, "dT_g": dTg}]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 0,9·T", "tipo": "SLU", "coefficienti": {"G": gG, "T": gT}}]
+    EA, EI = E_ACC * IPE300["A"], E_ACC * IPE300["I"]
+    NT, MT = -EA * ALFA * dTu, -EI * ALFA * dTg / 0.300
+    atteso = {"caso": "SLU1", "formule": {
+        "caso G (C13)": "MA = −qL²/30, MB = −qL²/20, RA = 3qL/20, RB = 7qL/20, N = 0",
+        "caso T (C14)": "N = −EAαΔTu, M = −EIαΔTg/h costante, nessuna reazione verticale",
+        "combinazione": "sovrapposizione lineare: 1,3·G + 0,9·T"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * 3 * q * L / 20, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * 7 * q * L / 20, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0", "valore": gG * (-q * L ** 2 / 30) + gT * MT, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=6", "valore": gG * (-q * L ** 2 / 20) + gT * MT, "unita": "kNm"},
+            {"grandezza": "N asta 1 x=3", "valore": gT * NT, "unita": "kN"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -712,7 +745,7 @@ if __name__ == "__main__":
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
                     ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
                     ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21),
-                    ("C22_gerber_trapezio_molla", c22)):
+                    ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

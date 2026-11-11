@@ -148,6 +148,13 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Modello grande (4681 nodi, 9150 aste) | caricamento 0,9 s, calcolo e disegno 3,1 s, modifica 1,6 s, annulla 1,6 s, 792 MB, nessun errore |
 | Controllo a vista | C13 e C23 con deformata visibile (D22); C14 senza deformata, corretto perché gli spostamenti sono nulli; molle a zig-zag su C8, C9, C22 (D21) |
 
+| Scenario | 11/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S33, combinazione | superati; S10 con la prova dedicata, come il 10/11 |
+| S34, combinazioni di C23 e C24 nell'interfaccia | superato: C23 Ry 23,40 e 54,60 kN, M −37,52 e −53,12 kNm, N −244,08 kN; C24 Rx −18,75, Ry 195,00 kN, Mz 105,00 kNm, N travi 7,50 e 11,25 kN |
+| Modello grande | 1,2–1,6 s per il caricamento, 4,2–5,4 s per calcolo e disegno, 782 MB, nessun errore. I tempi sono più alti del 10/11 (3,1 s) anche con il codice del 10/11, quindi dipendono dalla macchina, riavviata il giorno stesso, e non dalle modifiche |
+| Controllo a vista | C24 caso G: momenti delle travi 112,5 kNm, colonne senza flessione, cerniere visibili; C24 combinazione: deformata e diagrammi coerenti; molle invariate dopo il punto 65 |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -173,4 +180,5 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D20 | 07/11 | C5 | Frecce dei carichi uniformi e concentrati lunghe |q| volte il dovuto (introdotto il 31/10 con i trapezi) | alta (leggibilità) | **chiuso 07/11**, ricontrollato a vista | Irene |
 | D21 | 09/11 | C22 | Le molle sono disegnate come un anello, simbolo poco riconoscibile; quello consueto è una molla a zig-zag | bassa | **chiuso 10/11**: zig-zag con tratto di terra per ky (sotto il nodo) e kx (a sinistra), spirale per kr; ricontrollato a vista su C8, C9 e C22 | Irene |
 | D22 | 10/11 | C13, C23 | Sulle travi doppiamente incastrate la deformata non compariva: la scala usava i soli spostamenti dei nodi, che sono nulli | media | **chiuso 10/11**: la scala considera i 21 punti per asta; sotto 10⁻⁹ m la deformata non si disegna (C14, spostamenti nulli). I massimi su elenchi lunghi sono calcolati con cicli, perché `Math.max(...elenco)` falliva sul modello da 9150 aste | Mariana |
+| D23 | 11/11 | S34 | Su C24 l'etichetta del momento al nodo 3 («39,4») copre la freccia della forza orizzontale del primo piano | bassa | aperto | Irene |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

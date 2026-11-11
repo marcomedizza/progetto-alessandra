@@ -80,6 +80,11 @@ Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l
 
 **Punto 56 (Natalia, Ottavia, 08/11)**: la richiesta di calcolo sul modello da 9150 aste scende da 2,0 a 0,77 s con la validazione rapida (jsonschema-rs). Nel navigatore calcolo e disegno passano da 4,7 a 3,5 s.
 
+**Prove dell'11/11 (Carla, Ottavia)**:
+- `--casi` su C1–C24, 27 casi di carico: scarto massimo banda contro piena 1,5·10⁻⁹ m sul caso W di C24, con spostamento massimo 0,13 m, quindi circa 10⁻⁸ relativo. C24 ha deformabilità assiale trascurata su tutte le aste, quindi è il caso peggio condizionato; lo scarto resta nei limiti indicati per il punto 46. C21–C23 sotto 2·10⁻¹⁷ m.
+- Matrice piena oltre 1000 nodi (`--piena-fino-a 7000`): sul telaio 20×100 (2121 nodi, 6363 gdl) banda 0,20 s, piena 12,5 s, scarto relativo 3,7·10⁻¹². Il risultato della banda è quindi confermato anche oltre 1000 nodi. Il telaio 30×150 (14 043 gdl) non è stato confrontato: con la matrice piena servirebbero circa 1,6 GB.
+- I limiti del servizio (5000 nodi, 10 000 aste) restano invariati: il modello più grande si risolve in 0,48 s.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

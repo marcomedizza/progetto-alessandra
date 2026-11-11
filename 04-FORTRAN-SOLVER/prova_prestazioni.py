@@ -7,7 +7,8 @@ del modello accettato dal servizio.
 
 Uso:  python3 04-FORTRAN-SOLVER/prova_prestazioni.py           telai regolari, carichi verticali e orizzontali
       python3 04-FORTRAN-SOLVER/prova_prestazioni.py --v04     gli stessi con cedimento e distorsioni termiche
-      python3 04-FORTRAN-SOLVER/prova_prestazioni.py --casi    casi di prova C1–C19 con banda e con matrice piena
+      python3 04-FORTRAN-SOLVER/prova_prestazioni.py --casi    tutti i casi di prova con banda e con matrice piena
+      python3 04-FORTRAN-SOLVER/prova_prestazioni.py --piena-fino-a 7000   confronto con la matrice piena fino a 7000 gdl
 """
 
 import os
@@ -95,6 +96,8 @@ if __name__ == "__main__":
         sys.exit(0)
     v04 = "--v04" in sys.argv
     PIENA_FINO_A = 2000  # oltre questi gdl la matrice piena richiede troppa memoria e tempo
+    if "--piena-fino-a" in sys.argv:  # Ottavia, 11/11: confronto anche oltre 1000 nodi
+        PIENA_FINO_A = int(sys.argv[sys.argv.index("--piena-fino-a") + 1])
     print(f"{'telaio':>10} {'nodi':>6} {'aste':>6} {'gdl':>6} {'banda [s]':>10} {'piena [s]':>10} {'scarto':>9} {'ΣRy/carico':>12}")
     for campate, piani in ((1, 10), (3, 10), (5, 20), (8, 25), (10, 40), (12, 50), (20, 100), (30, 150)):
         m = telaio(campate, piani)

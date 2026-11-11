@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 10/11/2026
+# Rapporto di confronto del solutore — 11/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 09/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 10/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -33,9 +33,10 @@
 | C21 Asta inclinata, trapezio verticale e cedimento | 5 superati, 0 non superati | 0 | 0 |
 | C22 Trave Gerber su molla, trapezio parziale | 5 superati, 0 non superati | 0 | 0 |
 | C23 Trave incastrata, combinazione di carico triangolare e distorsione termica | 5 superati, 0 non superati | 0 | 0 |
+| C24 Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento | 8 superati, 0 non superati | 0 | 0 |
 
-**Novità del 10/11**
-- **C23**, prima combinazione di un carico con una distorsione termica (1,3·G + 0,9·T): Ry 23,4 e 54,6 kN, M −37,52 e −53,12 kNm, N −244,08 kN, uguali nei tre percorsi.
-- **Punto 60**: le anomalie dei validatori sono limitate alle ultime 100 voci; la prova `test_validatori_discordi` lo controlla.
+**Novità dell'11/11**
+- **C24**, telaio a due piani a travi incernierate con combinazione 1,3·G + 1,5·W: soluzione esatta per simmetria, uguale nei tre percorsi.
+- **Banda contro piena**: su 27 casi di carico scarto massimo 1,5·10⁻⁹ m (C24, caso W, circa 10⁻⁸ relativo); sul telaio da 2121 nodi 3,7·10⁻¹² relativo.
 
-**Altre prove**: `test_app.py` 30 superate; `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 32 superate (nuove: combinazioni di C23 e C24); `prove_modifica.mjs` 5 superate.

@@ -329,6 +329,28 @@ def test_validatori_discordi():
         servizio.VALIDATORE_RAPIDO = originale
 
 
+def test_combinazione_carico_e_termica():
+    # Natalia, 11/11: C23 dal servizio. La combinazione è la somma pesata dei casi G e T, punto per punto,
+    # e un caso T con dT_u ma deformabilità assiale trascurata resta rifiutato anche dentro una combinazione
+    m = modello("C23_combinazione_termica")
+    g, t = client.post("/api/calcola", json=m).json()["risultati"]
+    c = client.post("/api/calcola?combinazione=SLU1", json=m).json()["risultati"][0]
+    for k in ("N", "V", "M"):
+        for sg, st, sc in zip(g["sollecitazioni"], t["sollecitazioni"], c["sollecitazioni"]):
+            assert all(abs(1.3 * a + 0.9 * b - x) < 1e-6 for a, b, x in zip(sg[k], st[k], sc[k]))
+    m["analisi"]["deformabilita_assiale"] = False
+    r = client.post("/api/calcola?combinazione=SLU1", json=m)
+    assert r.status_code == 422 and any("ΔT uniforme" in e for e in r.json()["detail"]["coerenza"])
+
+
+def test_combinazione_due_piani():
+    # C24: le colonne uguali collegate da travi incernierate rigide si dividono a metà il vento
+    c = client.post("/api/calcola?combinazione=SLU1", json=modello("C24_due_piani_combinazione")).json()["risultati"][0]
+    rz = {x["nodo"]: x for x in c["reazioni"]}
+    assert abs(rz[1]["Rx"] + 18.75) < 1e-6 and abs(rz[2]["Rx"] + 18.75) < 1e-6
+    assert abs(rz[1]["Ry"] - 195) < 1e-6 and abs(rz[2]["Ry"] - 195) < 1e-6
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

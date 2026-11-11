@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C24 | telaio a due piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale trascurata; G: q = 25 kN/m, W: 10 e 15 kN; combinazione 1,3·G + 1,5·W | iperstatica (soluzione esatta per simmetria) | Ry = 195 kN e Rx = −18,75 kN per piede; M piede 105 kNm; M colonna al primo piano 39,375 kNm; M travi 146,25 kNm |
 | C23 | trave incastrata IPE 300, L = 6 m: caso G triangolare 0–20 kN/m (C13), caso T con ΔTu 20 °C e ΔTg 10 °C (C14), combinazione 1,3·G + 0,9·T (v1.2) | iperstatica | Ry = 23,4 e 54,6 kN; M = −37,52 e −53,12 kNm; N = −244,08 kN |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
 
@@ -193,6 +194,29 @@ Primo caso che combina un carico con una distorsione termica. Il servizio somma 
 - Combinazione: Ry = 1,3·18 = 23,4 kN e 1,3·42 = 54,6 kN; M = 1,3·(−24) + 0,9·(−7,02) = −37,52 kNm e 1,3·(−36) + 0,9·(−7,02) = −53,12 kNm; N = 0,9·(−271,2) = −244,08 kN.
 
 **Coefficienti**: 0,9 = 1,5·ψ0 con ψ0 = 0,6 per le variazioni termiche (NTC 2018, tab. 2.5.I; valore citato a memoria, da ricontrollare sul testo). Vale per la temperatura come azione di accompagnamento. In C23 la temperatura è l'unica azione variabile, quindi in una combinazione normativa sarebbe l'azione principale con γ = 1,5. Il caso prova la sovrapposizione con coefficienti diversi tra loro, non la scelta normativa dei coefficienti.
+
+## C24 · telaio a due piani a travi incernierate, combinazione (Daniela e Valentina, 11/11)
+
+Telaio con le travi incernierate a entrambe le estremità e deformabilità assiale trascurata. Le travi sono bielle rigide tra due mensole uguali, quindi la soluzione è esatta senza risolvere il telaio.
+- **Caso G** (q = 25 kN/m sulle due travi): ogni trave è appoggiata, M = qL²/8 = 112,5 kNm. Ogni colonna riceve qL/2 = 75 kN per piano, senza flessione, perché le cerniere non trasmettono momento. Ry = 150 kN per piede.
+- **Caso W** (10 kN al primo piano, 15 kN al secondo): le bielle rigide impongono lo stesso spostamento orizzontale alle due mensole. Essendo uguali, ciascuna porta metà di ogni forza: 5 e 7,5 kN.
+  - Rx = −12,5 kN per piede.
+  - M al piede = 5·3,5 + 7,5·7 = 70 kNm.
+  - M della colonna al primo piano = 7,5·3,5 = 26,25 kNm.
+  - Nessuna reazione verticale.
+  - Le travi sono compresse, perché portano alla colonna destra metà della forza di piano: 5 kN al primo piano, 7,5 kN al secondo.
+- **Combinazione 1,3·G + 1,5·W**:
+  - Ry = 195 kN;
+  - Rx = −18,75 kN;
+  - M piede = 105 kNm;
+  - M colonna al primo piano = 39,375 kNm;
+  - M travi = 146,25 kNm;
+  - N colonna destra al piede = −195 kN;
+  - N travi = 7,5 e 11,25 kN.
+
+**Coefficienti**: 1,3 per i permanenti non strutturali e 1,5 per il vento come azione principale. È lo stesso schema dell'esempio di riferimento `ESEMPIO_PORTALE_2D.json`. Con G2 non compiutamente definiti le NTC prevedono 1,5 (tab. 2.6.I, citata a memoria, da ricontrollare sul testo), quindi anche qui i coefficienti servono a provare la sovrapposizione e non sono una scelta di progetto.
+
+**Controllo nell'interfaccia** (11/11): reazioni, |M|, |V| e |N| per asta coincidono con i valori sopra.
 
 ## File
 

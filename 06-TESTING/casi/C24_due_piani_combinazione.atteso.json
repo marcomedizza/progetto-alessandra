@@ -1,0 +1,50 @@
+{
+  "caso": "SLU1",
+  "formule": {
+    "caso G": "travi appoggiate: M mezzeria = qL²/8; Ry = 2·qL/2 per colonna; colonne senza flessione",
+    "caso W": "mensole uguali collegate da bielle rigide: ciascuna porta H1/2 e H2/2; Rx = −(H1 + H2)/2; M al piede = H1/2·h + H2/2·2h; M in testa al primo piano = H2/2·h; Ry = 0",
+    "combinazione": "sovrapposizione lineare 1,3·G + 1,5·W"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 195.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 195.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -18.75,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 2",
+      "valore": -18.75,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|M| asta 1 x=0 (piede)",
+      "valore": 105.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 3 x=0 (primo piano)",
+      "valore": 39.375,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 5 x=L/2 (mezzeria)",
+      "valore": 146.25,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "N asta 2 x=0",
+      "valore": -195.0,
+      "unita": "kN"
+    }
+  ]
+}

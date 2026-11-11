@@ -734,6 +734,60 @@ def c23():
     return m, atteso
 
 
+def c24():
+    """Telaio a due piani con travi incernierate e combinazione di due casi (Daniela e Valentina, 11/11).
+
+    Le travi hanno cerniere a entrambe le estremità e la deformabilità assiale è trascurata: le travi sono
+    bielle rigide che collegano due mensole uguali. Ne seguono valori esatti senza risolvere il telaio:
+    - caso G: ogni trave è appoggiata, M in mezzeria qL²/8; ogni colonna porta qL/2 per piano, senza flessione;
+    - caso W: le bielle impongono lo stesso spostamento alle due mensole uguali, che si dividono a metà ogni
+      forza di piano; nessuna reazione verticale, perché le travi incernierate non trasmettono momento.
+    """
+    L, h, q, H1, H2 = 6.0, 3.5, 25.0, 10.0, 15.0
+    gG, gW = 1.3, 1.5
+    m = base("C24", "Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento",
+             "Una campata L = 6 m, due piani h = 3,5 m; colonne HE 200 A continue e incastrate al piede, travi IPE 300 "
+             "incernierate alle estremità; deformabilità assiale trascurata. Caso G: q = 25 kN/m sulle travi; caso W: "
+             "10 kN al primo piano e 15 kN al secondo; combinazione 1,3·G + 1,5·W (Daniela e Valentina).")
+    m["progetto"]["data"] = "2026-11-11"
+    cerniere = {"rz_i": True, "rz_j": True}
+    m.update({
+        "nodi": [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}, {"id": 3, "x": 0, "y": h},
+                 {"id": 4, "x": L, "y": h}, {"id": 5, "x": 0, "y": 2 * h}, {"id": 6, "x": L, "y": 2 * h}],
+        "sezioni": [HEA200, IPE300],
+        "aste": [{"id": 1, "nodo_i": 1, "nodo_j": 3, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 2, "nodo_i": 2, "nodo_j": 4, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 3, "nodo_i": 3, "nodo_j": 5, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 4, "nodo_i": 4, "nodo_j": 6, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 5, "nodo_i": 3, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300", "svincoli": dict(cerniere)},
+                 {"id": 6, "nodo_i": 5, "nodo_j": 6, "materiale": "S275", "sezione": "IPE300", "svincoli": dict(cerniere)}],
+        "vincoli": [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+        "casi_di_carico": [
+            {"id": "G", "nome": "Carichi verticali sulle travi", "categoria": "G2",
+             "carichi_aste": [{"asta": 5, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
+                              {"asta": 6, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]},
+            {"id": "W", "nome": "Vento", "categoria": "vento",
+             "carichi_nodali": [{"nodo": 3, "Fx": H1}, {"nodo": 5, "Fx": H2}]}],
+        "combinazioni": [{"id": "SLU1", "nome": "1,3·G + 1,5·W", "tipo": "SLU", "coefficienti": {"G": gG, "W": gW}}],
+        "analisi": {"tipo": "statica_lineare", "deformabilita_assiale": False, "punti_diagramma": 11},
+    })
+    atteso = {"caso": "SLU1", "formule": {
+        "caso G": "travi appoggiate: M mezzeria = qL²/8; Ry = 2·qL/2 per colonna; colonne senza flessione",
+        "caso W": "mensole uguali collegate da bielle rigide: ciascuna porta H1/2 e H2/2; Rx = −(H1 + H2)/2; "
+                  "M al piede = H1/2·h + H2/2·2h; M in testa al primo piano = H2/2·h; Ry = 0",
+        "combinazione": "sovrapposizione lineare 1,3·G + 1,5·W"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * q * L, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * q * L, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": -gW * (H1 + H2) / 2, "unita": "kN"},
+            {"grandezza": "Rx nodo 2", "valore": -gW * (H1 + H2) / 2, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=0 (piede)", "valore": gW * (H1 / 2 * h + H2 / 2 * 2 * h), "unita": "kNm"},
+            {"grandezza": "|M| asta 3 x=0 (primo piano)", "valore": gW * H2 / 2 * h, "unita": "kNm"},
+            {"grandezza": "|M| asta 5 x=L/2 (mezzeria)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "N asta 2 x=0", "valore": -gG * q * L, "unita": "kN"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -745,7 +799,8 @@ if __name__ == "__main__":
                     ("C17_inclinata_normale", c17), ("C14_termica_incastrata", c14),
                     ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
                     ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21),
-                    ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23)):
+                    ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23),
+                    ("C24_due_piani_combinazione", c24)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

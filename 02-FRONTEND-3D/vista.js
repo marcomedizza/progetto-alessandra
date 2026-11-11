@@ -169,7 +169,10 @@ export class Vista {
   }
 
   simboloVincolo(n, v) {
-    const S = this.S, g = new THREE.Group(), mat = new THREE.MeshBasicMaterial({ color: COL.vincolo, side: THREE.DoubleSide });
+    // materiali condivisi da tutti i vincoli (punto 65, 11/11), come per le aste (D19); svuota() li rilascia e
+    // three.js li ricarica al disegno successivo
+    const S = this.S, g = new THREE.Group();
+    const mat = (this.matVincolo ??= new THREE.MeshBasicMaterial({ color: COL.vincolo, side: THREE.DoubleSide }));
     const d = S * 0.035;
     if (v.ux && v.uy && v.rz) {                    // incastro
       const r = new THREE.Mesh(new THREE.PlaneGeometry(d * 2.4, d * 0.5), mat);
@@ -190,7 +193,7 @@ export class Vista {
     }
     // molle (D21, Irene, 10/11): zig-zag con tratto di terra per ky (sotto il nodo) e kx (a sinistra);
     // per kr una spirale, il simbolo consueto della molla rotazionale
-    const linea = new THREE.LineBasicMaterial({ color: COL.vincolo });
+    const linea = (this.lineaVincolo ??= new THREE.LineBasicMaterial({ color: COL.vincolo }));
     const zigzag = (dx, dy) => {               // dx, dy: versore dal nodo verso terra
       const nx = -dy, ny = dx, L = d * 2.6, pts = [];
       pts.push(new THREE.Vector3(n.x, n.y, 0), new THREE.Vector3(n.x + dx * L * 0.15, n.y + dy * L * 0.15, 0));

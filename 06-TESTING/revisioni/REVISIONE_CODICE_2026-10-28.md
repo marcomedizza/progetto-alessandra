@@ -252,9 +252,24 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 | 62 | `02-FRONTEND-3D/risultati.js` | La prima correzione di D22 usava `Math.max(...flatMap(...))`: sul modello da 9150 aste supera il limite di argomenti e il disegno si interrompe | media | **chiuso 10/11**: cicli espliciti; modello grande riprovato |
 | 63 | `02-FRONTEND-3D/risultati.js`, `vista.js` | Lo stesso costrutto era nella scala dei diagrammi e nell'inquadratura; oggi non falliva, ma il limite dipende dal motore del browser | bassa | **chiuso 10/11**: sostituito con cicli |
 | 64 | `06-TESTING/casi/genera_casi.py` | C23 ereditava la data del 03/11 dalla funzione `v12`, e il commento presentava 0,9 come coefficiente normativo; con la temperatura come unica azione variabile il coefficiente normativo sarebbe 1,5 | bassa | **chiuso 10/11**: data corretta; commento e README chiariscono che il caso prova la sovrapposizione |
-| 65 | `02-FRONTEND-3D/vista.js` | Le molle creano un `LineBasicMaterial` per nodo invece di condividerlo come gli altri simboli (D19) | bassa | aperto: incide solo su modelli con molte molle |
+| 65 | `02-FRONTEND-3D/vista.js` | Le molle creano un `LineBasicMaterial` per nodo invece di condividerlo come gli altri simboli (D19) | bassa | **chiuso 11/11**: un materiale di superficie e uno di linea per tutti i vincoli; schermate delle molle invariate |
 
 **Verifiche eseguite**:
 - `verifica_casi.py` nei tre percorsi su C1–C23: superati;
 - `test_app.py`: 30 prove; `prove_modifica.mjs`: 5;
 - scenari S1–S33, modello grande e controllo a vista.
+
+**Revisione del codice nuovo dell'11/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 66 | `02-FRONTEND-3D/vista.js` | I materiali condivisi dei vincoli vengono rilasciati da `svuota()` a ogni ridisegno e riusati: three.js li ricarica, ma il comportamento dipende da questa proprietà della libreria | bassa | accettato: le prove sul modello grande e le schermate non mostrano errori; da ricontrollare a ogni aggiornamento di three.js |
+| 67 | `06-TESTING/casi/genera_casi.py` | C24 usa la deformabilità assiale trascurata su tutte le aste: è il caso peggio condizionato (banda contro piena 10⁻⁸ relativo), ma resta nei limiti del punto 46 | — | nessun intervento |
+| 68 | `04-FORTRAN-SOLVER/prova_prestazioni.py` | `--piena-fino-a` senza valore numerico dà un errore Python non spiegato | bassa | aperto: è uno strumento di prova interno |
+| 69 | `03-BACKEND/servizio/test_app.py` | Le prove nuove confrontano la combinazione con i casi punto per punto (C23) e con la soluzione esatta (C24) | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C24: superati;
+- `test_app.py`: 32 prove; `prove_modifica.mjs`: 5;
+- banda contro piena su 27 casi di carico e fino a 2121 nodi;
+- scenari S1–S34.

@@ -85,6 +85,8 @@ Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l
 - Matrice piena oltre 1000 nodi (`--piena-fino-a 7000`): sul telaio 20×100 (2121 nodi, 6363 gdl) banda 0,20 s, piena 12,5 s, scarto relativo 3,7·10⁻¹². Il risultato della banda è quindi confermato anche oltre 1000 nodi. Il telaio 30×150 (14 043 gdl) non è stato confrontato: con la matrice piena servirebbero circa 1,6 GB.
 - I limiti del servizio (5000 nodi, 10 000 aste) restano invariati: il modello più grande si risolve in 0,48 s.
 
+**Compilazione (Ottavia, 12/11)**: `build.sh` con GNU Fortran 13.3.0 in 2,9 s su una macchina appena avviata. Rimane un solo avviso, `-Wcompare-reals`, per un confronto di uguaglianza tra numeri reali. È voluto, ma va ricontrollato alla prossima revisione del solutore. C1–C25 superati con il binario appena compilato.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

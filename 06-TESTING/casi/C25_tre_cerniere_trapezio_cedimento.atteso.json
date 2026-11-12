@@ -1,0 +1,52 @@
+{
+  "caso": "Q",
+  "formule": {
+    "risultante": "F = (qi + qj)/2·a = 45 kN a xF = a(qi + 2qj)/(3(qi + qj)) = 1,667 m dal nodo 2",
+    "verticali": "VB = F·xF/L = 12,5 kN; VA = F − VB = 32,5 kN",
+    "orizzontali": "M = 0 alla cerniera per la parte destra: HB = −(L/2)·VB/h = −9,375 kN; HA = −HB",
+    "momento nel traverso": "M(x) = VA·x − HA·h − (qi·x²/2 + (qj − qi)/a·x³/6), x dal nodo 2",
+    "cedimento": "struttura isostatica: il cedimento non cambia reazioni né sollecitazioni"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 32.5,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 5",
+      "valore": 12.5,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 9.375,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 5",
+      "valore": -9.375,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|M| asta 1 x=h (nodo 2)",
+      "valore": 37.5,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 2 x=1,5",
+      "valore": 1.875,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=3 (cerniera)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 5 (cedimento)",
+      "valore": -0.01,
+      "unita": "m"
+    }
+  ]
+}

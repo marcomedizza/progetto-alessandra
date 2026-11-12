@@ -139,6 +139,10 @@ LETTURE = {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "Rx nodo 2": R(2, "Rx"),
         "|M| asta 1 x=0 (piede)": ABS(S(1, "M", 0.0)), "|M| asta 3 x=0 (primo piano)": ABS(S(3, "M", 0.0)),
         "|M| asta 5 x=L/2 (mezzeria)": ABS(S(5, "M", 3.0)), "N asta 2 x=0": S(2, "N", 0.0)},
+    "C25": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 5": R(5, "Ry"), "Rx nodo 1": R(1, "Rx"), "Rx nodo 5": R(5, "Rx"),
+        "|M| asta 1 x=h (nodo 2)": ABS(S(1, "M", 4.0)), "|M| asta 2 x=1,5": ABS(S(2, "M", 1.5)),
+        "M asta 2 x=3 (cerniera)": S(2, "M", 3.0), "uy nodo 5 (cedimento)": U(5, "uy")},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

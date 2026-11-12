@@ -788,6 +788,54 @@ def c24():
     return m, atteso
 
 
+def c25():
+    """Portale a tre cerniere con trapezio parziale e cedimento (Daniela e Valentina, 12/11).
+
+    Isostatico: reazioni e sollecitazioni dal solo equilibrio; il cedimento non le cambia.
+    """
+    h, L, qi, qj, a = 4.0, 6.0, 10.0, 20.0, 3.0           # trapezio sulla mezza trave sinistra, da 0 a 3 m
+    F = (qi + qj) / 2 * a                                  # 45 kN
+    xF = a * (qi + 2 * qj) / (3 * (qi + qj))               # 1,667 m dal nodo 2
+    VB = F * xF / L                                        # equilibrio alla rotazione attorno ad A
+    VA = F - VB
+    HB = -(L / 2) * VB / h                                 # M = 0 alla cerniera C per la parte destra
+    HA = -HB
+    x = 1.5
+    Mx = VA * x - HA * h - (qi * x ** 2 / 2 + (qj - qi) / a * x ** 3 / 6)
+    m = v11(trave("C25", "Portale a tre cerniere, trapezio parziale e cedimento",
+                  "Colonne h = 4 m e traverso L = 6 m in IPE 300, appoggi fissi ai piedi, cerniera in mezzeria del traverso; "
+                  "trapezio verticale da 10 a 20 kN/m sulla metà sinistra del traverso; cedimento di 10 mm del piede destro "
+                  "(Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 0, "y": h}, {"id": 3, "x": L / 2, "y": h},
+                   {"id": 4, "x": L, "y": h}, {"id": 5, "x": L, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+                   {"id": 3, "nodo_i": 3, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300"},
+                   {"id": 4, "nodo_i": 5, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 5, "ux": True, "uy": True}],
+                  {"id": "Q", "nome": "Trapezio e cedimento", "categoria": "Q",
+                   "carichi_aste": [{"asta": 2, "tipo": "distribuito_trapezio", "direzione": "globale_y",
+                                     "q_i": -qi, "q_j": -qj, "a": 0.0, "b": a}],
+                   "cedimenti": [{"nodo": 5, "uy": -0.010}]}, 21))
+    m["progetto"]["data"] = "2026-11-12"
+    atteso = {"caso": "Q", "formule": {
+        "risultante": "F = (qi + qj)/2·a = 45 kN a xF = a(qi + 2qj)/(3(qi + qj)) = 1,667 m dal nodo 2",
+        "verticali": "VB = F·xF/L = 12,5 kN; VA = F − VB = 32,5 kN",
+        "orizzontali": "M = 0 alla cerniera per la parte destra: HB = −(L/2)·VB/h = −9,375 kN; HA = −HB",
+        "momento nel traverso": "M(x) = VA·x − HA·h − (qi·x²/2 + (qj − qi)/a·x³/6), x dal nodo 2",
+        "cedimento": "struttura isostatica: il cedimento non cambia reazioni né sollecitazioni"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": VA, "unita": "kN"},
+            {"grandezza": "Ry nodo 5", "valore": VB, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": HA, "unita": "kN"},
+            {"grandezza": "Rx nodo 5", "valore": HB, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=h (nodo 2)", "valore": HA * h, "unita": "kNm"},
+            {"grandezza": "|M| asta 2 x=1,5", "valore": abs(Mx), "unita": "kNm"},
+            {"grandezza": "M asta 2 x=3 (cerniera)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "uy nodo 5 (cedimento)", "valore": -0.010, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -800,7 +848,8 @@ if __name__ == "__main__":
                     ("C18_termica_appoggiata", c18), ("C19_gerber_termica", c19),
                     ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21),
                     ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23),
-                    ("C24_due_piani_combinazione", c24)):
+                    ("C24_due_piani_combinazione", c24),
+                    ("C25_tre_cerniere_trapezio_cedimento", c25)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

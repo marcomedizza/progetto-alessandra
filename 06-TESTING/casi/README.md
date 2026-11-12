@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C25 | portale a tre cerniere IPE 300, h = 4 m, L = 6 m, cerniera in mezzeria del traverso; trapezio 10→20 kN/m sulla metà sinistra; cedimento di 10 mm del piede destro (v1.1) | isostatica | VA = 32,5, VB = 12,5 kN; HA = −HB = 9,375 kN; M agli angoli 37,5 kNm; M a 1,5 m 1,875 kNm; reazioni invariate dal cedimento |
 | C24 | telaio a due piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale trascurata; G: q = 25 kN/m, W: 10 e 15 kN; combinazione 1,3·G + 1,5·W | iperstatica (soluzione esatta per simmetria) | Ry = 195 kN e Rx = −18,75 kN per piede; M piede 105 kNm; M colonna al primo piano 39,375 kNm; M travi 146,25 kNm |
 | C23 | trave incastrata IPE 300, L = 6 m: caso G triangolare 0–20 kN/m (C13), caso T con ΔTu 20 °C e ΔTg 10 °C (C14), combinazione 1,3·G + 0,9·T (v1.2) | iperstatica | Ry = 23,4 e 54,6 kN; M = −37,52 e −53,12 kNm; N = −244,08 kN |
 | C9 | Portale a tre cerniere (cerniera in mezzeria del traverso), piede destro su molla verticale ky = 5000 kN/m, H = 20 kN | statica (isostatica) + molla | Ry4 = 13,33 kN; Rx1 = Rx4 = −10 kN; M testa colonna = 40,00 kNm; abbassamento della molla = 2,67 mm |
@@ -217,6 +218,16 @@ Telaio con le travi incernierate a entrambe le estremità e deformabilità assia
 **Coefficienti**: 1,3 per i permanenti non strutturali e 1,5 per il vento come azione principale. È lo stesso schema dell'esempio di riferimento `ESEMPIO_PORTALE_2D.json`. Con G2 non compiutamente definiti le NTC prevedono 1,5 (tab. 2.6.I, citata a memoria, da ricontrollare sul testo), quindi anche qui i coefficienti servono a provare la sovrapposizione e non sono una scelta di progetto.
 
 **Controllo nell'interfaccia** (11/11): reazioni, |M|, |V| e |N| per asta coincidono con i valori sopra.
+
+## C25 · portale a tre cerniere, trapezio parziale e cedimento (Daniela e Valentina, 12/11)
+
+Unisce cerniera interna, trapezio e cedimento, provati finora a coppie (C16, C20, C21, C22). La struttura è isostatica: appoggi fissi ai piedi A (0; 0) e B (6; 0), cerniera C (3; 4) in mezzeria del traverso.
+1. Risultante del trapezio sulla metà sinistra (qi = 10, qj = 20 kN/m, a = 3 m): F = (10 + 20)/2 · 3 = 45 kN, a xF = 3·(10 + 40)/(3·30) = 1,667 m dal nodo 2.
+2. Rotazione attorno ad A: VB · 6 = 45 · 1,667, quindi VB = 12,5 kN e VA = 32,5 kN.
+3. M = 0 in C per la parte destra (colonna e mezza trave scariche): 3 · VB + 4 · HB = 0, quindi HB = −9,375 kN e HA = +9,375 kN.
+4. Momenti agli angoli: HA · h = 37,5 kNm su entrambe le colonne.
+5. Nel traverso, con x dal nodo 2: M(x) = VA·x − HA·h − (qi·x²/2 + (qj − qi)/a · x³/6). In x = 1,5 m vale 48,75 − 37,5 − 13,125 = −1,875 kNm; in x = 3 m vale 97,5 − 37,5 − 60 = 0, come deve alla cerniera.
+6. Il cedimento di 10 mm del piede destro non cambia reazioni né sollecitazioni, perché la struttura è isostatica: dà solo un moto rigido. La prova del servizio `test_tre_cerniere_cedimento_isostatico` lo controlla confrontando il calcolo con e senza cedimento.
 
 ## File
 

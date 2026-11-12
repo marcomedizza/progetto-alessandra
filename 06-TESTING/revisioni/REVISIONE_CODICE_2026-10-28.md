@@ -273,3 +273,17 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `test_app.py`: 32 prove; `prove_modifica.mjs`: 5;
 - banda contro piena su 27 casi di carico e fino a 2121 nodi;
 - scenari S1–S34.
+
+**Revisione del codice nuovo del 12/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 70 | `02-FRONTEND-3D/risultati.js` | Le dimensioni delle etichette per il controllo delle sovrapposizioni sono stimate in proporzione al modello, non misurate sullo schermo. Con lo zoom forte possono ancora sovrapporsi o restare troppo distanti | bassa | accettato per ora: una misura vera richiede il calcolo nella vista a ogni fotogramma |
+| 71 | `02-FRONTEND-3D/risultati.js` | Un'etichetta d'estremità spostata lungo l'asta può essere letta come valore del punto in cui si trova | bassa | aperto: valutare un tratto di richiamo verso il nodo |
+| 72 | `06-TESTING/casi/genera_casi.py` | C25 rilegge la data dopo `v11`, come C23 dopo `v12` (punto 64) | — | nessun intervento |
+| 73 | `03-BACKEND/servizio/test_app.py` | La prova su C25 controlla anche il rifiuto del cedimento su una rotazione non vincolata | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C25: superati;
+- `test_app.py`: 33 prove; `prove_modifica.mjs`: 5;
+- scenari S1–S34 e controllo a vista di C5, C24, C25.

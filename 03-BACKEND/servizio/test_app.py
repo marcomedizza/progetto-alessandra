@@ -351,6 +351,24 @@ def test_combinazione_due_piani():
     assert abs(rz[1]["Ry"] - 195) < 1e-6 and abs(rz[2]["Ry"] - 195) < 1e-6
 
 
+def test_tre_cerniere_cedimento_isostatico():
+    # Natalia, 12/11: su C25, isostatico, il cedimento non cambia reazioni né momenti, sposta solo il piede
+    m = modello("C25_tre_cerniere_trapezio_cedimento")
+    con = client.post("/api/calcola", json=m).json()["risultati"][0]
+    m["casi_di_carico"][0]["cedimenti"] = []
+    senza = client.post("/api/calcola", json=m).json()["risultati"][0]
+    for a, b in zip(con["reazioni"], senza["reazioni"]):
+        assert all(abs(a[k] - b[k]) < 1e-6 for k in ("Rx", "Ry"))
+    for a, b in zip(con["sollecitazioni"], senza["sollecitazioni"]):
+        assert all(abs(x - y) < 1e-6 for x, y in zip(a["M"], b["M"]))
+    uy = {u["nodo"]: u["uy"] for u in con["spostamenti"]}
+    assert abs(uy[5] + 0.010) < 1e-12
+    # cedimento su una rotazione non vincolata (piede incernierato): rifiutato
+    m["casi_di_carico"][0]["cedimenti"] = [{"nodo": 5, "rz": 0.001}]
+    r = client.post("/api/valida", json=m).json()
+    assert not r["valido"] and any("rz" in e for e in r["coerenza"])
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

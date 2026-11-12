@@ -100,9 +100,13 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
     if (im > 0 && Math.abs(val[im]) > Math.max(Math.abs(val[0]), Math.abs(val[n - 1])) * 1.01) indici.push(im);
     for (const i of indici) {
       if (Math.abs(val[i]) < max * 0.02) continue;
-      const [px, py] = punto(s.x[i], val[i] * 1.15);
+      // D23 (Irene, 12/11): le etichette d'estremità si spostano verso l'interno dell'asta, perché sul nodo
+      // arrivano le frecce dei carichi nodali e le etichette delle altre aste
+      const L = s.x[n - 1], sp = Math.min(L * 0.12, S * 0.04) * (i === 0 ? 1 : i === n - 1 ? -1 : 0);
+      const [qx, qy] = punto(s.x[i], val[i] * 1.15), px = qx + c * sp, py = qy + sn * sp;
       // M in valore assoluto: il lato del diagramma indica già le fibre tese; N e V con il segno
-      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]), v: Math.abs(val[i]) });
+      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]), v: Math.abs(val[i]),
+        dx: c * Math.sign(sp || 1), dy: sn * Math.sign(sp || 1) });
     }
   }
   const g = new THREE.BufferGeometry();
@@ -114,6 +118,14 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   // D19: sui modelli grandi solo le 150 etichette di valore assoluto maggiore (ogni etichetta è un elemento
   // della pagina riposizionato a ogni fotogramma)
   if (etichette.length > 150) etichette.sort((p, q) => q.v - p.v).length = 150;
+  // D23: un'etichetta che cade su una già posta scorre lungo la propria asta, al più 4 passi; la larghezza
+  // e l'altezza sono stimate in proporzione al modello (l'etichetta è larga circa 4 caratteri)
+  const W = S * 0.09, H = S * 0.04, posate = [];
+  const urta = (e) => posate.some((p) => Math.abs(p.x - e.x) < W && Math.abs(p.y - e.y) < H);
+  for (const e of etichette) {
+    for (let k = 0; k < 4 && urta(e); k++) { e.x += e.dx * S * 0.04; e.y += e.dy * S * 0.04; }
+    posate.push(e);
+  }
   return etichette;
 }
 

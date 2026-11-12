@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 11/11/2026
+# Rapporto di confronto del solutore — 12/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 10/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto dell'11/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -34,9 +34,10 @@
 | C22 Trave Gerber su molla, trapezio parziale | 5 superati, 0 non superati | 0 | 0 |
 | C23 Trave incastrata, combinazione di carico triangolare e distorsione termica | 5 superati, 0 non superati | 0 | 0 |
 | C24 Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento | 8 superati, 0 non superati | 0 | 0 |
+| C25 Portale a tre cerniere, trapezio parziale e cedimento | 8 superati, 0 non superati | 0 | 0 |
 
-**Novità dell'11/11**
-- **C24**, telaio a due piani a travi incernierate con combinazione 1,3·G + 1,5·W: soluzione esatta per simmetria, uguale nei tre percorsi.
-- **Banda contro piena**: su 27 casi di carico scarto massimo 1,5·10⁻⁹ m (C24, caso W, circa 10⁻⁸ relativo); sul telaio da 2121 nodi 3,7·10⁻¹² relativo.
+**Novità del 12/11**
+- **C25**, portale a tre cerniere con trapezio parziale e cedimento: soluzione a mano dal solo equilibrio, uguale nei tre percorsi.
+- Il cedimento, su struttura isostatica, non cambia reazioni né momenti: lo controlla la prova del servizio `test_tre_cerniere_cedimento_isostatico`.
 
-**Altre prove**: `test_app.py` 32 superate (nuove: combinazioni di C23 e C24); `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 33 superate; `prove_modifica.mjs` 5 superate.

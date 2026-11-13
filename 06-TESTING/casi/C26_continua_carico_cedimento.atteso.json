@@ -1,0 +1,35 @@
+{
+  "caso": "SLU1",
+  "formule": {
+    "caso G": "R1 = R3 = 3qL/8, R2 = 10qL/8, M2 = −qL²/8",
+    "caso D": "P = 6EIδ/L³; R2 = −P, R1 = R3 = P/2, M2 = +PL/2, uy2 = −δ",
+    "combinazione": "1,3·G + 1,0·D"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 60.93716666666667,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 190.12566666666666,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 3",
+      "valore": 60.93716666666667,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=L (appoggio centrale)",
+      "valore": -102.377,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.01,
+      "unita": "m"
+    }
+  ]
+}

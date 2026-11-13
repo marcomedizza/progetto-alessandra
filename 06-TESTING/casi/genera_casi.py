@@ -836,6 +836,45 @@ def c25():
     return m, atteso
 
 
+def c26():
+    """Trave continua su tre appoggi: carico uniforme e cedimento in due casi, poi combinati (Daniela e Valentina, 13/11).
+
+    Prima combinazione che contiene un cedimento. Soluzioni chiuse:
+    - caso G: M sull'appoggio centrale −qL²/8, reazioni 3qL/8 e 10qL/8;
+    - caso D: il cedimento δ equivale a una forza P = 6EIδ/L³ in mezzeria della trave 2L appoggiata
+      (δ = P(2L)³/48EI), verso il basso sulla trave: reazione centrale −P, estreme +P/2, M centrale +PL/2.
+    """
+    L, q, d = 6.0, 20.0, 0.010
+    gG, gD = 1.3, 1.0
+    EI = E_ACC * IPE300["I"]
+    P = 6 * EI * d / L ** 3
+    m = v11(trave("C26", "Trave continua, combinazione di carico uniforme e cedimento",
+                  "IPE 300, due campate da 6 m su tre appoggi; caso G: q = 20 kN/m su entrambe le campate; caso D: "
+                  "cedimento di 10 mm dell'appoggio centrale; combinazione 1,3·G + 1,0·D (Daniela e Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}, {"id": 3, "x": 2 * L, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+                   {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 2, "uy": True}, {"nodo": 3, "uy": True}],
+                  {"id": "G", "nome": "Carico uniforme", "categoria": "G2",
+                   "carichi_aste": [{"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
+                                    {"asta": 2, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 13))
+    m["progetto"]["data"] = "2026-11-13"
+    m["casi_di_carico"].append({"id": "D", "nome": "Cedimento dell'appoggio centrale", "categoria": "altro",
+                                "cedimenti": [{"nodo": 2, "uy": -d}]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 1,0·D", "tipo": "SLU", "coefficienti": {"G": gG, "D": gD}}]
+    atteso = {"caso": "SLU1", "formule": {
+        "caso G": "R1 = R3 = 3qL/8, R2 = 10qL/8, M2 = −qL²/8",
+        "caso D": "P = 6EIδ/L³; R2 = −P, R1 = R3 = P/2, M2 = +PL/2, uy2 = −δ",
+        "combinazione": "1,3·G + 1,0·D"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * 3 * q * L / 8 + gD * P / 2, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * 10 * q * L / 8 - gD * P, "unita": "kN"},
+            {"grandezza": "Ry nodo 3", "valore": gG * 3 * q * L / 8 + gD * P / 2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=L (appoggio centrale)", "valore": gG * (-q * L ** 2 / 8) + gD * P * L / 2, "unita": "kNm"},
+            {"grandezza": "uy nodo 2", "valore": -gD * d, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -849,7 +888,8 @@ if __name__ == "__main__":
                     ("C20_gerber_trapezio", c20), ("C21_inclinata_trapezio_cedimento", c21),
                     ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23),
                     ("C24_due_piani_combinazione", c24),
-                    ("C25_tre_cerniere_trapezio_cedimento", c25)):
+                    ("C25_tre_cerniere_trapezio_cedimento", c25),
+                    ("C26_continua_carico_cedimento", c26)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C26 | trave continua IPE 300 su tre appoggi, campate da 6 m; G: q = 20 kN/m; D: cedimento di 10 mm dell'appoggio centrale; combinazione 1,3·G + 1,0·D (v1.1) | iperstatica | R1 = R3 = 60,94 kN; R2 = 190,13 kN; M appoggio centrale −102,38 kNm; uy2 = −10 mm |
 | C25 | portale a tre cerniere IPE 300, h = 4 m, L = 6 m, cerniera in mezzeria del traverso; trapezio 10→20 kN/m sulla metà sinistra; cedimento di 10 mm del piede destro (v1.1) | isostatica | VA = 32,5, VB = 12,5 kN; HA = −HB = 9,375 kN; M agli angoli 37,5 kNm; M a 1,5 m 1,875 kNm; reazioni invariate dal cedimento |
 | C24 | telaio a due piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale trascurata; G: q = 25 kN/m, W: 10 e 15 kN; combinazione 1,3·G + 1,5·W | iperstatica (soluzione esatta per simmetria) | Ry = 195 kN e Rx = −18,75 kN per piede; M piede 105 kNm; M colonna al primo piano 39,375 kNm; M travi 146,25 kNm |
 | C23 | trave incastrata IPE 300, L = 6 m: caso G triangolare 0–20 kN/m (C13), caso T con ΔTu 20 °C e ΔTg 10 °C (C14), combinazione 1,3·G + 0,9·T (v1.2) | iperstatica | Ry = 23,4 e 54,6 kN; M = −37,52 e −53,12 kNm; N = −244,08 kN |
@@ -228,6 +229,21 @@ Unisce cerniera interna, trapezio e cedimento, provati finora a coppie (C16, C20
 4. Momenti agli angoli: HA · h = 37,5 kNm su entrambe le colonne.
 5. Nel traverso, con x dal nodo 2: M(x) = VA·x − HA·h − (qi·x²/2 + (qj − qi)/a · x³/6). In x = 1,5 m vale 48,75 − 37,5 − 13,125 = −1,875 kNm; in x = 3 m vale 97,5 − 37,5 − 60 = 0, come deve alla cerniera.
 6. Il cedimento di 10 mm del piede destro non cambia reazioni né sollecitazioni, perché la struttura è isostatica: dà solo un moto rigido. La prova del servizio `test_tre_cerniere_cedimento_isostatico` lo controlla confrontando il calcolo con e senza cedimento.
+
+## C26 · trave continua, combinazione di carico uniforme e cedimento (Daniela e Valentina, 13/11)
+
+È la prima combinazione che contiene un caso di soli cedimenti. Il solutore e il servizio sommano anche gli spostamenti impressi con il loro coefficiente.
+- **Caso G** (q = 20 kN/m, L = 6 m): R1 = R3 = 3qL/8 = 45 kN; R2 = 10qL/8 = 150 kN; M2 = −qL²/8 = −90 kNm.
+- **Caso D** (δ = 10 mm all'appoggio centrale): togliendo l'appoggio centrale resta una trave appoggiata di luce 2L. Il cedimento equivale a una forza P in mezzeria con δ = P(2L)³/(48EI), quindi P = 6EIδ/L³.
+  - Con EI = 2,1·10⁸ · 8356·10⁻⁸ = 17 548 kNm²: P = 6 · 17 548 · 0,01 / 216 = 4,874 kN.
+  - La forza tira la trave verso il basso: R2 = −4,874 kN, R1 = R3 = +2,437 kN, M2 = +PL/2 = +14,62 kNm.
+- **Combinazione 1,3·G + 1,0·D**:
+  - R1 = R3 = 58,5 + 2,437 = 60,94 kN;
+  - R2 = 195 − 4,874 = 190,13 kN;
+  - M2 = −117 + 14,62 = −102,38 kNm;
+  - uy2 = −10 mm.
+
+**Coefficiente 1,0 sul cedimento**: scelto per provare la sovrapposizione. Il coefficiente normativo per le distorsioni impresse non è stato controllato sul testo delle NTC.
 
 ## File
 

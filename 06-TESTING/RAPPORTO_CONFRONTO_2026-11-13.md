@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 12/11/2026
+# Rapporto di confronto del solutore — 13/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto dell'11/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 12/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -35,9 +35,10 @@
 | C23 Trave incastrata, combinazione di carico triangolare e distorsione termica | 5 superati, 0 non superati | 0 | 0 |
 | C24 Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento | 8 superati, 0 non superati | 0 | 0 |
 | C25 Portale a tre cerniere, trapezio parziale e cedimento | 8 superati, 0 non superati | 0 | 0 |
+| C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità del 12/11**
-- **C25**, portale a tre cerniere con trapezio parziale e cedimento: soluzione a mano dal solo equilibrio, uguale nei tre percorsi.
-- Il cedimento, su struttura isostatica, non cambia reazioni né momenti: lo controlla la prova del servizio `test_tre_cerniere_cedimento_isostatico`.
+**Novità del 13/11**
+- **C26**, prima combinazione con un caso di soli cedimenti: trave continua, 1,3·G + 1,0·D, soluzione chiusa, uguale nei tre percorsi.
+- **Formato d'uscita del Fortran** con esponente a tre cifre (D25): C1–C26 invariati.
 
-**Altre prove**: `test_app.py` 33 superate; `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 35 superate (nuove: dati errati, esponente a tre cifre); `prove_modifica.mjs` 5 superate.

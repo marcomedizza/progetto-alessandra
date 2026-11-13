@@ -287,3 +287,19 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C25: superati;
 - `test_app.py`: 33 prove; `prove_modifica.mjs`: 5;
 - scenari S1–S34 e controllo a vista di C5, C24, C25.
+
+**Revisione del codice nuovo del 13/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 74 | `03-BACKEND/servizio/app.py` | Il controllo dei numeri non finiti precede i validatori: senza di esso jsonschema-rs rifiutava il NaN e jsonschema lo accettava, quindi la discordanza veniva registrata e il calcolo falliva | — | chiuso con D24 |
+| 75 | `03-BACKEND/servizio/app.py` | Il controllo delle aste di lunghezza nulla usa la mappa delle coordinate costruita una volta; la prima stesura la ricostruiva per ogni asta, con tempo quadratico sul modello da 9150 aste | — | corretto prima del salvataggio |
+| 76 | `03-BACKEND/servizio/app.py` | Non c'è un limite di plausibilità sulle grandezze. Un carico di 10³⁰⁰ kN/m viene calcolato e restituisce spostamenti di 10²⁹⁶ m; una coordinata di 10³⁰⁸ m dà «struttura labile», un messaggio che non indica la causa | bassa | aperto: proposta di limiti, per esempio coordinate entro 10⁴ m e carichi entro 10⁸ kN, da decidere con Marco |
+| 77 | `04-FORTRAN-SOLVER/esegui.py` | L'avviso di gfortran sulle eccezioni in virgola mobile non entra più nel messaggio per l'utente | — | nessun intervento |
+| 78 | `04-FORTRAN-SOLVER/src/telaio2d.f90` | Il formato `es25.16e3` allunga ogni numero di un carattere: l'uscita del modello grande cresce di circa il 4 % | — | accettato |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C26: superati;
+- `test_app.py`: 35 prove; `prove_modifica.mjs`: 5;
+- banda contro piena su C1–C26;
+- scenari S1–S34 e S34 esteso a C26.

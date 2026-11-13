@@ -369,6 +369,31 @@ def test_tre_cerniere_cedimento_isostatico():
     assert not r["valido"] and any("rz" in e for e in r["coerenza"])
 
 
+def test_dati_errati():
+    # Natalia, 13/11: nessun dato errato deve dare un errore interno (500)
+    r = client.post("/api/calcola", content=b'{"nodi": [', headers={"content-type": "application/json"})
+    assert r.status_code == 422
+    for campo, valore in (("x", float("nan")), ("x", float("inf"))):
+        m = modello("C1_trave_appoggiata")
+        m["nodi"][1][campo] = valore
+        r = client.post("/api/calcola", content=json.dumps(m).encode(), headers={"content-type": "application/json"})
+        assert r.status_code == 422 and "non finito" in r.json()["detail"]["schema"][0]["messaggio"]
+    m = modello("C1_trave_appoggiata")
+    m["nodi"][1]["x"] = 0
+    r = client.post("/api/calcola", json=m)
+    assert r.status_code == 422 and "lunghezza nulla" in r.json()["detail"]["coerenza"][0]
+
+
+def test_esponente_a_tre_cifre():
+    # 13/11: il Fortran scriveva -2.24+296 senza la E per esponenti oltre 99; ora sempre E+ddd
+    m = modello("C1_trave_appoggiata")
+    m["casi_di_carico"][0]["carichi_aste"][0]["q"] = 1e300
+    r = client.post("/api/calcola", json=m)
+    assert r.status_code == 200
+    uy = max(abs(u["uy"]) for u in r.json()["risultati"][0]["spostamenti"])
+    assert 1e290 < uy < 1e300
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

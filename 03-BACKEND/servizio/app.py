@@ -63,7 +63,23 @@ FRONTEND = os.path.join(RADICE, "02-FRONTEND-3D")
 app = FastAPI(title="Progetto Alessandra — servizio di calcolo", version="0.1")
 
 
+def numeri_non_finiti(x, percorso="(radice)"):
+    """Percorsi dei numeri NaN o infiniti: il JSON di Python li accetta, lo schema no (Natalia, 13/11)."""
+    if isinstance(x, float) and not math.isfinite(x):
+        return [percorso]
+    if isinstance(x, dict):
+        return [p for k, v in x.items() for p in numeri_non_finiti(v, f"{percorso}/{k}".removeprefix("(radice)/"))]
+    if isinstance(x, list):
+        return [p for i, v in enumerate(x) for p in numeri_non_finiti(v, f"{percorso}/{i}".removeprefix("(radice)/"))]
+    return []
+
+
 def errori_schema(modello):
+    # prima dei validatori: jsonschema-rs rifiuta NaN e infinito, jsonschema li accetta (sarebbe una falsa
+    # discordanza, punto 58) e il calcolo fallirebbe con un errore interno
+    non_finiti = numeri_non_finiti(modello)
+    if non_finiti:
+        return [{"percorso": p, "messaggio": "valore non finito (NaN o infinito)"} for p in non_finiti]
     if VALIDATORE is None:
         return []
     if VALIDATORE_RAPIDO is not None and VALIDATORE_RAPIDO.is_valid(modello):
@@ -78,6 +94,16 @@ def errori_schema(modello):
     return errori
 
 
+def lunghezza_nulla(coord, asta):
+    i, j = coord.get(asta["nodo_i"]), coord.get(asta["nodo_j"])
+    return i is not None and j is not None and math.dist(i, j) < 1e-9
+
+
+def risultati_finiti(r):
+    """Vero se tutti i numeri dei risultati sono finiti: carichi o dimensioni fuori scala danno infiniti."""
+    return not numeri_non_finiti(r)
+
+
 def errori_coerenza(modello):
     """Controlli che lo schema non può fare: riferimenti tra nodi, aste, materiali e sezioni."""
     err = []
@@ -87,6 +113,7 @@ def errori_coerenza(modello):
     mat = {m["id"] for m in modello.get("materiali", [])}
     sez = {s["id"] for s in modello.get("sezioni", [])}
     aste = {a["id"] for a in modello.get("aste", [])}
+    coord = {n["id"]: (n["x"], n["y"]) for n in modello.get("nodi", [])}
     if len(nodi) != len(modello.get("nodi", [])):
         err.append("identificativi dei nodi duplicati")
     for a in modello.get("aste", []):
@@ -95,6 +122,8 @@ def errori_coerenza(modello):
                 err.append(f"asta {a['id']}: {k} {a[k]} non esiste")
         if a["nodo_i"] == a["nodo_j"]:
             err.append(f"asta {a['id']}: nodi coincidenti")
+        elif lunghezza_nulla(coord, a):
+            err.append(f"asta {a['id']}: lunghezza nulla (i nodi {a['nodo_i']} e {a['nodo_j']} hanno le stesse coordinate)")
         if a["materiale"] not in mat:
             err.append(f"asta {a['id']}: materiale {a['materiale']} non definito")
         if a["sezione"] not in sez:
@@ -106,7 +135,6 @@ def errori_coerenza(modello):
     aste_per_id = {a["id"]: a for a in modello.get("aste", [])}
     materiali = {m["id"]: m for m in modello.get("materiali", [])}
     sezioni = {x["id"]: x for x in modello.get("sezioni", [])}
-    coord = {n["id"]: (n["x"], n["y"]) for n in modello.get("nodi", [])}
     lunghezze = {a["id"]: math.dist(coord[a["nodo_i"]], coord[a["nodo_j"]]) for a in modello.get("aste", [])
                  if a["nodo_i"] in coord and a["nodo_j"] in coord}
     for c in modello.get("casi_di_carico", []):
@@ -201,12 +229,16 @@ def calcola(modello: dict, caso: str | None = None, combinazione: str | None = N
             mancanti = [k for k in comb["coefficienti"] if k not in casi]
             if mancanti:
                 raise HTTPException(422, f"la combinazione cita casi inesistenti: {', '.join(mancanti)}")
-            return {"risultati": [converti.combina(modello, combinazione)]}
-        scelti = [caso] if caso else casi
-        for s in scelti:
-            if s not in casi:
-                raise HTTPException(422, f"caso di carico {s} non definito")
-        return {"risultati": [converti.risultati(modello, s) for s in scelti]}
+            out = [converti.combina(modello, combinazione)]
+        else:
+            scelti = [caso] if caso else casi
+            for s in scelti:
+                if s not in casi:
+                    raise HTTPException(422, f"caso di carico {s} non definito")
+            out = [converti.risultati(modello, s) for s in scelti]
+        if not risultati_finiti(out):
+            raise HTTPException(422, "risultati non finiti: carichi, rigidezze o dimensioni fuori scala")
+        return {"risultati": out}
     except FileNotFoundError as ex:
         raise HTTPException(503, str(ex))
     except (RuntimeError, TimeoutError) as ex:

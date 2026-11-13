@@ -254,12 +254,12 @@ program telaio2d
    open(newunit=u_out, file=trim(fout), status='replace', action='write')
    write(u_out,'(a,1x,i0)') 'SPOSTAMENTI', nn
    do i = 1, nn
-      write(u_out,'(i0,3(1x,es24.16))') nid(i), Uv(3*i-2), Uv(3*i-1), Uv(3*i)
+      write(u_out,'(i0,3(1x,es25.16e3))') nid(i), Uv(3*i-2), Uv(3*i-1), Uv(3*i)
    end do
    write(u_out,'(a,1x,i0)') 'REAZIONI', count([(any(vinc(3*i-2:3*i)) .or. any(molla(3*i-2:3*i)), i = 1, nn)])
    do i = 1, nn
       if (any(vinc(3*i-2:3*i)) .or. any(molla(3*i-2:3*i))) then
-         write(u_out,'(i0,3(1x,es24.16))') nid(i), (reazione(3*i-3+a), a = 1, 3)
+         write(u_out,'(i0,3(1x,es25.16e3))') nid(i), (reazione(3*i-3+a), a = 1, 3)
       end if
    end do
    write(u_out,'(a,1x,i0)') 'ESTREMITA', ne
@@ -268,7 +268,7 @@ program telaio2d
       ug = Uv(dofs(:,k))
       ul = matmul(T, ug)
       fe = matmul(kc(:,:,k), ul) + fc(:,k)
-      write(u_out,'(i0,6(1x,es24.16))') eid(k), fe
+      write(u_out,'(i0,6(1x,es25.16e3))') eid(k), fe
    end do
    write(u_out,'(a,1x,i0)') 'ROTAZIONI_ASTE', ne
    do k = 1, ne
@@ -294,7 +294,7 @@ program telaio2d
          phi(3) = (b2(1)*A2(2,2) - A2(1,2)*b2(2))/det
          phi(6) = (A2(1,1)*b2(2) - A2(2,1)*b2(1))/det
       end if
-      write(u_out,'(i0,2(1x,es24.16))') eid(k), phi(3), phi(6)
+      write(u_out,'(i0,2(1x,es25.16e3))') eid(k), phi(3), phi(6)
    end do
    write(u_out,'(a)') 'FINE'
    close(u_out)

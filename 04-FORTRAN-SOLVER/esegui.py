@@ -33,7 +33,9 @@ def esegui(testo_input, solutore=None, tempo_massimo=TEMPO_MASSIMO, opzioni=()):
             raise TimeoutError(f"il solutore ha superato {tempo_massimo} s") from ex
         if r.returncode != 0:
             # il Fortran aggiunge «STOP 2» all'uscita d'errore: si tiene solo il messaggio
-            righe = [x.strip() for x in r.stderr.splitlines() if x.strip() and not x.strip().startswith("STOP")]
+            # e l'avviso «Note: The following floating-point exceptions…» del supporto gfortran (13/11)
+            righe = [x.strip() for x in r.stderr.splitlines()
+                     if x.strip() and not x.strip().startswith(("STOP", "Note: The following floating-point"))]
             msg = " ".join(x.replace("ERRORE telaio2d: ", "") for x in righe)
             raise RuntimeError(msg or f"errore del solutore (codice {r.returncode})")
         with open(fout) as fh:

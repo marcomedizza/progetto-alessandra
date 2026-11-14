@@ -168,6 +168,13 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Modello grande | caricamento 1,5 s, calcolo e disegno 4,4 s, nessun errore |
 | Dati errati inviati al servizio (Natalia) | prima: NaN, infinito, asta di lunghezza nulla e carichi oltre 10²⁹⁹ davano un errore interno (500). Dopo le correzioni del 13/11 tutti danno 422 con il motivo (D24, D25) |
 
+| Scenario | 14/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S34, combinazione | superati; S10 con la prova dedicata |
+| S34 esteso a C27 | Ry 195,00 kN, colonne con M e V nulli, M travi 146,25 kNm, freccia −34,49 mm |
+| S35, avviso di plausibilità (punto 76) | C1 con q = −10⁹ kN/m aperto da file: il calcolo procede e la riga di stato, in giallo, dice «carico di 1e+09 oltre 1e+08 (kN, kN/m o kNm): unità sbagliate?» |
+| Modello grande | caricamento 1,0 s, calcolo e disegno 3,3 s, nessun errore |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -196,4 +203,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D23 | 11/11 | S34 | Su C24 l'etichetta del momento al nodo 3 («39,4») copre la freccia della forza orizzontale del primo piano | bassa | **chiuso 12/11**: le etichette d'estremità si spostano verso l'interno dell'asta e, se cadono su un'altra etichetta, scorrono lungo la propria asta; ricontrollato a vista su C5, C24, C25 | Irene |
 | D24 | 13/11 | dati errati | Un modello con un numero NaN o infinito (accettato dal JSON di Python) o con un'asta di lunghezza nulla causava un errore interno 500 | media | **chiuso 13/11**: rifiuto con 422 e percorso del campo; asta di lunghezza nulla segnalata fra gli errori di coerenza | Natalia |
 | D25 | 13/11 | dati errati | Con risultati oltre 10⁹⁹ il Fortran scriveva l'esponente senza la «E» (`-2.24+296`) e il convertitore non leggeva l'uscita | bassa | **chiuso 13/11**: formato `es25.16e3`, esponente sempre a tre cifre; i risultati non finiti sono rifiutati con 422 | Ottavia, Paola |
+| D26 | 14/11 | S35 | Aprendo un modello da file, il menu dei casi continua a mostrare il caso scelto prima | bassa | aperto | Irene |
+| D27 | 14/11 | S35 | Con valori di 10⁹ le etichette dei diagrammi si sovrappongono e la tabella dei risultati esce dal pannello | bassa | aperto: legato al punto 70 | Irene, Lucia |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

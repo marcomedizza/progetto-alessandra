@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 13/11/2026
+# Rapporto di confronto del solutore — 14/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 12/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 13/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -36,9 +36,10 @@
 | C24 Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento | 8 superati, 0 non superati | 0 | 0 |
 | C25 Portale a tre cerniere, trapezio parziale e cedimento | 8 superati, 0 non superati | 0 | 0 |
 | C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
+| C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità del 13/11**
-- **C26**, prima combinazione con un caso di soli cedimenti: trave continua, 1,3·G + 1,0·D, soluzione chiusa, uguale nei tre percorsi.
-- **Formato d'uscita del Fortran** con esponente a tre cifre (D25): C1–C26 invariati.
+**Novità del 14/11**
+- **C27**: carichi verticali e ΔT a farfalla su travi isostatiche di un telaio. Soluzione esatta, uguale nei tre percorsi.
+- **Scostamento trovato e non nascosto** (punto 79): con il vento sullo stesso telaio Fortran e riferimento differiscono di circa 10⁻⁶ relativo e si scostano dai valori esatti di circa 10⁻⁵. Il caso è stato preparato senza vento e la tolleranza non è stata allargata.
 
-**Altre prove**: `test_app.py` 35 superate (nuove: dati errati, esponente a tre cifre); `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 37 superate (nuove: avvisi di plausibilità, C27); `prove_modifica.mjs` 5 superate.

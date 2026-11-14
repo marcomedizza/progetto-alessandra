@@ -875,6 +875,57 @@ def c26():
     return m, atteso
 
 
+def c27():
+    """Telaio di C24 con le travi divise in mezzeria: carichi verticali e ΔT a farfalla (Daniela e Valentina, 14/11).
+
+    Il vento di C24 è escluso: con le travi divise e la deformabilità assiale trascurata il caso W si scosta dai
+    valori esatti di circa 10⁻⁵ relativo in entrambi i solutori (punto 79 della revisione), oltre la tolleranza
+    del confronto completo.
+
+    Le travi sono incernierate agli estremi, quindi isostatiche: il ΔT a farfalla le incurva senza sollecitazioni
+    né reazioni. Ogni trave è divisa in mezzeria per leggere la freccia, che si somma a quella dei carichi:
+    - caso G: −5qL⁴/384EI (nodi d'estremità fermi, colonne assialmente rigide);
+    - caso T: κ = α·ΔTg/h; il lato inferiore più caldo si allunga e la trave si incurva verso il basso: −κL²/8
+      (stesso verso di C18);
+    """
+    m, _ = c24()
+    L, h, q, dTg = 6.0, 3.5, 25.0, 20.0
+    gG, gT = 1.3, 0.9
+    m["progetto"].update({"id": "C27", "nome": "Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla",
+                          "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi e divise in mezzeria, deformabilità assiale trascurata). Caso G: q = 25 kN/m sulle travi; caso T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (Daniela e Valentina).",
+                          "data": "2026-11-14"})
+    m["schema_version"] = "1.2"
+    m["materiali"] = [dict(ACC, alfa_t=ALFA)]
+    m["sezioni"] = [HEA200, dict(IPE300, h=0.300)]
+    m["nodi"] += [{"id": 7, "x": L / 2, "y": h}, {"id": 8, "x": L / 2, "y": 2 * h}]
+    m["aste"] = m["aste"][:4] + [
+        {"id": 5, "nodo_i": 3, "nodo_j": 7, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_i": True}},
+        {"id": 6, "nodo_i": 7, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+        {"id": 7, "nodo_i": 5, "nodo_j": 8, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_i": True}},
+        {"id": 8, "nodo_i": 8, "nodo_j": 6, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}}]
+    m["casi_di_carico"][0]["carichi_aste"] = [
+        {"asta": a, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q} for a in (5, 6, 7, 8)]
+    m["casi_di_carico"] = [x for x in m["casi_di_carico"] if x["id"] != "W"]
+    m["casi_di_carico"].append({"id": "T", "nome": "ΔT a farfalla sulle travi", "categoria": "temperatura",
+                                "carichi_termici": [{"asta": a, "dT_g": dTg} for a in (5, 6, 7, 8)]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 0,9·T", "tipo": "SLU", "coefficienti": {"G": gG, "T": gT}}]
+    EI = E_ACC * IPE300["I"]
+    fG = -5 * q * L ** 4 / (384 * EI)
+    fT = -ALFA * dTg / 0.300 * L ** 2 / 8
+    atteso = {"caso": "SLU1", "formule": {
+        "reazioni e momenti": "travi appoggiate: Ry = qL per piede, colonne senza flessione; il ΔT a farfalla su travi isostatiche non dà sollecitazioni",
+        "freccia in mezzeria": "1,3·(−5qL⁴/384EI) + 0,9·(−α·ΔTg/h·L²/8)",
+        "combinazione": "1,3·G + 0,9·T"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * q * L, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 5 x=L/2 (mezzeria)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "uy nodo 7 (mezzeria primo piano)", "valore": gG * fG + gT * fT, "unita": "m"},
+            {"grandezza": "uy nodo 8 (mezzeria secondo piano)", "valore": gG * fG + gT * fT, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -889,7 +940,8 @@ if __name__ == "__main__":
                     ("C22_gerber_trapezio_molla", c22), ("C23_combinazione_termica", c23),
                     ("C24_due_piani_combinazione", c24),
                     ("C25_tre_cerniere_trapezio_cedimento", c25),
-                    ("C26_continua_carico_cedimento", c26)):
+                    ("C26_continua_carico_cedimento", c26),
+                    ("C27_due_piani_termica", c27)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

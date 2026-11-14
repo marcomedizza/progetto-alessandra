@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C27 | telaio di C24 con travi divise in mezzeria; G: q = 25 kN/m; T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (v1.2) | iperstatica (soluzione esatta) | Ry = 195 kN; Rx = 0; colonne senza flessione; M travi 146,25 kNm; freccia in mezzeria −34,49 mm |
 | C26 | trave continua IPE 300 su tre appoggi, campate da 6 m; G: q = 20 kN/m; D: cedimento di 10 mm dell'appoggio centrale; combinazione 1,3·G + 1,0·D (v1.1) | iperstatica | R1 = R3 = 60,94 kN; R2 = 190,13 kN; M appoggio centrale −102,38 kNm; uy2 = −10 mm |
 | C25 | portale a tre cerniere IPE 300, h = 4 m, L = 6 m, cerniera in mezzeria del traverso; trapezio 10→20 kN/m sulla metà sinistra; cedimento di 10 mm del piede destro (v1.1) | isostatica | VA = 32,5, VB = 12,5 kN; HA = −HB = 9,375 kN; M agli angoli 37,5 kNm; M a 1,5 m 1,875 kNm; reazioni invariate dal cedimento |
 | C24 | telaio a due piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale trascurata; G: q = 25 kN/m, W: 10 e 15 kN; combinazione 1,3·G + 1,5·W | iperstatica (soluzione esatta per simmetria) | Ry = 195 kN e Rx = −18,75 kN per piede; M piede 105 kNm; M colonna al primo piano 39,375 kNm; M travi 146,25 kNm |
@@ -244,6 +245,19 @@ Unisce cerniera interna, trapezio e cedimento, provati finora a coppie (C16, C20
   - uy2 = −10 mm.
 
 **Coefficiente 1,0 sul cedimento**: scelto per provare la sovrapposizione. Il coefficiente normativo per le distorsioni impresse non è stato controllato sul testo delle NTC.
+
+## C27 · telaio a travi incernierate, carichi verticali e ΔT a farfalla (Daniela e Valentina, 14/11)
+
+È il telaio di C24, con le travi divise in mezzeria (nodi 7 e 8) per leggere la freccia. Le cerniere restano agli estremi delle travi.
+- **Caso G**: travi appoggiate, M = qL²/8 = 112,5 kNm. Le colonne, assialmente rigide e senza flessione, non si accorciano, quindi gli estremi delle travi restano fermi. Freccia in mezzeria −5qL⁴/(384EI) = −5·25·6⁴/(384·17 548) = −24,04 mm.
+- **Caso T** (ΔTg = +20 °C, lato inferiore più caldo): κ = α·ΔTg/h = 1,2·10⁻⁵·20/0,30 = 8·10⁻⁴ 1/m.
+  - Le fibre inferiori si allungano e la trave si incurva verso il basso: freccia −κL²/8 = −3,60 mm, nello stesso verso di C18.
+  - Le travi sono isostatiche, quindi non nascono reazioni né sollecitazioni.
+- **Combinazione 1,3·G + 0,9·T**: freccia 1,3·(−24,04) + 0,9·(−3,60) = −34,49 mm; M travi 146,25 kNm; Ry = 195 kN.
+
+Nella prima stesura il segno del caso T era sbagliato (freccia verso l'alto): l'ha mostrato il confronto con il calcolo, e il caso atteso è stato corretto.
+
+**Perché il vento di C24 non c'è**: con le travi divise e la deformabilità assiale trascurata, nel caso W entrambi i solutori si scostano dai valori esatti di circa 10⁻⁵ in senso relativo (3·10⁻⁵ kN il riferimento, 1·10⁻⁴ kN il Fortran), oltre la tolleranza 10⁻⁶ del confronto completo. È un limite dell'area fittizia, punto 79 della revisione.
 
 ## File
 

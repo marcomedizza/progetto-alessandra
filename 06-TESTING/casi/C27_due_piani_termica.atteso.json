@@ -1,0 +1,40 @@
+{
+  "caso": "SLU1",
+  "formule": {
+    "reazioni e momenti": "travi appoggiate: Ry = qL per piede, colonne senza flessione; il ΔT a farfalla su travi isostatiche non dà sollecitazioni",
+    "freccia in mezzeria": "1,3·(−5qL⁴/384EI) + 0,9·(−α·ΔTg/h·L²/8)",
+    "combinazione": "1,3·G + 0,9·T"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 195.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0 (piede)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 5 x=L/2 (mezzeria)",
+      "valore": 146.25,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 7 (mezzeria primo piano)",
+      "valore": -0.03449427408876428,
+      "unita": "m"
+    },
+    {
+      "grandezza": "uy nodo 8 (mezzeria secondo piano)",
+      "valore": -0.03449427408876428,
+      "unita": "m"
+    }
+  ]
+}

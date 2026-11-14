@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.2",
+  "progetto": {
+    "id": "C27",
+    "nome": "Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla",
+    "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi e divise in mezzeria, deformabilità assiale trascurata). Caso G: q = 25 kN/m sulle travi; caso T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (Daniela e Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-14",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5,
+      "alfa_t": 1.2e-05
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6.0,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 0,
+      "y": 3.5
+    },
+    {
+      "id": 4,
+      "x": 6.0,
+      "y": 3.5
+    },
+    {
+      "id": 5,
+      "x": 0,
+      "y": 7.0
+    },
+    {
+      "id": 6,
+      "x": 6.0,
+      "y": 7.0
+    },
+    {
+      "id": 7,
+      "x": 3.0,
+      "y": 3.5
+    },
+    {
+      "id": 8,
+      "x": 3.0,
+      "y": 7.0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    },
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte",
+      "h": 0.3
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 3,
+      "nodo_i": 3,
+      "nodo_j": 5,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 4,
+      "nodo_i": 4,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 5,
+      "nodo_i": 3,
+      "nodo_j": 7,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_i": true
+      }
+    },
+    {
+      "id": 6,
+      "nodo_i": 7,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_j": true
+      }
+    },
+    {
+      "id": 7,
+      "nodo_i": 5,
+      "nodo_j": 8,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_i": true
+      }
+    },
+    {
+      "id": 8,
+      "nodo_i": 8,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_j": true
+      }
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 2,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "G",
+      "nome": "Carichi verticali sulle travi",
+      "categoria": "G2",
+      "carichi_aste": [
+        {
+          "asta": 5,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25.0
+        },
+        {
+          "asta": 6,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25.0
+        },
+        {
+          "asta": 7,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25.0
+        },
+        {
+          "asta": 8,
+          "tipo": "distribuito_uniforme",
+          "direzione": "globale_y",
+          "q": -25.0
+        }
+      ]
+    },
+    {
+      "id": "T",
+      "nome": "ΔT a farfalla sulle travi",
+      "categoria": "temperatura",
+      "carichi_termici": [
+        {
+          "asta": 5,
+          "dT_g": 20.0
+        },
+        {
+          "asta": 6,
+          "dT_g": 20.0
+        },
+        {
+          "asta": 7,
+          "dT_g": 20.0
+        },
+        {
+          "asta": 8,
+          "dT_g": 20.0
+        }
+      ]
+    }
+  ],
+  "combinazioni": [
+    {
+      "id": "SLU1",
+      "nome": "1,3·G + 0,9·T",
+      "tipo": "SLU",
+      "coefficienti": {
+        "G": 1.3,
+        "T": 0.9
+      }
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": false,
+    "punti_diagramma": 11
+  }
+}

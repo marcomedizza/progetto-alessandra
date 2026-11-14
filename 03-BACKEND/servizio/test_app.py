@@ -394,6 +394,30 @@ def test_esponente_a_tre_cifre():
     assert 1e290 < uy < 1e300
 
 
+def test_avvisi_di_plausibilita():
+    # punto 76 (14/11): oltre le soglie il calcolo procede ma la risposta porta un avviso; sotto, nessun avviso
+    m = modello("C1_trave_appoggiata")
+    assert "avvisi" not in client.post("/api/calcola", json=m).json()
+    m["casi_di_carico"][0]["carichi_aste"][0]["q"] = -1e9
+    r = client.post("/api/calcola", json=m)
+    assert r.status_code == 200 and "unità sbagliate" in r.json()["avvisi"][0]
+    m = modello("C1_trave_appoggiata")
+    for n in m["nodi"]:
+        n["x"] *= 1e4
+    v = client.post("/api/valida", json=m).json()
+    assert v["valido"] and "coordinate" in v["avvisi"][0]
+
+
+def test_c27_termica_su_travi_isostatiche():
+    # 14/11: il ΔT a farfalla sulle travi incernierate di C27 non dà reazioni né momenti, solo la freccia
+    m = modello("C27_due_piani_termica")
+    t = client.post("/api/calcola?caso=T", json=m).json()["risultati"][0]
+    assert all(abs(x[k]) < 1e-6 for x in t["reazioni"] for k in ("Rx", "Ry", "Mz"))
+    assert all(abs(v) < 1e-6 for s in t["sollecitazioni"] for v in s["M"])
+    uy = {u["nodo"]: u["uy"] for u in t["spostamenti"]}
+    assert abs(uy[7] + 1.2e-5 * 20 / 0.3 * 36 / 8) < 1e-9
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

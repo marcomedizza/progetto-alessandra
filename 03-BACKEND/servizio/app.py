@@ -99,6 +99,25 @@ def lunghezza_nulla(coord, asta):
     return i is not None and j is not None and math.dist(i, j) < 1e-9
 
 
+# Punto 76 (proposta del 14/11, in attesa della decisione di Marco): soglie di plausibilità che NON bloccano il
+# calcolo ma producono un avviso nella risposta. Valori da confermare.
+SOGLIA_COORDINATA = 1e4      # m
+SOGLIA_CARICO = 1e8          # kN, kN/m, kNm
+
+
+def avvisi_plausibilita(modello):
+    av = []
+    fuori = [n["id"] for n in modello.get("nodi", []) if max(abs(n["x"]), abs(n["y"])) > SOGLIA_COORDINATA]
+    if fuori:
+        av.append(f"{len(fuori)} nodi con coordinate oltre {SOGLIA_COORDINATA:g} m (primo: {fuori[0]}): unità sbagliate?")
+    for c in modello.get("casi_di_carico", []):
+        valori = [abs(q.get(k, 0)) for q in c.get("carichi_nodali", []) for k in ("Fx", "Fy", "Mz")]
+        valori += [abs(q.get(k, 0)) for q in c.get("carichi_aste", []) for k in ("q", "P", "q_i", "q_j")]
+        if valori and max(valori) > SOGLIA_CARICO:
+            av.append(f"caso {c['id']}: carico di {max(valori):.3g} oltre {SOGLIA_CARICO:g} (kN, kN/m o kNm): unità sbagliate?")
+    return av
+
+
 def risultati_finiti(r):
     """Vero se tutti i numeri dei risultati sono finiti: carichi o dimensioni fuori scala danno infiniti."""
     return not numeri_non_finiti(r)
@@ -211,7 +230,7 @@ def esempio():
 def valida(modello: dict):
     e = errori_schema(modello)
     c = [] if e else errori_coerenza(modello)
-    return {"valido": not e and not c, "schema": e, "coerenza": c}
+    return {"valido": not e and not c, "schema": e, "coerenza": c, "avvisi": [] if e else avvisi_plausibilita(modello)}
 
 
 @app.post("/api/calcola")
@@ -238,7 +257,8 @@ def calcola(modello: dict, caso: str | None = None, combinazione: str | None = N
             out = [converti.risultati(modello, s) for s in scelti]
         if not risultati_finiti(out):
             raise HTTPException(422, "risultati non finiti: carichi, rigidezze o dimensioni fuori scala")
-        return {"risultati": out}
+        av = avvisi_plausibilita(modello)
+        return {"risultati": out, "avvisi": av} if av else {"risultati": out}
     except FileNotFoundError as ex:
         raise HTTPException(503, str(ex))
     except (RuntimeError, TimeoutError) as ex:

@@ -153,7 +153,9 @@ async function calcola() {
       return;
     }
     stato.ris = j.risultati[0];
-    messaggio(`Calcolo completato (${stato.ris.solutore})`, 'ok');
+    // punto 76: avvisi di plausibilità del servizio (unità sbagliate?), il calcolo è comunque eseguito
+    if (j.avvisi?.length) messaggio(`Calcolo completato con avvisi: ${j.avvisi.join(' · ')}`, 'avviso');
+    else messaggio(`Calcolo completato (${stato.ris.solutore})`, 'ok');
     aggiorna(false);
   } catch (e) {
     messaggio('Servizio di calcolo non raggiungibile: avviarlo con uvicorn (vedi README)', 'errore');

@@ -308,7 +308,7 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 79 | metodo dell'area fittizia (`converti.py`, punto 46) | Su C27 con il vento, cioè travi incernierate divise in due aste da 3 m e deformabilità assiale trascurata, l'errore sui valori esatti è 3·10⁻⁵ kN nel riferimento e 1·10⁻⁴ kN nel Fortran, circa 10⁻⁵ relativo. Il README dichiara 2·10⁻⁹–1·10⁻⁸. Su C24, con le travi intere, l'errore è 10⁻⁵ e 5·10⁻⁷ kN | media | aperto (Elisa, Ottavia): studiare la dipendenza dalla lunghezza delle aste e dalle cerniere; aggiornare i limiti dichiarati. C27 è stato preparato senza vento per non nascondere il problema allargando la tolleranza |
+| 79 | metodo dell'area fittizia (`converti.py`, punto 46) | Su C27 con il vento, cioè travi incernierate divise in due aste da 3 m e deformabilità assiale trascurata, l'errore sui valori esatti è 3·10⁻⁵ kN nel riferimento e 1·10⁻⁴ kN nel Fortran, circa 10⁻⁵ relativo. Il README dichiara 2·10⁻⁹–1·10⁻⁸. Su C24, con le travi intere, l'errore è 10⁻⁵ e 5·10⁻⁷ kN | media | **chiuso 15/11** (Elisa, Ottavia): `studio_area_fittizia.py`. L'ottimo di R dipende dalla struttura: 10⁸ per i nodi rigidi, circa 10⁷ con aste incernierate. R resta 10⁸ e il limite nel README è corretto in «fino a 10⁻⁵ relativo con aste incernierate» |
 | 80 | `03-BACKEND/servizio/app.py` | Gli avvisi di plausibilità controllano coordinate e carichi, non le rigidezze, per esempio E in MPa al posto di kN/m² | bassa | aperto: estendere se Marco conferma l'approccio |
 | 81 | `02-FRONTEND-3D/app.js` | L'avviso sostituisce il nome del solutore nella riga di stato | — | accettato: il nome resta nel pannello dei risultati |
 
@@ -316,3 +316,16 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C27: superati;
 - `test_app.py`: 37 prove; `prove_modifica.mjs`: 5;
 - scenari S1–S35.
+
+**Revisione del codice nuovo del 15/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 82 | `06-TESTING/riferimento/telaio2d.py` | Il rapporto 10⁸ era scritto nella formula; ora è la costante `RAPPORTO_ASSIALE`, come nel convertitore. I due valori vanno tenuti uguali a mano | bassa | aperto: una prova che controlli l'uguaglianza delle due costanti |
+| 83 | `04-FORTRAN-SOLVER/studio_area_fittizia.py` | Lo studio modifica la costante dei moduli e la ripristina alla fine; un'eccezione a metà la lascerebbe cambiata nello stesso processo | bassa | accettato: è uno strumento a sé, non importato dalle prove |
+| 84 | `02-FRONTEND-3D/app.js` | La voce «File: …» usa `textContent`, quindi un nome di progetto con codice HTML non viene interpretato (coerente con D7) | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C27, anche con R = 10⁷ al posto di 10⁸: superati in entrambi i casi;
+- `test_app.py`: 37 prove; `prove_modifica.mjs`: 5;
+- scenari S1–S36.

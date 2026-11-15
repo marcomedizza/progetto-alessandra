@@ -133,7 +133,8 @@ function caricaModello(m) {
     + (m.combinazioni || []).map((c) => `<option value="comb:${esc(c.id)}">combinazione ${esc(c.id)} · ${esc(c.nome)}</option>`).join('');
   aggiorna();
   vista.vista(vista.vistaCorrente);
-  messaggio(`${m.progetto.nome}: ${m.nodi.length} nodi, ${m.aste.length} aste`);  // textContent: nessun rischio
+  const n = m.nodi.length, a = m.aste.length;
+  messaggio(`${m.progetto.nome}: ${n} ${n === 1 ? 'nodo' : 'nodi'}, ${a} ${a === 1 ? 'asta' : 'aste'}`);  // textContent: nessun rischio
 }
 
 async function calcola() {
@@ -176,17 +177,34 @@ async function avvio() {
   }
 }
 
+// D26 (Irene, 15/11): un modello aperto da file o creato con «Nuovo» compare nel menu come voce propria,
+// così il menu non mostra più il caso scelto prima
+function voceLocale(titolo) {
+  const sel = $('#sel-caso');
+  sel.querySelector('option[value="__locale"]')?.remove();
+  const o = document.createElement('option');
+  o.value = '__locale';
+  o.textContent = titolo;
+  sel.prepend(o);
+  sel.value = '__locale';
+}
+
 $('#sel-caso').addEventListener('change', async (e) => {
+  if (e.target.value === '__locale') return;
   const url = e.target.value === '__esempio' ? '/api/esempio' : `/api/casi/${encodeURIComponent(e.target.value)}`;
   caricaModello(await (await fetch(url)).json());
 });
 $('#file-modello').addEventListener('change', async (e) => {
   const f = e.target.files[0];
   if (!f) return;
-  try { caricaModello(JSON.parse(await f.text())); } catch { messaggio('File non leggibile come modello JSON', 'errore'); }
+  try {
+    const m = JSON.parse(await f.text());
+    caricaModello(m);
+    voceLocale(`File: ${m.progetto?.nome || f.name}`);
+  } catch { messaggio('File non leggibile come modello JSON', 'errore'); }
 });
 $('#sel-carico').addEventListener('change', () => { stato.ris = null; aggiorna(); });
-$('#btn-nuovo').addEventListener('click', () => caricaModello(modelloNuovo()));
+$('#btn-nuovo').addEventListener('click', () => { caricaModello(modelloNuovo()); voceLocale('Modello nuovo'); });
 $('#btn-calcola').addEventListener('click', calcola);
 $('#btn-disegna').addEventListener('click', () => disegno(!stato.disegno));
 $('#passo').addEventListener('change', () => { if (stato.disegno) disegno(true); });

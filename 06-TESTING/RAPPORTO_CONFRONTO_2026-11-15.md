@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 14/11/2026
+# Rapporto di confronto del solutore — 15/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 13/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 14/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -38,8 +38,8 @@
 | C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
 | C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità del 14/11**
-- **C27**: carichi verticali e ΔT a farfalla su travi isostatiche di un telaio. Soluzione esatta, uguale nei tre percorsi.
-- **Scostamento trovato e non nascosto** (punto 79): con il vento sullo stesso telaio Fortran e riferimento differiscono di circa 10⁻⁶ relativo e si scostano dai valori esatti di circa 10⁻⁵. Il caso è stato preparato senza vento e la tolleranza non è stata allargata.
+**Novità del 15/11**
+- Nessun caso nuovo: C1–C27 superati nei tre percorsi.
+- **Punto 79 chiuso**: `04-FORTRAN-SOLVER/studio_area_fittizia.py` mostra che l'errore dell'area fittizia arriva a 10⁻⁵ relativo con aste incernierate agli estremi. Il limite nel README del solutore è corretto. La catena è superata anche con R = 10⁷: la scelta di R non cambia l'esito delle prove.
 
-**Altre prove**: `test_app.py` 37 superate (nuove: avvisi di plausibilità, C27); `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 37 superate; `prove_modifica.mjs` 5 superate.

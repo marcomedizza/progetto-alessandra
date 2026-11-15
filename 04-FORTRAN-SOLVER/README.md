@@ -85,6 +85,26 @@ Con il fattore fisso l'errore dipende dalle dimensioni: per aste corte prevale l
 - Matrice piena oltre 1000 nodi (`--piena-fino-a 7000`): sul telaio 20×100 (2121 nodi, 6363 gdl) banda 0,20 s, piena 12,5 s, scarto relativo 3,7·10⁻¹². Il risultato della banda è quindi confermato anche oltre 1000 nodi. Il telaio 30×150 (14 043 gdl) non è stato confrontato: con la matrice piena servirebbero circa 1,6 GB.
 - I limiti del servizio (5000 nodi, 10 000 aste) restano invariati: il modello più grande si risolve in 0,48 s.
 
+**Limite corretto dell'area fittizia (punto 79; Elisa, Ottavia, 15/11)**: il limite 2·10⁻⁹–1·10⁻⁸ indicato sopra vale per i telai a nodi rigidi come C3. Non vale in generale. `studio_area_fittizia.py` misura lo scarto massimo sulle grandezze con soluzione rigida esatta (reazioni, momento al piede, sforzo nelle travi) al variare del rapporto R.
+
+| R | C3, nodi rigidi [kNm] | C24 vento, travi incernierate [kN] | travi incernierate divise (C27 con vento) [kN] |
+|---|---|---|---|
+| 10⁶ | 1,3·10⁻⁵ | 6,3·10⁻⁶ | 1,6–1,8·10⁻⁶ |
+| 10⁷ | 1,3·10⁻⁶ | 6,6–7,0·10⁻⁷ | 1,9·10⁻⁶ |
+| 10⁸ (in uso) | 5–10·10⁻⁸ | 4,8·10⁻⁷ (Fortran) – 1,3·10⁻⁵ (riferimento) | 3,4–9,6·10⁻⁵ |
+| 10⁹ | 5–7·10⁻⁷ | 4–5·10⁻⁵ | 1,5–5,8·10⁻⁴ |
+
+(Per ogni R: valore del riferimento Python e del Fortran; dove sono vicini è indicato l'intervallo.)
+
+Lettura:
+- Nei telai a nodi rigidi l'ottimo è intorno a 10⁸.
+- Con le aste incernierate agli estremi l'arrotondamento prevale già da 2·10⁷. La regola lega EA alla rigidezza flessionale 12EI/L³ della stessa asta, ma in un'asta incernierata la flessione non entra nella matrice: il rapporto con la rigidezza effettiva del telaio diventa molto più grande.
+- Fra 2·10⁷ e 5·10⁷ lo scarto sulle travi divise è irregolare (8·10⁻⁶–3·10⁻⁵ kN). Nessun valore unico è ottimo per tutte le strutture.
+
+**Decisione**: R resta 10⁸. Il caso peggiore misurato è 10⁻⁴ kN su forze di 5–10 kN, cioè 10⁻⁵ relativo, senza effetto sui valori di progetto. Il limite dichiarato diventa «10⁻⁸ relativo nei telai a nodi rigidi, fino a 10⁻⁵ con aste incernierate agli estremi».
+
+Possibile miglioramento, non fatto: un R più basso, intorno a 10⁷, per le aste con cerniere, oppure vincoli esatti di inestensibilità. Va valutato solo se servisse più precisione. Il confronto completo Fortran/riferimento (tolleranza 10⁻⁶ relativa) non è adatto a queste strutture, per questo C27 è stato preparato senza vento.
+
 **Formato d'uscita (Ottavia, Paola, 13/11, D25)**: i numeri sono scritti con `es25.16e3`, cioè esponente sempre a tre cifre (`1.0000000000000000E+000`). Con `es24.16` gfortran ometteva la «E» per esponenti oltre 99, e il convertitore non leggeva il file. Banda contro piena su C1–C26 invariata (scarto massimo 1,5·10⁻⁹ m su C24).
 
 **Compilazione (Ottavia, 12/11)**: `build.sh` con GNU Fortran 13.3.0 in 2,9 s su una macchina appena avviata. Rimane un solo avviso, `-Wcompare-reals`, per un confronto di uguaglianza tra numeri reali. È voluto, ma va ricontrollato alla prossima revisione del solutore. C1–C25 superati con il binario appena compilato.

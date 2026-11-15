@@ -18,6 +18,10 @@ Senza dipendenze esterne.
 
 import json
 import math
+
+# rapporto tra rigidezza assiale e flessionale dell'asta con deformabilità assiale trascurata (punto 46);
+# modificabile per gli studi (punto 79, studio_area_fittizia.py)
+RAPPORTO_ASSIALE = 1e8
 import sys
 
 
@@ -217,7 +221,7 @@ def analizza(modello, caso_id, punti=None):
         c, s = dx / L, dy / L
         m, se = mat[el["materiale"]], sez[el["sezione"]]
         # deformabilità assiale trascurata: stessa regola del convertitore (punto 46, v0.5)
-        A = max(se["A"], 1e8 * 12 * se["I"] / L ** 2) if rigida else se["A"]
+        A = max(se["A"], RAPPORTO_ASSIALE * 12 * se["I"] / L ** 2) if rigida else se["A"]
         kl = rigidezza_locale(m["E"], A, se["I"], L)
         carichi = list(carichi_per_asta.get(el["id"], []))
         if caso.get("peso_proprio") and m.get("peso_specifico"):

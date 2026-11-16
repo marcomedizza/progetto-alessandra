@@ -418,6 +418,13 @@ def test_c27_termica_su_travi_isostatiche():
     assert abs(uy[7] + 1.2e-5 * 20 / 0.3 * 36 / 8) < 1e-9
 
 
+def test_rapporto_assiale_uguale():
+    # punto 82 (16/11): convertitore e risolutore di riferimento devono usare lo stesso rapporto dell'area fittizia
+    sys.path.insert(0, os.path.join(servizio.RADICE, "06-TESTING", "riferimento"))
+    import telaio2d
+    assert servizio.converti.RAPPORTO_ASSIALE == telaio2d.RAPPORTO_ASSIALE == 1e8
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

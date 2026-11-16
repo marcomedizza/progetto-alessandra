@@ -321,7 +321,7 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 82 | `06-TESTING/riferimento/telaio2d.py` | Il rapporto 10⁸ era scritto nella formula; ora è la costante `RAPPORTO_ASSIALE`, come nel convertitore. I due valori vanno tenuti uguali a mano | bassa | aperto: una prova che controlli l'uguaglianza delle due costanti |
+| 82 | `06-TESTING/riferimento/telaio2d.py` | Il rapporto 10⁸ era scritto nella formula; ora è la costante `RAPPORTO_ASSIALE`, come nel convertitore. I due valori vanno tenuti uguali a mano | bassa | **chiuso 16/11**: `test_rapporto_assiale_uguale` |
 | 83 | `04-FORTRAN-SOLVER/studio_area_fittizia.py` | Lo studio modifica la costante dei moduli e la ripristina alla fine; un'eccezione a metà la lascerebbe cambiata nello stesso processo | bassa | accettato: è uno strumento a sé, non importato dalle prove |
 | 84 | `02-FRONTEND-3D/app.js` | La voce «File: …» usa `textContent`, quindi un nome di progetto con codice HTML non viene interpretato (coerente con D7) | — | nessun intervento |
 
@@ -329,3 +329,16 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C27, anche con R = 10⁷ al posto di 10⁸: superati in entrambi i casi;
 - `test_app.py`: 37 prove; `prove_modifica.mjs`: 5;
 - scenari S1–S36.
+
+**Revisione del codice nuovo del 16/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 85 | `02-FRONTEND-3D/risultati.js` | L'etichetta del massimo interno mostra il valore del punto campionato più vicino, non il massimo vero. Su C28 indica 13,8 kNm a 2,5 m; il massimo è 13,86 kNm a 2,63 m. Con 21 punti per asta lo scarto resta piccolo, ma l'etichetta non è il massimo | bassa | aperto: calcolare il massimo dove il taglio si annulla, cosa esatta per carichi uniformi e trapezi, oppure scrivere «≈» |
+| 86 | `06-TESTING/casi/genera_casi.py` | C28 ricava i valori attesi risolvendo il sistema 2×2 nel generatore, non scrivendoli a mano. Le due equazioni sono riportate in `formule` e nel README e sono controllabili a mano | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C28: superati;
+- `test_app.py`: 38 prove; `prove_modifica.mjs`: 5;
+- banda contro piena su C28: 1,1·10⁻¹⁵ m;
+- scenari S1–S36 e controllo a vista di C28.

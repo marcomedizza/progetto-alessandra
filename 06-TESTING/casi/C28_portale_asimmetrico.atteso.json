@@ -1,0 +1,51 @@
+{
+  "caso": "Q",
+  "formule": {
+    "rotazione attorno ad A": "8·VB − 2·HB − 5·H − 2,5·(q·5) − 6·P = 0",
+    "cerniera C, parte destra": "5·VB + 3·HB − 3·P = 0",
+    "equilibrio": "HA = −(H + 5q) − HB; VA = P − VB",
+    "momenti": "colonna destra in testa |3·HB|; traverso sotto P |2·VB + 3·HB|; colonna sinistra in testa |5·HA + 2,5·5q|"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": -0.882352941176471,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 5",
+      "valore": 30.88235294117647,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -10.529411764705884,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 5",
+      "valore": -21.470588235294116,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|M| asta 4 x=L (testa colonna destra)",
+      "valore": 64.41176470588235,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 3 x=3 (sotto il carico)",
+      "valore": 2.647058823529406,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=L (testa colonna sinistra)",
+      "valore": 2.64705882352942,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=3 (cerniera)",
+      "valore": 0.0,
+      "unita": "kNm"
+    }
+  ]
+}

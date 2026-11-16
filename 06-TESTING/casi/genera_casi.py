@@ -926,6 +926,61 @@ def c27():
     return m, atteso
 
 
+def c28():
+    """Portale asimmetrico a tre cerniere con carichi misti (Daniela e Valentina, 16/11).
+
+    Piedi a quote diverse: A (0; 0) e B (8; 2); traverso a quota 5, cerniera C a 3 m da sinistra.
+    Carichi: forza orizzontale H in testa alla colonna sinistra, vento q uniforme sulla colonna sinistra,
+    forza verticale P sul traverso a 6 m. Isostatico: tre equazioni globali e M = 0 in C.
+    """
+    H, q, P, xP = 12.0, 4.0, 30.0, 6.0
+    A, D, C, E, B = (0.0, 0.0), (0.0, 5.0), (3.0, 5.0), (8.0, 5.0), (8.0, 2.0)
+    Fq, yq = q * (D[1] - A[1]), (D[1] + A[1]) / 2          # risultante del vento e sua quota
+    # rotazione attorno ad A (antioraria positiva): xB·VB − yB·HB − yD·H − yq·Fq − xP·P = 0
+    # M = 0 in C per la parte destra:               (xB − xC)·VB − (yB − yC)·HB − (xP − xC)·P = 0
+    a11, a12, b1 = B[0], -B[1], D[1] * H + yq * Fq + xP * P
+    a21, a22, b2 = B[0] - C[0], -(B[1] - C[1]), (xP - C[0]) * P
+    det = a11 * a22 - a12 * a21
+    VB = (b1 * a22 - a12 * b2) / det
+    HB = (a11 * b2 - a21 * b1) / det
+    HA = -(H + Fq) - HB
+    VA = P - VB
+    M_E = abs(-(B[1] - E[1]) * HB)                                   # testa della colonna destra
+    M_P = abs((B[0] - xP) * VB - (B[1] - E[1]) * HB)                 # traverso sotto il carico
+    M_D = abs(-(A[1] - D[1]) * HA - (yq - D[1]) * Fq)                # testa della colonna sinistra
+    m = trave("C28", "Portale asimmetrico a tre cerniere, carichi misti",
+              "Piedi incernierati a quote diverse, A (0; 0) e B (8; 2); traverso IPE 300 a quota 5 m con cerniera a 3 m "
+              "da sinistra; forza orizzontale 12 kN in testa alla colonna sinistra, vento 4 kN/m sulla colonna sinistra, "
+              "forza verticale 30 kN sul traverso a 6 m (Daniela e Valentina).",
+              [{"id": 1, "x": A[0], "y": A[1]}, {"id": 2, "x": D[0], "y": D[1]}, {"id": 3, "x": C[0], "y": C[1]},
+               {"id": 4, "x": E[0], "y": E[1]}, {"id": 5, "x": B[0], "y": B[1]}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"},
+               {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+               {"id": 3, "nodo_i": 3, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300"},
+               {"id": 4, "nodo_i": 5, "nodo_j": 4, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True}, {"nodo": 5, "ux": True, "uy": True}],
+              {"id": "Q", "nome": "Carichi misti", "categoria": "Q",
+               "carichi_nodali": [{"nodo": 2, "Fx": H}],
+               "carichi_aste": [{"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_x", "q": q},
+                                {"asta": 3, "tipo": "concentrato", "direzione": "globale_y", "P": -P, "a": xP - C[0]}]}, 21)
+    m["progetto"]["data"] = "2026-11-16"
+    atteso = {"caso": "Q", "formule": {
+        "rotazione attorno ad A": "8·VB − 2·HB − 5·H − 2,5·(q·5) − 6·P = 0",
+        "cerniera C, parte destra": "5·VB + 3·HB − 3·P = 0",
+        "equilibrio": "HA = −(H + 5q) − HB; VA = P − VB",
+        "momenti": "colonna destra in testa |3·HB|; traverso sotto P |2·VB + 3·HB|; colonna sinistra in testa |5·HA + 2,5·5q|"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": VA, "unita": "kN"},
+            {"grandezza": "Ry nodo 5", "valore": VB, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": HA, "unita": "kN"},
+            {"grandezza": "Rx nodo 5", "valore": HB, "unita": "kN"},
+            {"grandezza": "|M| asta 4 x=L (testa colonna destra)", "valore": M_E, "unita": "kNm"},
+            {"grandezza": "|M| asta 3 x=3 (sotto il carico)", "valore": M_P, "unita": "kNm"},
+            {"grandezza": "|M| asta 1 x=L (testa colonna sinistra)", "valore": M_D, "unita": "kNm"},
+            {"grandezza": "M asta 2 x=3 (cerniera)", "valore": 0.0, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -941,7 +996,8 @@ if __name__ == "__main__":
                     ("C24_due_piani_combinazione", c24),
                     ("C25_tre_cerniere_trapezio_cedimento", c25),
                     ("C26_continua_carico_cedimento", c26),
-                    ("C27_due_piani_termica", c27)):
+                    ("C27_due_piani_termica", c27),
+                    ("C28_portale_asimmetrico", c28)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

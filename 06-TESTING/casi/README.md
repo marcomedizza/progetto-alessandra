@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C28 | portale asimmetrico a tre cerniere IPE 300, piedi A (0; 0) e B (8; 2), traverso a quota 5 con cerniera a 3 m; H = 12 kN in testa a sinistra, vento 4 kN/m sulla colonna sinistra, P = 30 kN sul traverso a 6 m (v1.0) | isostatica | VA = −0,882 kN; VB = 30,882 kN; HA = −10,529 kN; HB = −21,471 kN; M testa colonna destra 64,41 kNm; M sotto P e in testa a sinistra 2,647 kNm |
 | C27 | telaio di C24 con travi divise in mezzeria; G: q = 25 kN/m; T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (v1.2) | iperstatica (soluzione esatta) | Ry = 195 kN; Rx = 0; colonne senza flessione; M travi 146,25 kNm; freccia in mezzeria −34,49 mm |
 | C26 | trave continua IPE 300 su tre appoggi, campate da 6 m; G: q = 20 kN/m; D: cedimento di 10 mm dell'appoggio centrale; combinazione 1,3·G + 1,0·D (v1.1) | iperstatica | R1 = R3 = 60,94 kN; R2 = 190,13 kN; M appoggio centrale −102,38 kNm; uy2 = −10 mm |
 | C25 | portale a tre cerniere IPE 300, h = 4 m, L = 6 m, cerniera in mezzeria del traverso; trapezio 10→20 kN/m sulla metà sinistra; cedimento di 10 mm del piede destro (v1.1) | isostatica | VA = 32,5, VB = 12,5 kN; HA = −HB = 9,375 kN; M agli angoli 37,5 kNm; M a 1,5 m 1,875 kNm; reazioni invariate dal cedimento |
@@ -258,6 +259,19 @@ Unisce cerniera interna, trapezio e cedimento, provati finora a coppie (C16, C20
 Nella prima stesura il segno del caso T era sbagliato (freccia verso l'alto): l'ha mostrato il confronto con il calcolo, e il caso atteso è stato corretto.
 
 **Perché il vento di C24 non c'è**: con le travi divise e la deformabilità assiale trascurata, nel caso W entrambi i solutori si scostano dai valori esatti di circa 10⁻⁵ in senso relativo (3·10⁻⁵ kN il riferimento, 1·10⁻⁴ kN il Fortran), oltre la tolleranza 10⁻⁶ del confronto completo. È un limite dell'area fittizia, punto 79 della revisione.
+
+## C28 · portale asimmetrico a tre cerniere, carichi misti (Daniela e Valentina, 16/11)
+
+Primo caso con piedi a quote diverse e tre tipi di carico insieme: forza nodale, carico distribuito orizzontale su una colonna e forza concentrata sul traverso. La struttura è isostatica: A (0; 0), D (0; 5), cerniera C (3; 5), E (8; 5), B (8; 2).
+1. Rotazione attorno ad A, antioraria positiva. Il vento ha risultante 4·5 = 20 kN a quota 2,5: 8·VB − 2·HB − 5·12 − 2,5·20 − 6·30 = 0, cioè 8·VB − 2·HB = 290.
+2. M = 0 in C per la parte destra (traverso CE con P, colonna EB): (8 − 3)·VB − (2 − 5)·HB − (6 − 3)·30 = 0, cioè 5·VB + 3·HB = 90.
+3. Soluzione: VB = 1050/34 = 30,882 kN; HB = (90 − 5·VB)/3 = −21,471 kN.
+4. Equilibrio: HA = −(12 + 20) − HB = −10,529 kN; VA = 30 − VB = −0,882 kN. La reazione verticale in A è verso il basso: il vento e la forza H tendono a sollevare il piede sinistro.
+5. Momenti:
+   - testa della colonna destra: |3·HB| = 64,41 kNm;
+   - traverso sotto P: |2·VB + 3·HB| = 2,647 kNm;
+   - testa della colonna sinistra: |5·HA + 2,5·20| = 2,647 kNm. È uguale al precedente perché tra D e P il traverso è scarico e passa per la cerniera, quindi il momento è lineare con zero in C, a 3 m da D e da P;
+   - massimo nella colonna sinistra: dove il taglio si annulla, y = 10,529/4 = 2,63 m, vale 10,529·2,63 − 4·2,63²/2 = 13,86 kNm.
 
 ## File
 

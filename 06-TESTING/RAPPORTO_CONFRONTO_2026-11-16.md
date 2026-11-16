@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 15/11/2026
+# Rapporto di confronto del solutore — 16/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 14/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 15/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -37,9 +37,10 @@
 | C25 Portale a tre cerniere, trapezio parziale e cedimento | 8 superati, 0 non superati | 0 | 0 |
 | C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
 | C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
+| C28 Portale asimmetrico a tre cerniere, carichi misti | 8 superati, 0 non superati | 0 | 0 |
 
-**Novità del 15/11**
-- Nessun caso nuovo: C1–C27 superati nei tre percorsi.
-- **Punto 79 chiuso**: `04-FORTRAN-SOLVER/studio_area_fittizia.py` mostra che l'errore dell'area fittizia arriva a 10⁻⁵ relativo con aste incernierate agli estremi. Il limite nel README del solutore è corretto. La catena è superata anche con R = 10⁷: la scelta di R non cambia l'esito delle prove.
+**Novità del 16/11**
+- **C28**, portale asimmetrico a tre cerniere con forza nodale, vento su una colonna e forza concentrata: soluzione dal solo equilibrio, uguale nei tre percorsi.
+- **Punto 82**: la prova `test_rapporto_assiale_uguale` controlla che convertitore e riferimento usino lo stesso rapporto dell'area fittizia.
 
-**Altre prove**: `test_app.py` 37 superate; `prove_modifica.mjs` 5 superate.
+**Altre prove**: `test_app.py` 38 superate; `prove_modifica.mjs` 5 superate.

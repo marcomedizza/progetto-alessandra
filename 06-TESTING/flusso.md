@@ -182,6 +182,12 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Riga di stato | «2 nodi, 1 asta» al singolare (prima «1 aste») |
 | Modello grande | caricamento 1,2 s, calcolo e disegno 4,8 s, nessun errore |
 
+| Scenario | 16/11 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S36, combinazione | superati; S10 con la prova dedicata |
+| Controllo a vista di C28 | colonna destra 64,4 kNm in testa, zero al piede; traverso nullo alla cerniera e 2,6 kNm sotto P; colonna sinistra con massimo interno 13,8 kNm; frecce del vento sulla colonna e di P a 6 m al posto giusto |
+| Modello grande | caricamento 1,1 s, calcolo e disegno 3,6 s, nessun errore |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

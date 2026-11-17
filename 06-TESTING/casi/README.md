@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C29 | telaio di C24; trapezio 10→30 kN/m sulla trave del primo piano; cedimento di 10 mm del piede destro (v1.1) | iperstatica (soluzione esatta) | Ry = 50 e 70 kN; Rx = 0; colonne senza flessione; M trave in x = 3 m 90,0 kNm, massimo 90,62 kNm in x = 3,24 m; testa della colonna destra −10 mm |
 | C28 | portale asimmetrico a tre cerniere IPE 300, piedi A (0; 0) e B (8; 2), traverso a quota 5 con cerniera a 3 m; H = 12 kN in testa a sinistra, vento 4 kN/m sulla colonna sinistra, P = 30 kN sul traverso a 6 m (v1.0) | isostatica | VA = −0,882 kN; VB = 30,882 kN; HA = −10,529 kN; HB = −21,471 kN; M testa colonna destra 64,41 kNm; M sotto P e in testa a sinistra 2,647 kNm |
 | C27 | telaio di C24 con travi divise in mezzeria; G: q = 25 kN/m; T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (v1.2) | iperstatica (soluzione esatta) | Ry = 195 kN; Rx = 0; colonne senza flessione; M travi 146,25 kNm; freccia in mezzeria −34,49 mm |
 | C26 | trave continua IPE 300 su tre appoggi, campate da 6 m; G: q = 20 kN/m; D: cedimento di 10 mm dell'appoggio centrale; combinazione 1,3·G + 1,0·D (v1.1) | iperstatica | R1 = R3 = 60,94 kN; R2 = 190,13 kN; M appoggio centrale −102,38 kNm; uy2 = −10 mm |
@@ -272,6 +273,18 @@ Primo caso con piedi a quote diverse e tre tipi di carico insieme: forza nodale,
    - traverso sotto P: |2·VB + 3·HB| = 2,647 kNm;
    - testa della colonna sinistra: |5·HA + 2,5·20| = 2,647 kNm. È uguale al precedente perché tra D e P il traverso è scarico e passa per la cerniera, quindi il momento è lineare con zero in C, a 3 m da D e da P;
    - massimo nella colonna sinistra: dove il taglio si annulla, y = 10,529/4 = 2,63 m, vale 10,529·2,63 − 4·2,63²/2 = 13,86 kNm.
+
+## C29 · telaio a travi incernierate, trapezio e cedimento (Daniela e Valentina, 17/11)
+
+Telaio di C24 con un solo caso: trapezio verticale da 10 a 30 kN/m sull'intera trave del primo piano e cedimento di 10 mm del piede destro.
+- **Trapezio**: la trave incernierata agli estremi è appoggiata.
+  - Rs = L(2qi + qj)/6 = 6·50/6 = 50 kN; Rd = L(qi + 2qj)/6 = 6·70/6 = 70 kN.
+  - M(x) = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L). In x = 3 m vale 150 − 45 − 15 = 90,0 kNm.
+  - Il massimo è dove V = 50 − 10x − (20/12)x² = 0, cioè x = 3,244 m, e vale 90,62 kNm.
+- **Colonne**: ricevono Rs e Rd senza momento, perché le cerniere non lo trasmettono. N al piede: −50 e −70 kN; nessuna reazione orizzontale.
+- **Cedimento**: con le colonne assialmente rigide la colonna destra si abbassa rigidamente di 10 mm e le travi ruotano senza deformarsi. Non nascono sollecitazioni; la testa della colonna destra scende di 10 mm.
+
+Il valore in x = 3 m è controllato da `verifica_casi.py`. Il massimo a 3,24 m è quello che l'interfaccia scrive sull'etichetta dal 17/11 (punto 85).
 
 ## File
 

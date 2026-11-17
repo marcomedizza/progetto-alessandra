@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C29",
+    "nome": "Telaio a due piani a travi incernierate, trapezio e cedimento",
+    "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale trascurata); trapezio verticale da 10 a 30 kN/m sulla trave del primo piano; cedimento di 10 mm del piede destro (Daniela e Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-17",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6.0,
+      "y": 0
+    },
+    {
+      "id": 3,
+      "x": 0,
+      "y": 3.5
+    },
+    {
+      "id": 4,
+      "x": 6.0,
+      "y": 3.5
+    },
+    {
+      "id": 5,
+      "x": 0,
+      "y": 7.0
+    },
+    {
+      "id": 6,
+      "x": 6.0,
+      "y": 7.0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "HEA200",
+      "nome": "HE 200 A",
+      "A": 0.005383,
+      "I": 3.692e-05,
+      "W": 0.0003886,
+      "fonte": "sagomario profili HE A, asse forte"
+    },
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 3,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 2,
+      "nodo_i": 2,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 3,
+      "nodo_i": 3,
+      "nodo_j": 5,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 4,
+      "nodo_i": 4,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "HEA200"
+    },
+    {
+      "id": 5,
+      "nodo_i": 3,
+      "nodo_j": 4,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_i": true,
+        "rz_j": true
+      }
+    },
+    {
+      "id": 6,
+      "nodo_i": 5,
+      "nodo_j": 6,
+      "materiale": "S275",
+      "sezione": "IPE300",
+      "svincoli": {
+        "rz_i": true,
+        "rz_j": true
+      }
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 2,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Trapezio e cedimento",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 5,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_y",
+          "q_i": -10.0,
+          "q_j": -30.0,
+          "a": 0.0,
+          "b": 6.0
+        }
+      ],
+      "cedimenti": [
+        {
+          "nodo": 2,
+          "uy": -0.01
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": false,
+    "punti_diagramma": 11
+  }
+}

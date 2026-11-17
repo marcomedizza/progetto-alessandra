@@ -981,6 +981,43 @@ def c28():
     return m, atteso
 
 
+def c29():
+    """Telaio di C24 con trapezio sulla trave del primo piano e cedimento del piede destro (Daniela e Valentina, 17/11).
+
+    Le travi sono incernierate agli estremi e le colonne assialmente rigide: il cedimento del piede destro abbassa
+    rigidamente la colonna destra e fa ruotare le travi senza sollecitazioni. Il trapezio dà le reazioni della
+    trave appoggiata, portate a terra dalle colonne senza flessione.
+    """
+    m, _ = c24()
+    L, qi, qj, d = 6.0, 10.0, 30.0, 0.010
+    m["progetto"].update({"id": "C29", "nome": "Telaio a due piani a travi incernierate, trapezio e cedimento",
+                          "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli "
+                          "estremi, deformabilità assiale trascurata); trapezio verticale da 10 a 30 kN/m sulla trave del "
+                          "primo piano; cedimento di 10 mm del piede destro (Daniela e Valentina).", "data": "2026-11-17"})
+    m["schema_version"] = "1.1"
+    m["casi_di_carico"] = [{"id": "Q", "nome": "Trapezio e cedimento", "categoria": "Q",
+                            "carichi_aste": [{"asta": 5, "tipo": "distribuito_trapezio", "direzione": "globale_y",
+                                              "q_i": -qi, "q_j": -qj, "a": 0.0, "b": L}],
+                            "cedimenti": [{"nodo": 2, "uy": -d}]}]
+    m.pop("combinazioni", None)
+    Rs, Rd = L * (2 * qi + qj) / 6, L * (qi + 2 * qj) / 6
+    x = 3.0
+    Mx = Rs * x - qi * x ** 2 / 2 - (qj - qi) * x ** 3 / (6 * L)
+    atteso = {"caso": "Q", "formule": {
+        "trave appoggiata con trapezio": "Rs = L(2qi + qj)/6, Rd = L(qi + 2qj)/6; M(x) = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L)",
+        "cedimento": "moto rigido: colonna destra abbassata di 10 mm, travi ruotate, nessuna sollecitazione",
+        "colonne": "nessuna flessione; N = −Rs e −Rd"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": Rs, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": Rd, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 5 x=3 (mezzeria)", "valore": Mx, "unita": "kNm"},
+            {"grandezza": "N asta 2 x=0", "valore": -Rd, "unita": "kN"},
+            {"grandezza": "uy nodo 6 (testa colonna destra)", "valore": -d, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -997,7 +1034,8 @@ if __name__ == "__main__":
                     ("C25_tre_cerniere_trapezio_cedimento", c25),
                     ("C26_continua_carico_cedimento", c26),
                     ("C27_due_piani_termica", c27),
-                    ("C28_portale_asimmetrico", c28)):
+                    ("C28_portale_asimmetrico", c28),
+                    ("C29_due_piani_trapezio_cedimento", c29)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

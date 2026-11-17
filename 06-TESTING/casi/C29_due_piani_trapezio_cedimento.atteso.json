@@ -1,0 +1,45 @@
+{
+  "caso": "Q",
+  "formule": {
+    "trave appoggiata con trapezio": "Rs = L(2qi + qj)/6, Rd = L(qi + 2qj)/6; M(x) = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L)",
+    "cedimento": "moto rigido: colonna destra abbassata di 10 mm, travi ruotate, nessuna sollecitazione",
+    "colonne": "nessuna flessione; N = −Rs e −Rd"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 50.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 70.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0 (piede)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 5 x=3 (mezzeria)",
+      "valore": 90.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "N asta 2 x=0",
+      "valore": -70.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "uy nodo 6 (testa colonna destra)",
+      "valore": -0.01,
+      "unita": "m"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 16/11/2026
+# Rapporto di confronto del solutore — 17/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 15/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 16/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -38,9 +38,10 @@
 | C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
 | C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
 | C28 Portale asimmetrico a tre cerniere, carichi misti | 8 superati, 0 non superati | 0 | 0 |
+| C29 Telaio a due piani a travi incernierate, trapezio e cedimento | 7 superati, 0 non superati | 0 | 0 |
 
-**Novità del 16/11**
-- **C28**, portale asimmetrico a tre cerniere con forza nodale, vento su una colonna e forza concentrata: soluzione dal solo equilibrio, uguale nei tre percorsi.
-- **Punto 82**: la prova `test_rapporto_assiale_uguale` controlla che convertitore e riferimento usino lo stesso rapporto dell'area fittizia.
+**Novità del 17/11**
+- **C29**: trapezio e cedimento sul telaio a travi incernierate, soluzione esatta, uguale nei tre percorsi.
+- **Punto 85**: nuova prova dell'interfaccia `prove_risultati.mjs` (4 prove) per il massimo interno del momento.
 
 **Altre prove**: `test_app.py` 38 superate; `prove_modifica.mjs` 5 superate.

@@ -67,6 +67,23 @@ function inflessioneIncastrata(X, L, EI, car) {
   return v;
 }
 
+// Punto 85 (Irene, Mariana, 17/11): il massimo del momento fra due punti del diagramma cade dove V = dM/dx si
+// annulla. Con M e V agli estremi del tratto l'interpolazione di Hermite cubica è esatta per i carichi uniformi
+// (M parabolico) e trapezoidali (M cubico); con un carico concentrato nel tratto è un'approssimazione.
+export function massimoInterno(x, M, V, im) {
+  let migliore = { x: x[im], v: M[im] };
+  for (const [a, b] of [[im - 1, im], [im, im + 1]]) {
+    if (a < 0 || b >= x.length || Math.sign(V[a]) === Math.sign(V[b])) continue;
+    const h = x[b] - x[a];
+    for (let k = 1; k < 64; k++) {
+      const t = k / 64, t2 = t * t, t3 = t2 * t;
+      const v = (2 * t3 - 3 * t2 + 1) * M[a] + (t3 - 2 * t2 + t) * h * V[a] + (-2 * t3 + 3 * t2) * M[b] + (t3 - t2) * h * V[b];
+      if (Math.abs(v) > Math.abs(migliore.v)) migliore = { x: x[a] + t * h, v };
+    }
+  }
+  return migliore;
+}
+
 function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   let max = 1e-12;
   for (const s of ris.sollecitazioni) for (const v of s[comp]) max = Math.max(max, Math.abs(v));
@@ -100,12 +117,13 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
     if (im > 0 && Math.abs(val[im]) > Math.max(Math.abs(val[0]), Math.abs(val[n - 1])) * 1.01) indici.push(im);
     for (const i of indici) {
       if (Math.abs(val[i]) < max * 0.02) continue;
+      const vero = comp === 'M' && i === im && i > 0 && i < n - 1 && s.V ? massimoInterno(s.x, val, s.V, i) : { x: s.x[i], v: val[i] };
       // D23 (Irene, 12/11): le etichette d'estremità si spostano verso l'interno dell'asta, perché sul nodo
       // arrivano le frecce dei carichi nodali e le etichette delle altre aste
       const L = s.x[n - 1], sp = Math.min(L * 0.12, S * 0.04) * (i === 0 ? 1 : i === n - 1 ? -1 : 0);
-      const [qx, qy] = punto(s.x[i], val[i] * 1.15), px = qx + c * sp, py = qy + sn * sp;
+      const [qx, qy] = punto(vero.x, vero.v * 1.15), px = qx + c * sp, py = qy + sn * sp;
       // M in valore assoluto: il lato del diagramma indica già le fibre tese; N e V con il segno
-      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(val[i]) : val[i]), v: Math.abs(val[i]),
+      etichette.push({ x: px, y: py, testo: fmtE(comp === 'M' ? Math.abs(vero.v) : vero.v), v: Math.abs(vero.v),
         dx: c * Math.sign(sp || 1), dy: sn * Math.sign(sp || 1) });
     }
   }

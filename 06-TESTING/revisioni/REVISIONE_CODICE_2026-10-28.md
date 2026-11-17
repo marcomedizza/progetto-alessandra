@@ -334,7 +334,7 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 85 | `02-FRONTEND-3D/risultati.js` | L'etichetta del massimo interno mostra il valore del punto campionato più vicino, non il massimo vero. Su C28 indica 13,8 kNm a 2,5 m; il massimo è 13,86 kNm a 2,63 m. Con 21 punti per asta lo scarto resta piccolo, ma l'etichetta non è il massimo | bassa | aperto: calcolare il massimo dove il taglio si annulla, cosa esatta per carichi uniformi e trapezi, oppure scrivere «≈» |
+| 85 | `02-FRONTEND-3D/risultati.js` | L'etichetta del massimo interno mostra il valore del punto campionato più vicino, non il massimo vero. Su C28 indica 13,8 kNm a 2,5 m; il massimo è 13,86 kNm a 2,63 m. Con 21 punti per asta lo scarto resta piccolo, ma l'etichetta non è il massimo | bassa | **chiuso 17/11**: `massimoInterno`, interpolazione di Hermite su M e V nei tratti in cui V cambia segno; 4 prove in `prove_risultati.mjs` |
 | 86 | `06-TESTING/casi/genera_casi.py` | C28 ricava i valori attesi risolvendo il sistema 2×2 nel generatore, non scrivendoli a mano. Le due equazioni sono riportate in `formule` e nel README e sono controllabili a mano | — | nessun intervento |
 
 **Verifiche eseguite**:
@@ -342,3 +342,16 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `test_app.py`: 38 prove; `prove_modifica.mjs`: 5;
 - banda contro piena su C28: 1,1·10⁻¹⁵ m;
 - scenari S1–S36 e controllo a vista di C28.
+
+**Revisione del codice nuovo del 17/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 87 | `02-FRONTEND-3D/risultati.js` | `massimoInterno` è esatta per M di grado fino a 3. Con un carico concentrato dentro il tratto vicino al massimo V salta e l'interpolazione approssima. Lì però il massimo cade sotto il carico, che è già un punto del diagramma | bassa | accettato |
+| 88 | `02-FRONTEND-3D/prove_risultati.mjs` | La funzione è estratta dal sorgente come testo, perché `risultati.js` importa three dal navigatore. Se la funzione viene spostata o rinominata la prova fallisce, che è il comportamento voluto | — | nessun intervento |
+| 89 | `06-TESTING/casi/genera_casi.py` | C29 prende il telaio da C24 e ne toglie casi e combinazioni: una modifica a C24 si propaga a C27 e C29 | bassa | accettato: i tre casi vanno rigenerati insieme, e `genera_casi.py` lo fa |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C29: superati;
+- `test_app.py`: 38 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- scenari S1–S36 e controllo a vista di C28 e C29.

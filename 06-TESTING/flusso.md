@@ -188,6 +188,13 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Controllo a vista di C28 | colonna destra 64,4 kNm in testa, zero al piede; traverso nullo alla cerniera e 2,6 kNm sotto P; colonna sinistra con massimo interno 13,8 kNm; frecce del vento sulla colonna e di P a 6 m al posto giusto |
 | Modello grande | caricamento 1,1 s, calcolo e disegno 3,6 s, nessun errore |
 
+| Scenario | 17/11 (Renata, Vittoria, Mariana; Chromium automatico) |
+|---|---|
+| S1–S36, combinazione | superati; S10 con la prova dedicata |
+| Massimo interno (punto 85) | C28: etichetta 13,9 kNm (prima 13,8, massimo vero 13,86); C29: etichetta 90,6 kNm (massimo vero 90,62, valore campionato a 3 m 90,0) |
+| Controllo a vista di C29 | trapezio con frecce crescenti; colonne senza diagramma; deformata della trave superiore inclinata per il cedimento del piede destro |
+| Modello grande | caricamento 1,2 s, calcolo e disegno 4,1 s, nessun errore |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

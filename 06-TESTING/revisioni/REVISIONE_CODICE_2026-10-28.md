@@ -347,7 +347,7 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 87 | `02-FRONTEND-3D/risultati.js` | `massimoInterno` è esatta per M di grado fino a 3. Con un carico concentrato dentro il tratto vicino al massimo V salta e l'interpolazione approssima. Lì però il massimo cade sotto il carico, che è già un punto del diagramma | bassa | accettato |
+| 87 | `02-FRONTEND-3D/risultati.js` | `massimoInterno` è esatta per M di grado fino a 3. Con un carico concentrato dentro il tratto vicino al massimo V salta e l'interpolazione approssima. Lì però il massimo cade sotto il carico, che è già un punto del diagramma | ~~bassa~~ media | **riaperto e chiuso 18/11** (D28): la valutazione del 17/11 era sbagliata. L'interpolazione non si limita ad approssimare, sovrastima: 70,9 kNm invece di 69,33 su C30. Ora le aste con forze concentrate usano il valore campionato |
 | 88 | `02-FRONTEND-3D/prove_risultati.mjs` | La funzione è estratta dal sorgente come testo, perché `risultati.js` importa three dal navigatore. Se la funzione viene spostata o rinominata la prova fallisce, che è il comportamento voluto | — | nessun intervento |
 | 89 | `06-TESTING/casi/genera_casi.py` | C29 prende il telaio da C24 e ne toglie casi e combinazioni: una modifica a C24 si propaga a C27 e C29 | bassa | accettato: i tre casi vanno rigenerati insieme, e `genera_casi.py` lo fa |
 
@@ -355,3 +355,16 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C29: superati;
 - `test_app.py`: 38 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
 - scenari S1–S36 e controllo a vista di C28 e C29.
+
+**Revisione del codice nuovo del 18/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 90 | `02-FRONTEND-3D/risultati.js` | Sulle aste con forze concentrate l'etichetta mostra il massimo campionato. Se la forza non cade su un punto di campionamento, il valore è di poco inferiore al vero, come prima del 17/11 | bassa | aperto: aggiungere i punti di applicazione delle forze ai punti del diagramma (solutore e convertitore) |
+| 91 | `06-TESTING/scenari/s37_pannello.js` | Primo scenario salvato nel repository con controlli e codice d'uscita; gli altri script dei giorni precedenti stanno ancora solo nella cartella di lavoro e si perdono a ogni riavvio | media | aperto: portare nel repository anche S1–S36 (Renata) |
+| 92 | `06-TESTING/scenari/s37_pannello.js` | La selezione col mouse cerca l'asta e il nodo con una scansione di clic. È robusta rispetto all'inquadratura, ma lenta (alcuni secondi) | bassa | accettato |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C30: superati;
+- `test_app.py`: 38 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- scenari S1–S37 e controllo a vista di C28 e C30.

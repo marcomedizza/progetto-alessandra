@@ -96,6 +96,10 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
   const etichette = [];
   const nodi = mappaNodi(modello);
   const aste = new Map(modello.aste.map((a) => [a.id, a]));
+  // 18/11 (punto 87 riaperto): dove c'è una forza concentrata il taglio salta e l'interpolazione di Hermite
+  // sovrastima il massimo (C30: 70,9 invece di 69,33 kNm); su queste aste resta il valore campionato
+  const conConcentrati = new Set((modello.casi_di_carico || []).flatMap((c) =>
+    (c.carichi_aste || []).filter((q) => q.tipo === 'concentrato').map((q) => q.asta)));
   // D19: tutte le aste in una sola geometria di riempimento e una sola di contorno
   const pos = [], curva = [];
   for (const s of ris.sollecitazioni) {
@@ -117,7 +121,8 @@ function disegnaDiagramma(gruppo, modello, ris, comp, S) {
     if (im > 0 && Math.abs(val[im]) > Math.max(Math.abs(val[0]), Math.abs(val[n - 1])) * 1.01) indici.push(im);
     for (const i of indici) {
       if (Math.abs(val[i]) < max * 0.02) continue;
-      const vero = comp === 'M' && i === im && i > 0 && i < n - 1 && s.V ? massimoInterno(s.x, val, s.V, i) : { x: s.x[i], v: val[i] };
+      const vero = comp === 'M' && i === im && i > 0 && i < n - 1 && s.V && !conConcentrati.has(s.asta)
+        ? massimoInterno(s.x, val, s.V, i) : { x: s.x[i], v: val[i] };
       // D23 (Irene, 12/11): le etichette d'estremità si spostano verso l'interno dell'asta, perché sul nodo
       // arrivano le frecce dei carichi nodali e le etichette delle altre aste
       const L = s.x[n - 1], sp = Math.min(L * 0.12, S * 0.04) * (i === 0 ? 1 : i === n - 1 ? -1 : 0);

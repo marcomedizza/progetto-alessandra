@@ -1018,6 +1018,71 @@ def c29():
     return m, atteso
 
 
+def c30():
+    """Telaio a tre piani a travi incernierate, carichi misti combinati (Daniela e Valentina, 18/11).
+
+    Colonne HE 200 A continue e incastrate, travi IPE 300 incernierate agli estremi, deformabilità assiale
+    trascurata, come C24 con un piano in più. Caso G: forza concentrata sulla trave del primo piano, carico
+    uniforme sul secondo, trapezio sul terzo, cedimento del piede destro. Caso Q: carico uniforme in copertura.
+    Soluzione esatta: travi appoggiate, colonne senza flessione, cedimento come moto rigido.
+    Il vento è escluso per il motivo del punto 79 (come C27): sul telaio a travi incernierate i due solutori
+    differiscono di 2·10⁻⁵ kN, oltre la tolleranza del confronto completo.
+    """
+    L, h, P, aP, q, qi, qj, d = 6.0, 3.5, 40.0, 2.0, 20.0, 10.0, 30.0, 0.010
+    q2 = 15.0
+    gG, gQ = 1.3, 1.5
+    m = base("C30", "Telaio a tre piani a travi incernierate, carichi misti combinati",
+             "Una campata L = 6 m, tre piani h = 3,5 m; colonne HE 200 A continue e incastrate al piede, travi IPE 300 "
+             "incernierate alle estremità; deformabilità assiale trascurata. Caso G: 40 kN a 2 m sulla trave del primo "
+             "piano, 20 kN/m sul secondo, trapezio 10→30 kN/m sul terzo, cedimento di 10 mm del piede destro; caso Q: "
+             "15 kN/m sulla trave di copertura; combinazione 1,3·G + 1,5·Q (Daniela e Valentina).")
+    m["schema_version"] = "1.1"
+    m["progetto"]["data"] = "2026-11-18"
+    nodi = [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}]
+    for k in (1, 2, 3):
+        nodi += [{"id": 2 * k + 1, "x": 0, "y": k * h}, {"id": 2 * k + 2, "x": L, "y": k * h}]
+    aste = []
+    for k in (0, 1, 2):          # colonne: sinistra 2k+1 → 2k+3, destra 2k+2 → 2k+4
+        aste += [{"id": 2 * k + 1, "nodo_i": 2 * k + 1, "nodo_j": 2 * k + 3, "materiale": "S275", "sezione": "HEA200"},
+                 {"id": 2 * k + 2, "nodo_i": 2 * k + 2, "nodo_j": 2 * k + 4, "materiale": "S275", "sezione": "HEA200"}]
+    for k in (1, 2, 3):          # travi 7, 8, 9
+        aste.append({"id": 6 + k, "nodo_i": 2 * k + 1, "nodo_j": 2 * k + 2, "materiale": "S275", "sezione": "IPE300",
+                     "svincoli": {"rz_i": True, "rz_j": True}})
+    m.update({
+        "nodi": nodi, "sezioni": [HEA200, IPE300], "aste": aste,
+        "vincoli": [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+        "casi_di_carico": [
+            {"id": "G", "nome": "Carichi verticali e cedimento", "categoria": "G2",
+             "carichi_aste": [{"asta": 7, "tipo": "concentrato", "direzione": "globale_y", "P": -P, "a": aP},
+                              {"asta": 8, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q},
+                              {"asta": 9, "tipo": "distribuito_trapezio", "direzione": "globale_y", "q_i": -qi, "q_j": -qj,
+                               "a": 0.0, "b": L}],
+             "cedimenti": [{"nodo": 2, "uy": -d}]},
+            {"id": "Q", "nome": "Carico in copertura", "categoria": "Q",
+             "carichi_aste": [{"asta": 9, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q2}]}],
+        "combinazioni": [{"id": "SLU1", "nome": "1,3·G + 1,5·Q", "tipo": "SLU", "coefficienti": {"G": gG, "Q": gQ}}],
+        "analisi": {"tipo": "statica_lineare", "deformabilita_assiale": False, "punti_diagramma": 13},
+    })
+    Rs = P * (L - aP) / L + q * L / 2 + L * (2 * qi + qj) / 6       # reazioni sinistre delle tre travi
+    Rd = P * aP / L + q * L / 2 + L * (qi + 2 * qj) / 6
+    atteso = {"caso": "SLU1", "formule": {
+        "travi appoggiate": "P: P(L−a)/L e Pa/L; uniforme: qL/2; trapezio: L(2qi + qj)/6 e L(qi + 2qj)/6",
+        "caso Q": "trave di copertura appoggiata: q2·L/2 per colonna, M mezzeria q2·L²/8",
+        "trapezio in x = 3 m": "M = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L) = 90 kNm",
+        "cedimento": "moto rigido della colonna destra; con il coefficiente 1,3 il cedimento combinato vale 13 mm",
+        "combinazione": "1,3·G + 1,5·Q"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * Rs + gQ * q2 * L / 2, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * Rd + gQ * q2 * L / 2, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 9 x=3 (mezzeria copertura)", "valore": gG * 90.0 + gQ * q2 * L ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "M asta 7 x=2 (sotto P)", "valore": gG * P * (L - aP) / L * aP, "unita": "kNm"},
+            {"grandezza": "M asta 8 x=3 (mezzeria)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "uy nodo 8 (testa colonna destra)", "valore": -gG * d, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -1035,7 +1100,8 @@ if __name__ == "__main__":
                     ("C26_continua_carico_cedimento", c26),
                     ("C27_due_piani_termica", c27),
                     ("C28_portale_asimmetrico", c28),
-                    ("C29_due_piani_trapezio_cedimento", c29)):
+                    ("C29_due_piani_trapezio_cedimento", c29),
+                    ("C30_tre_piani_misti", c30)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

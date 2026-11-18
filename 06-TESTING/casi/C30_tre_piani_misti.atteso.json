@@ -1,0 +1,52 @@
+{
+  "caso": "SLU1",
+  "formule": {
+    "travi appoggiate": "P: P(L−a)/L e Pa/L; uniforme: qL/2; trapezio: L(2qi + qj)/6 e L(qi + 2qj)/6",
+    "caso Q": "trave di copertura appoggiata: q2·L/2 per colonna, M mezzeria q2·L²/8",
+    "trapezio in x = 3 m": "M = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L) = 90 kNm",
+    "cedimento": "moto rigido della colonna destra; con il coefficiente 1,3 il cedimento combinato vale 13 mm",
+    "combinazione": "1,3·G + 1,5·Q"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 245.16666666666669,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 2",
+      "valore": 253.83333333333331,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": 0.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0 (piede)",
+      "valore": 0.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 9 x=3 (mezzeria copertura)",
+      "valore": 218.25,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 7 x=2 (sotto P)",
+      "valore": 69.33333333333333,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 8 x=3 (mezzeria)",
+      "valore": 117.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 8 (testa colonna destra)",
+      "valore": -0.013000000000000001,
+      "unita": "m"
+    }
+  ]
+}

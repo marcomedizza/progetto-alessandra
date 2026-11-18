@@ -195,6 +195,13 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Controllo a vista di C29 | trapezio con frecce crescenti; colonne senza diagramma; deformata della trave superiore inclinata per il cedimento del piede destro |
 | Modello grande | caricamento 1,2 s, calcolo e disegno 4,1 s, nessun errore |
 
+| Scenario | 18/11 (Lucia, Renata, Vittoria; Chromium automatico) |
+|---|---|
+| S1–S36, combinazione | superati; S10 con la prova dedicata |
+| **S37, pannello di modifica su C2** (`06-TESTING/scenari/s37_pannello.js`, primo scenario salvato nel repository) | trapezio 10→20 kN/m dal pannello: Ry 10 → 55 kN, Mz 30 → 105 kNm, come a mano; Ctrl+Z riporta a 10 e 30; ΔT senza α del materiale: messaggio «Manca α»; cedimento di −10 mm sull'incastro: reazioni invariate, freccia 11,61 → 21,61 mm; Ctrl+Z torna a 11,61; 8 controlli superati, nessun errore di console |
+| Controllo a vista di C30 | M travi 69,3 / 117 / 219 kNm, colonne senza flessione. Alla prima prova l'etichetta del 1° piano diceva 70,9 kNm invece di 69,33 (D28) |
+| Modello grande | caricamento 1,5 s, calcolo e disegno 5,3 s, nessun errore |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -225,4 +232,5 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D25 | 13/11 | dati errati | Con risultati oltre 10⁹⁹ il Fortran scriveva l'esponente senza la «E» (`-2.24+296`) e il convertitore non leggeva l'uscita | bassa | **chiuso 13/11**: formato `es25.16e3`, esponente sempre a tre cifre; i risultati non finiti sono rifiutati con 422 | Ottavia, Paola |
 | D26 | 14/11 | S35 | Aprendo un modello da file, il menu dei casi continua a mostrare il caso scelto prima | bassa | **chiuso 15/11**: il modello da file o «Nuovo» compare in testa al menu come voce propria («File: …», «Modello nuovo»); scegliendo poi un caso dall'elenco si torna al caso | Irene |
 | D27 | 14/11 | S35 | Con valori di 10⁹ le etichette dei diagrammi si sovrappongono e la tabella dei risultati esce dal pannello | bassa | aperto: legato al punto 70 | Irene, Lucia |
+| D28 | 18/11 | C30 | Sulle aste con forze concentrate l'etichetta del massimo interno, calcolata dal 17/11 con l'interpolazione di Hermite, sovrastimava il momento (70,9 kNm invece di 69,33), perché il taglio salta sotto la forza | media | **chiuso 18/11**: su queste aste l'etichetta torna al valore campionato; corretto su C30, invariato C28 (13,9) | Irene, Mariana |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

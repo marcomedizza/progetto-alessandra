@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 18/11/2026
+# Rapporto di confronto del solutore — 19/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 17/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 18/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -41,8 +41,9 @@
 | C29 Telaio a due piani a travi incernierate, trapezio e cedimento | 7 superati, 0 non superati | 0 | 0 |
 | C30 Telaio a tre piani a travi incernierate, carichi misti combinati | 8 superati, 0 non superati | 0 | 0 |
 
-**Novità del 18/11**
-- **C30**, telaio a tre piani con forza concentrata, carico uniforme, trapezio e cedimento, combinato con un carico in copertura: soluzione esatta, uguale nei tre percorsi.
-- Con il vento lo stesso telaio supera la tolleranza del confronto completo (2,4·10⁻⁵ kN, punto 79): il vento è stato tolto e la tolleranza non è stata allargata.
+**Novità del 19/11**
+- Nessun caso nuovo: C1–C30 superati nei tre percorsi.
+- **Punto 90**: i diagrammi hanno un punto sotto ogni forza concentrata. I riferimenti rigenerati non cambiano, perché nei casi esistenti le forze cadevano già su punti campionati. La nuova prova del servizio usa C7 con 11 punti, quindi forza a 2 m fuori dalla griglia, e ottiene M = 26,67 kNm esatto.
+- **Scenari nel repository**: `06-TESTING/scenari/esegui_scenari.py`, 16 script superati.
 
-**Altre prove**: `test_app.py` 38 superate; `prove_modifica.mjs` 5; `prove_risultati.mjs` 4; scenario `s37_pannello.js` 8 controlli.
+**Altre prove**: `test_app.py` 39 superate; `prove_modifica.mjs` 5; `prove_risultati.mjs` 4.

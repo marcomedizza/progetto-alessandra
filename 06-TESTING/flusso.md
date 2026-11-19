@@ -202,6 +202,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Controllo a vista di C30 | M travi 69,3 / 117 / 219 kNm, colonne senza flessione. Alla prima prova l'etichetta del 1° piano diceva 70,9 kNm invece di 69,33 (D28) |
 | Modello grande | caricamento 1,5 s, calcolo e disegno 5,3 s, nessun errore |
 
+| Scenario | 19/11 (Renata, Vittoria; Chromium automatico) |
+|---|---|
+| Tutti gli scenari con `06-TESTING/scenari/esegui_scenari.py` | 16 script superati su 16 in 3 minuti; il controllo è provato anche su esiti negativi fittizi |
+| Punto 90 | diagrammi con il punto sotto la forza concentrata; C30 invariato (69,3 kNm) |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

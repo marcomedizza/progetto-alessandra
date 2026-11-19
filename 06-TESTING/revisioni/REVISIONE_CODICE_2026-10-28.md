@@ -360,11 +360,24 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 90 | `02-FRONTEND-3D/risultati.js` | Sulle aste con forze concentrate l'etichetta mostra il massimo campionato. Se la forza non cade su un punto di campionamento, il valore è di poco inferiore al vero, come prima del 17/11 | bassa | aperto: aggiungere i punti di applicazione delle forze ai punti del diagramma (solutore e convertitore) |
-| 91 | `06-TESTING/scenari/s37_pannello.js` | Primo scenario salvato nel repository con controlli e codice d'uscita; gli altri script dei giorni precedenti stanno ancora solo nella cartella di lavoro e si perdono a ogni riavvio | media | aperto: portare nel repository anche S1–S36 (Renata) |
+| 90 | `02-FRONTEND-3D/risultati.js` | Sulle aste con forze concentrate l'etichetta mostra il massimo campionato. Se la forza non cade su un punto di campionamento, il valore è di poco inferiore al vero, come prima del 17/11 | bassa | **chiuso 19/11**: `punti_asta` nel convertitore e lo stesso calcolo nel riferimento aggiungono le ascisse delle forze concentrate di tutti i casi; prova `test_punto_della_forza_concentrata` |
+| 91 | `06-TESTING/scenari/s37_pannello.js` | Primo scenario salvato nel repository con controlli e codice d'uscita; gli altri script dei giorni precedenti stanno ancora solo nella cartella di lavoro e si perdono a ogni riavvio | media | **chiuso 19/11**: 16 script in `06-TESTING/scenari/` con l'esecutore `esegui_scenari.py` |
 | 92 | `06-TESTING/scenari/s37_pannello.js` | La selezione col mouse cerca l'asta e il nodo con una scansione di clic. È robusta rispetto all'inquadratura, ma lenta (alcuni secondi) | bassa | accettato |
 
 **Verifiche eseguite**:
 - `verifica_casi.py` nei tre percorsi su C1–C30: superati;
 - `test_app.py`: 38 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
 - scenari S1–S37 e controllo a vista di C28 e C30.
+
+**Revisione del codice nuovo del 19/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 93 | `03-BACKEND/converter/converti.py`, `06-TESTING/riferimento/telaio2d.py` | Le ascisse delle forze concentrate sono calcolate in due punti con la stessa regola, per tenere indipendente il riferimento. Una differenza tra le due farebbe fallire il confronto completo, quindi verrebbe scoperta subito | — | nessun intervento |
+| 94 | `06-TESTING/scenari/esegui_scenari.py` | Il controllo generico (errori di console, `false`) non verifica i valori degli script che li stampano soltanto (`s34`, `d3_d4`); per quelli resta il controllo a vista | bassa | aperto: aggiungere i valori attesi agli script, come in `s37` |
+| 95 | `06-TESTING/scenari/*.js` | Gli script non indicano più il percorso del Chromium della macchina e usano quello di Playwright, così girano anche altrove | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C30, con i riferimenti rigenerati: nessun file cambiato;
+- `test_app.py`: 39 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- `esegui_scenari.py`: 16 script su 16.

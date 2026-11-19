@@ -319,7 +319,14 @@ def analizza(modello, caso_id, punti=None):
         ul = matvec(d["T"], ug)
         f = [a + b for a, b in zip(matvec(d["kc"], ul), d["fc"])]
         L = d["L"]
+        # punti equidistanti più le posizioni delle forze concentrate in qualunque caso del modello (punto 90)
         xs = [L * k / (npt - 1) for k in range(npt)]
+        for c in modello["casi_di_carico"]:
+            for q in c.get("carichi_aste", []):
+                if q["asta"] == d["el"]["id"] and q["tipo"] == "concentrato" and 1e-9 < q["a"] < L - 1e-9 \
+                        and all(abs(q["a"] - x) > 1e-9 for x in xs):
+                    xs.append(q["a"])
+        xs.sort()
         Ns, Vs, Ms = [], [], []
         for x in xs:
             N = -f[0]

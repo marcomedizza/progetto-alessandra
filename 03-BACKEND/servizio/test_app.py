@@ -425,6 +425,16 @@ def test_rapporto_assiale_uguale():
     assert servizio.converti.RAPPORTO_ASSIALE == telaio2d.RAPPORTO_ASSIALE == 1e8
 
 
+def test_punto_della_forza_concentrata():
+    # punto 90 (19/11): la posizione della forza concentrata è un punto del diagramma anche se non cade sui punti
+    # equidistanti, quindi |M| massimo è esatto: C7 con 11 punti, P = 20 kN a 2 m su 6 m, M = P·a·b/L = 26,67 kNm
+    m = modello("C7_carico_concentrato")
+    m["analisi"]["punti_diagramma"] = 11
+    s = client.post("/api/calcola", json=m).json()["risultati"][0]["sollecitazioni"][0]
+    assert len(s["x"]) == 12 and any(abs(x - 2.0) < 1e-9 for x in s["x"])
+    assert abs(max(abs(v) for v in s["M"]) - 20 * 2 * 4 / 6) < 1e-9
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

@@ -177,9 +177,23 @@ def leggi_output(testo):
     return out
 
 
-def diagrammi(f, carichi, L, npt):
-    """N, V, M lungo l'asta dalle forze d'estremità locali e dai carichi locali (convenzioni dello schema)."""
+def punti_asta(modello, asta_id, L, npt):
+    """Ascisse del diagramma: npt punti equidistanti più le posizioni delle forze concentrate sull'asta in
+    qualunque caso del modello, così il massimo sotto la forza è un punto del diagramma e le combinazioni hanno
+    le stesse ascisse in tutti i casi (punto 90, Paola, 19/11)."""
     xs = [L * k / (npt - 1) for k in range(npt)]
+    for c in modello.get("casi_di_carico", []):
+        for q in c.get("carichi_aste", []):
+            if q["asta"] == asta_id and q["tipo"] == "concentrato" and 1e-9 < q["a"] < L - 1e-9:
+                if all(abs(q["a"] - x) > 1e-9 for x in xs):
+                    xs.append(q["a"])
+    return sorted(xs)
+
+
+def diagrammi(f, carichi, L, npt):
+    """N, V, M lungo l'asta dalle forze d'estremità locali e dai carichi locali (convenzioni dello schema).
+    npt è il numero di punti equidistanti oppure l'elenco delle ascisse (punti_asta)."""
+    xs = list(npt) if isinstance(npt, (list, tuple)) else [L * k / (npt - 1) for k in range(npt)]
     N, V, M = [], [], []
     for x in xs:
         n, v, m = -f[0], f[1], -f[2] + x * f[1]
@@ -222,7 +236,8 @@ def risultati(modello, caso_id):
     npt = modello.get("analisi", {}).get("punti_diagramma", 11)
     soll = []
     for el in modello["aste"]:
-        xs, N, V, M = diagrammi(grezzo["estremita"][el["id"]], cl[el["id"]], geo[el["id"]][0], npt)
+        L = geo[el["id"]][0]
+        xs, N, V, M = diagrammi(grezzo["estremita"][el["id"]], cl[el["id"]], L, punti_asta(modello, el["id"], L, npt))
         soll.append({"asta": el["id"], "x": xs, "N": N, "V": V, "M": M})
     return {"caso": caso_id, "solutore": "telaio2d Fortran v0.4", "spostamenti": grezzo["spostamenti"],
             "reazioni": grezzo["reazioni"], "rotazioni_aste": grezzo["rotazioni_aste"], "sollecitazioni": soll}

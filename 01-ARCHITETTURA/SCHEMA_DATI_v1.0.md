@@ -116,3 +116,7 @@ Dal 04/11 le distorsioni termiche si inseriscono anche dal pannello (D17), come 
 ## Prossime estensioni (v2)
 
 P-Delta, analisi modale, telai spaziali, formato binario per il Fortran.
+
+## Punti dei diagrammi (19/11/2026, punto 90; Paola, Benedetta)
+
+`analisi.punti_diagramma` è il numero di punti equidistanti per asta. Dal 19/11 i risultati aggiungono anche le ascisse delle forze concentrate sull'asta, prese da tutti i casi del modello. Così il massimo del momento sotto la forza è un punto del diagramma, e i casi di una combinazione hanno le stesse ascisse. Il numero di valori di `x`, `N`, `V`, `M` può quindi superare `punti_diagramma`. Lo schema non fissa la lunghezza degli elenchi, quindi i modelli e i risultati esistenti restano validi.

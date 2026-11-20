@@ -162,6 +162,9 @@ LETTURE = {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "M asta 1 x=0 (piede)": S(1, "M", 0.0),
         "M asta 9 x=3 (mezzeria copertura)": S(9, "M", 3.0), "M asta 7 x=2 (sotto P)": S(7, "M", 2.0), "M asta 8 x=3 (mezzeria)": S(8, "M", 3.0),
         "uy nodo 8 (testa colonna destra)": U(8, "uy")},
+    "C31": {
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=0 (piede)": S(1, "M", 0.0),
+        "M asta 8 x=3 (mezzeria secondo piano)": S(8, "M", 3.0), "uy nodo 9 (mezzeria secondo piano)": U(9, "uy")},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

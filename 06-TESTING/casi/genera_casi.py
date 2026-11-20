@@ -1083,6 +1083,56 @@ def c30():
     return m, atteso
 
 
+def c31():
+    """C30 con la trave del secondo piano divisa in mezzeria e ΔT a farfalla (Daniela e Valentina, 20/11).
+
+    Cerniere interne agli estremi di tutte le travi; la trave del secondo piano è divisa nel nodo 9 per leggere la
+    freccia. Terzo caso T: ΔT a farfalla +20 °C sulle due aste di quella trave. Freccia di mezzeria esatta:
+    - G: −5qL⁴/384EI più metà del cedimento della colonna destra (moto rigido della trave);
+    - T: −κL²/8 con κ = α·ΔTg/h (lato inferiore più caldo, come C18 e C27);
+    - Q: nessuna (carico solo in copertura).
+    """
+    m, _ = c30()
+    L, h, q, d, dTg = 6.0, 3.5, 20.0, 0.010, 20.0
+    gG, gQ, gT = 1.3, 1.5, 0.9
+    m["progetto"].update({"id": "C31", "nome": "Telaio a tre piani a travi incernierate, carichi misti e ΔT",
+                          "descrizione": m["progetto"]["descrizione"].replace(
+                              "combinazione 1,3·G + 1,5·Q", "trave del secondo piano divisa in mezzeria; caso T: ΔT a "
+                              "farfalla +20 °C su quella trave; combinazione 1,3·G + 1,5·Q + 0,9·T"),
+                          "data": "2026-11-20"})
+    m["schema_version"] = "1.2"
+    m["materiali"] = [dict(ACC, alfa_t=ALFA)]
+    m["sezioni"] = [HEA200, dict(IPE300, h=0.300)]
+    m["nodi"].append({"id": 9, "x": L / 2, "y": 2 * h})
+    m["aste"] = [a for a in m["aste"] if a["id"] != 8] + [
+        {"id": 8, "nodo_i": 5, "nodo_j": 9, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_i": True}},
+        {"id": 10, "nodo_i": 9, "nodo_j": 6, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}}]
+    g = m["casi_di_carico"][0]
+    g["carichi_aste"] = [x for x in g["carichi_aste"] if x["asta"] != 8] + [
+        {"asta": a, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q} for a in (8, 10)]
+    m["casi_di_carico"].append({"id": "T", "nome": "ΔT a farfalla sulla trave del secondo piano", "categoria": "temperatura",
+                                "carichi_termici": [{"asta": a, "dT_g": dTg} for a in (8, 10)]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 1,5·Q + 0,9·T", "tipo": "SLU",
+                          "coefficienti": {"G": gG, "Q": gQ, "T": gT}}]
+    EI = E_ACC * IPE300["I"]
+    fG = -5 * q * L ** 4 / (384 * EI) - d / 2
+    fT = -ALFA * dTg / 0.300 * L ** 2 / 8
+    q2 = 15.0
+    Rs = 40.0 * 4 / 6 + q * L / 2 + L * (2 * 10.0 + 30.0) / 6
+    Rd = 40.0 * 2 / 6 + q * L / 2 + L * (10.0 + 2 * 30.0) / 6
+    atteso = {"caso": "SLU1", "formule": {
+        "reazioni": "come C30: il ΔT a farfalla su travi isostatiche non dà reazioni",
+        "freccia in mezzeria del secondo piano": "1,3·(−5qL⁴/384EI − δ/2) + 0,9·(−α·ΔTg/h·L²/8)",
+        "combinazione": "1,3·G + 1,5·Q + 0,9·T"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * Rs + gQ * q2 * L / 2, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * Rd + gQ * q2 * L / 2, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "M asta 8 x=3 (mezzeria secondo piano)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
+            {"grandezza": "uy nodo 9 (mezzeria secondo piano)", "valore": gG * fG + gT * fT, "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -1101,7 +1151,8 @@ if __name__ == "__main__":
                     ("C27_due_piani_termica", c27),
                     ("C28_portale_asimmetrico", c28),
                     ("C29_due_piani_trapezio_cedimento", c29),
-                    ("C30_tre_piani_misti", c30)):
+                    ("C30_tre_piani_misti", c30),
+                    ("C31_tre_piani_termica", c31)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

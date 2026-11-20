@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C31 | C30 con la trave del 2° piano divisa in mezzeria (nodo 9) e caso T: ΔT a farfalla +20 °C su quella trave; combinazione 1,3·G + 1,5·Q + 0,9·T (v1.2) | iperstatica (soluzione esatta) | reazioni come C30; M 2° piano 117 kNm; freccia in mezzeria −34,74 mm |
 | C30 | telaio a tre piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, assiale rigida; G: 40 kN a 2 m (1° piano), 20 kN/m (2°), trapezio 10→30 kN/m (3°), cedimento 10 mm del piede destro; Q: 15 kN/m in copertura; combinazione 1,3·G + 1,5·Q (v1.1) | iperstatica (soluzione esatta) | Ry = 245,17 e 253,83 kN; colonne senza flessione; M travi 69,33, 117,0 e 218,25 kNm; testa colonna destra −13 mm |
 | C29 | telaio di C24; trapezio 10→30 kN/m sulla trave del primo piano; cedimento di 10 mm del piede destro (v1.1) | iperstatica (soluzione esatta) | Ry = 50 e 70 kN; Rx = 0; colonne senza flessione; M trave in x = 3 m 90,0 kNm, massimo 90,62 kNm in x = 3,24 m; testa della colonna destra −10 mm |
 | C28 | portale asimmetrico a tre cerniere IPE 300, piedi A (0; 0) e B (8; 2), traverso a quota 5 con cerniera a 3 m; H = 12 kN in testa a sinistra, vento 4 kN/m sulla colonna sinistra, P = 30 kN sul traverso a 6 m (v1.0) | isostatica | VA = −0,882 kN; VB = 30,882 kN; HA = −10,529 kN; HB = −21,471 kN; M testa colonna destra 64,41 kNm; M sotto P e in testa a sinistra 2,647 kNm |
@@ -302,6 +303,17 @@ Tre piani, una campata, travi incernierate agli estremi e colonne assialmente ri
   - testa della colonna destra −13 mm, perché il cedimento sta nel caso G ed è moltiplicato per 1,3.
 
 **Perché non c'è il vento**: l'assegnazione chiedeva carichi misti con cedimenti. Con il vento su questo telaio i due solutori differiscono di 2,4·10⁻⁵ kN, mentre il caso G concorda entro 5·10⁻⁷ kN. È il limite già descritto al punto 79: come per C27, il vento è stato tolto invece di allargare la tolleranza.
+
+## C31 · telaio a tre piani, carichi misti e ΔT (Daniela e Valentina, 20/11)
+
+C30 con la trave del secondo piano divisa in mezzeria (aste 8 e 10, cerniere agli estremi esterni) e un terzo caso T: ΔT a farfalla +20 °C su quella trave.
+- **Reazioni e momenti**: come C30. Il ΔT su una trave isostatica la incurva senza sollecitazioni; una prova del servizio controlla che il caso T dia reazioni e momenti nulli.
+- **Freccia in mezzeria del secondo piano**:
+  - G: −5qL⁴/(384EI) = −5·20·6⁴/(384·17 548) = −19,23 mm; più metà del cedimento della colonna destra, −5,00 mm, perché la trave ruota rigidamente;
+  - T: −κL²/8 = −(1,2·10⁻⁵·20/0,30)·36/8 = −3,60 mm, verso il basso perché il lato inferiore è più caldo;
+  - combinazione: 1,3·(−24,23) + 0,9·(−3,60) = −34,74 mm.
+
+Il vento non c'è per il limite del punto 79, come in C27 e C30.
 
 ## File
 

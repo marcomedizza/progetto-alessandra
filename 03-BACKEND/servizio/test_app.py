@@ -435,6 +435,20 @@ def test_punto_della_forza_concentrata():
     assert abs(max(abs(v) for v in s["M"]) - 20 * 2 * 4 / 6) < 1e-9
 
 
+def test_c31_carichi_misti_e_termica():
+    # Natalia, 20/11: su C31 il caso T (ΔT a farfalla su travi incernierate) non dà reazioni né momenti; la
+    # combinazione ha le reazioni di C30 e ogni asta con la forza concentrata ha il punto sotto la forza
+    m = modello("C31_tre_piani_termica")
+    t = client.post("/api/calcola?caso=T", json=m).json()["risultati"][0]
+    assert all(abs(x[k]) < 1e-6 for x in t["reazioni"] for k in ("Rx", "Ry", "Mz"))
+    assert all(abs(v) < 1e-6 for s in t["sollecitazioni"] for v in s["M"])
+    c = client.post("/api/calcola?combinazione=SLU1", json=m).json()["risultati"][0]
+    rz = {x["nodo"]: x for x in c["reazioni"]}
+    assert abs(rz[1]["Ry"] - 245.1666667) < 1e-5 and abs(rz[2]["Ry"] - 253.8333333) < 1e-5
+    s7 = next(s for s in c["sollecitazioni"] if s["asta"] == 7)
+    assert any(abs(x - 2.0) < 1e-9 for x in s7["x"]) and abs(max(abs(v) for v in s7["M"]) - 1.3 * 40 * 2 * 4 / 6) < 1e-6
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 19/11/2026
+# Rapporto di confronto del solutore — 20/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 18/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 19/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -40,10 +40,9 @@
 | C28 Portale asimmetrico a tre cerniere, carichi misti | 8 superati, 0 non superati | 0 | 0 |
 | C29 Telaio a due piani a travi incernierate, trapezio e cedimento | 7 superati, 0 non superati | 0 | 0 |
 | C30 Telaio a tre piani a travi incernierate, carichi misti combinati | 8 superati, 0 non superati | 0 | 0 |
+| C31 Telaio a tre piani a travi incernierate, carichi misti e ΔT | 5 superati, 0 non superati | 0 | 0 |
 
-**Novità del 19/11**
-- Nessun caso nuovo: C1–C30 superati nei tre percorsi.
-- **Punto 90**: i diagrammi hanno un punto sotto ogni forza concentrata. I riferimenti rigenerati non cambiano, perché nei casi esistenti le forze cadevano già su punti campionati. La nuova prova del servizio usa C7 con 11 punti, quindi forza a 2 m fuori dalla griglia, e ottiene M = 26,67 kNm esatto.
-- **Scenari nel repository**: `06-TESTING/scenari/esegui_scenari.py`, 16 script superati.
+**Novità del 20/11**
+- **C31**: C30 con ΔT a farfalla e trave divisa, combinazione di tre casi; soluzione esatta, uguale nei tre percorsi.
 
-**Altre prove**: `test_app.py` 39 superate; `prove_modifica.mjs` 5; `prove_risultati.mjs` 4.
+**Altre prove**: `test_app.py` 40 superate; `prove_modifica.mjs` 5; `prove_risultati.mjs` 4; `esegui_scenari.py` 16 script.

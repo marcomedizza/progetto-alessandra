@@ -381,3 +381,15 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C30, con i riferimenti rigenerati: nessun file cambiato;
 - `test_app.py`: 39 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
 - `esegui_scenari.py`: 16 script su 16.
+
+**Revisione del codice nuovo del 20/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 96 | `06-TESTING/casi/genera_casi.py` | C31 deriva da C30, che deriva dai dati di C24: tre livelli di dipendenza. Le reazioni attese di C31 ricalcolano i carichi di C30 con numeri scritti di nuovo e non li leggono da C30; se C30 cambiasse, C31 fallirebbe e lo segnalerebbe | bassa | accettato |
+| 97 | `03-BACKEND/servizio/test_app.py` | La prova su C31 controlla anche che l'asta con la forza concentrata abbia il punto sotto la forza nella combinazione (punto 90) | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C31: superati;
+- `test_app.py`: 40 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- `esegui_scenari.py`: 16 script.

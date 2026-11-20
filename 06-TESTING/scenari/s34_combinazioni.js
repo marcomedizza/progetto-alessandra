@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
   const w = (ms) => p.waitForTimeout(ms), esito = {};
   await p.goto('http://127.0.0.1:8765/'); await w(1200);
-  for (const nome of ['C23_combinazione_termica', 'C24_due_piani_combinazione', 'C26_continua_carico_cedimento', 'C27_due_piani_termica', 'C30_tre_piani_misti']) {
+  for (const nome of ['C23_combinazione_termica', 'C24_due_piani_combinazione', 'C26_continua_carico_cedimento', 'C27_due_piani_termica', 'C30_tre_piani_misti', 'C31_tre_piani_termica']) {
     await p.selectOption('#sel-caso', nome); await w(900);
     await p.selectOption('#sel-carico', 'comb:SLU1'); await w(300); await p.click('#btn-calcola'); await w(1200);
     const rs = await p.textContent('#pannello-risultati');

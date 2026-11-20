@@ -207,6 +207,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | Tutti gli scenari con `06-TESTING/scenari/esegui_scenari.py` | 16 script superati su 16 in 3 minuti; il controllo è provato anche su esiti negativi fittizi |
 | Punto 90 | diagrammi con il punto sotto la forza concentrata; C30 invariato (69,3 kNm) |
 
+| Scenario | 20/11 (Renata, Vittoria; `esegui_scenari.py`) |
+|---|---|
+| 16 script | superati; S34 esteso a C31 |
+| Controllo a vista di C31 | reazioni 245,17 e 253,83 kN; M 69,3 / 117 / 219 kNm; colonne senza flessione. Due difetti minori (D29, D30) |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -238,4 +243,6 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D26 | 14/11 | S35 | Aprendo un modello da file, il menu dei casi continua a mostrare il caso scelto prima | bassa | **chiuso 15/11**: il modello da file o «Nuovo» compare in testa al menu come voce propria («File: …», «Modello nuovo»); scegliendo poi un caso dall'elenco si torna al caso | Irene |
 | D27 | 14/11 | S35 | Con valori di 10⁹ le etichette dei diagrammi si sovrappongono e la tabella dei risultati esce dal pannello | bassa | aperto: legato al punto 70 | Irene, Lucia |
 | D28 | 18/11 | C30 | Sulle aste con forze concentrate l'etichetta del massimo interno, calcolata dal 17/11 con l'interpolazione di Hermite, sovrastimava il momento (70,9 kNm invece di 69,33), perché il taglio salta sotto la forza | media | **chiuso 18/11**: su queste aste l'etichetta torna al valore campionato; corretto su C30, invariato C28 (13,9) | Irene, Mariana |
+| D29 | 20/11 | S34 | Con un nome di combinazione lungo («1,3·G + 1,5·Q + 0,9·T») la barra dei comandi va su due righe e la vista si accorcia | bassa | aperto | Irene |
+| D30 | 20/11 | S34 | La tabella dei risultati elenca le aste nell'ordine del file (7, 9, 8, 10 in C31), non per numero | bassa | aperto | Lucia |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

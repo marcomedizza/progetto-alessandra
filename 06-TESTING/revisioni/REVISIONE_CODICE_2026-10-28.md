@@ -393,3 +393,17 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C31: superati;
 - `test_app.py`: 40 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
 - `esegui_scenari.py`: 16 script.
+
+**Revisione del codice nuovo del 21/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 98 | `converti.py`, `telaio2d.py` | R = 10⁶ per le aste con almeno una cerniera. Il criterio vale anche per un'asta con una sola cerniera, che conserva rigidezza flessionale (3EI/L³ invece di 12EI/L³). Non è stato provato su un caso con aste a una sola cerniera e assiale rigida, oltre a C25 e C28, che sono a deformabilità assiale | bassa | aperto: preparare un caso con un'asta a una cerniera e assiale rigida |
+| 99 | `03-BACKEND/servizio/test_app.py` | La tolleranza di `test_combinazione_due_piani` passa da 10⁻⁶ a 10⁻⁴ kN. Il confronto è con la soluzione rigida esatta, quindi misura l'errore del metodo, documentato in circa 10⁻⁵ kN. Prima la prova passava solo per l'errore casualmente piccolo del Fortran. Non nasconde un difetto: il confronto completo tra i due solutori resta a 10⁻⁶ relativo | — | motivato nel commento della prova |
+| 100 | `04-FORTRAN-SOLVER/studio_area_fittizia.py` | Lo studio varia solo `RAPPORTO_ASSIALE`; le righe delle strutture incernierate sono ora costanti | bassa | aperto: aggiungere una colonna per `RAPPORTO_ASSIALE_CERNIERE` |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C32, riferimento di C24 rigenerato: superati;
+- `test_app.py`: 40 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- banda contro piena: 1,2·10⁻¹⁰ m;
+- `esegui_scenari.py`: 16 script.

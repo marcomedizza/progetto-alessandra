@@ -212,6 +212,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | 16 script | superati; S34 esteso a C31 |
 | Controllo a vista di C31 | reazioni 245,17 e 253,83 kN; M 69,3 / 117 / 219 kNm; colonne senza flessione. Due difetti minori (D29, D30) |
 
+| Scenario | 21/11 (Renata, Vittoria; `esegui_scenari.py`) |
+|---|---|
+| 16 script | superati; S34 esteso a C32 |
+| Controllo a vista di C32 | Rx −13,50 kN, Mz 110,25 kNm ai piedi; colonne 63 e 23,6 kNm ai piani; deformata a mensola; sforzo nelle travi 2,25 / 4,5 / 6,75 kN |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

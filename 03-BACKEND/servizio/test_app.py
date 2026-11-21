@@ -347,8 +347,11 @@ def test_combinazione_due_piani():
     # C24: le colonne uguali collegate da travi incernierate rigide si dividono a metà il vento
     c = client.post("/api/calcola?combinazione=SLU1", json=modello("C24_due_piani_combinazione")).json()["risultati"][0]
     rz = {x["nodo"]: x for x in c["reazioni"]}
-    assert abs(rz[1]["Rx"] + 18.75) < 1e-6 and abs(rz[2]["Rx"] + 18.75) < 1e-6
-    assert abs(rz[1]["Ry"] - 195) < 1e-6 and abs(rz[2]["Ry"] - 195) < 1e-6
+    # tolleranza 1e-4 kN: errore del metodo dell'area fittizia rispetto alla soluzione rigida esatta, circa 1e-5 kN
+    # con le aste incernierate (punto 79, README del solutore); fino al 20/11 era 1e-6 e passava solo perché il
+    # Fortran aveva per caso un errore di 5e-7 (il riferimento Python era a 1,3e-5)
+    assert abs(rz[1]["Rx"] + 18.75) < 1e-4 and abs(rz[2]["Rx"] + 18.75) < 1e-4
+    assert abs(rz[1]["Ry"] - 195) < 1e-4 and abs(rz[2]["Ry"] - 195) < 1e-4
 
 
 def test_tre_cerniere_cedimento_isostatico():
@@ -423,6 +426,7 @@ def test_rapporto_assiale_uguale():
     sys.path.insert(0, os.path.join(servizio.RADICE, "06-TESTING", "riferimento"))
     import telaio2d
     assert servizio.converti.RAPPORTO_ASSIALE == telaio2d.RAPPORTO_ASSIALE == 1e8
+    assert servizio.converti.RAPPORTO_ASSIALE_CERNIERE == telaio2d.RAPPORTO_ASSIALE_CERNIERE == 1e6
 
 
 def test_punto_della_forza_concentrata():

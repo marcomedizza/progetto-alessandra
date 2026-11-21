@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C32 | C31 con il vento: caso W 5, 10, 15 kN ai piani; combinazione 1,3·G + 1,5·Q + 0,9·W + 0,9·T (v1.2) | iperstatica (soluzione esatta) | Ry come C31; Rx = −13,5 kN per piede; M piede 110,25 kNm; M colonna al 1° piano 63,0 kNm |
 | C31 | C30 con la trave del 2° piano divisa in mezzeria (nodo 9) e caso T: ΔT a farfalla +20 °C su quella trave; combinazione 1,3·G + 1,5·Q + 0,9·T (v1.2) | iperstatica (soluzione esatta) | reazioni come C30; M 2° piano 117 kNm; freccia in mezzeria −34,74 mm |
 | C30 | telaio a tre piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, assiale rigida; G: 40 kN a 2 m (1° piano), 20 kN/m (2°), trapezio 10→30 kN/m (3°), cedimento 10 mm del piede destro; Q: 15 kN/m in copertura; combinazione 1,3·G + 1,5·Q (v1.1) | iperstatica (soluzione esatta) | Ry = 245,17 e 253,83 kN; colonne senza flessione; M travi 69,33, 117,0 e 218,25 kNm; testa colonna destra −13 mm |
 | C29 | telaio di C24; trapezio 10→30 kN/m sulla trave del primo piano; cedimento di 10 mm del piede destro (v1.1) | iperstatica (soluzione esatta) | Ry = 50 e 70 kN; Rx = 0; colonne senza flessione; M trave in x = 3 m 90,0 kNm, massimo 90,62 kNm in x = 3,24 m; testa della colonna destra −10 mm |
@@ -314,6 +315,17 @@ C30 con la trave del secondo piano divisa in mezzeria (aste 8 e 10, cerniere agl
   - combinazione: 1,3·(−24,23) + 0,9·(−3,60) = −34,74 mm.
 
 Il vento non c'è per il limite del punto 79, come in C27 e C30.
+
+## C32 · telaio a tre piani con il vento (Daniela e Valentina, 21/11)
+
+È la variante di C31 con il vento, rinviata il 18/11 e il 20/11 per il limite del punto 79 e possibile dal 21/11 con R = 10⁶ per le aste incernierate (README del solutore).
+- Vento: 5, 10 e 15 kN ai piani. Ciascuna colonna ne porta metà, perché le colonne sono uguali e collegate da travi incernierate assialmente rigide, come in C24.
+- Coefficiente 0,9: Rx = −0,9·30/2 = −13,5 kN per piede. M al piede = 0,9·(2,5·3,5 + 5·7 + 7,5·10,5) = 0,9·122,5 = 110,25 kNm.
+- M della colonna al primo piano: 0,9·(5·3,5 + 7,5·7) = 63,0 kNm. Al secondo: 0,9·7,5·3,5 = 23,63 kNm.
+- Le travi trasmettono metà della forza di piano in compressione: 2,25, 4,5 e 6,75 kN.
+- Reazioni verticali e momenti delle travi come C31.
+
+**Coefficienti**: 0,9 = 1,5·ψ0 con ψ0 = 0,6 per vento e temperatura, con il carico in copertura come azione principale. I valori di ψ0 sono citati a memoria e vanno ricontrollati sulle NTC 2018, tab. 2.5.I.
 
 ## File
 

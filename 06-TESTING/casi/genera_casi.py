@@ -1133,6 +1133,43 @@ def c31():
     return m, atteso
 
 
+def c32():
+    """C31 con il vento: la variante rinviata il 18/11 e il 20/11 per il punto 79 (Daniela e Valentina, 21/11).
+
+    Dal 21/11 le aste incernierate con deformabilità assiale trascurata usano R = 10⁶ (RAPPORTO_ASSIALE_CERNIERE)
+    e i due solutori concordano entro 10⁻⁶. Caso W: 5, 10 e 15 kN ai piani; le colonne uguali, collegate da travi
+    incernierate rigide, portano ciascuna metà del vento (come C24). Combinazione con il carico in copertura come
+    azione principale: 1,3·G + 1,5·Q + 0,9·W + 0,9·T (0,9 = 1,5·ψ0 con ψ0 = 0,6, valori da ricontrollare sulle NTC).
+    """
+    m, _ = c31()
+    L, h = 6.0, 3.5
+    H = (5.0, 10.0, 15.0)
+    gG, gQ, gW, gT = 1.3, 1.5, 0.9, 0.9
+    m["progetto"].update({"id": "C32", "nome": "Telaio a tre piani a travi incernierate, carichi misti, ΔT e vento",
+                          "descrizione": m["progetto"]["descrizione"].replace(
+                              "combinazione 1,3·G + 1,5·Q + 0,9·T", "caso W: 5, 10 e 15 kN ai piani; combinazione "
+                              "1,3·G + 1,5·Q + 0,9·W + 0,9·T"), "data": "2026-11-21"})
+    m["casi_di_carico"].append({"id": "W", "nome": "Vento", "categoria": "vento",
+                                "carichi_nodali": [{"nodo": 2 * k + 1, "Fx": H[k - 1]} for k in (1, 2, 3)]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 1,5·Q + 0,9·W + 0,9·T", "tipo": "SLU",
+                          "coefficienti": {"G": gG, "Q": gQ, "W": gW, "T": gT}}]
+    Rs = 40.0 * 4 / 6 + 20.0 * L / 2 + L * (2 * 10.0 + 30.0) / 6
+    Rd = 40.0 * 2 / 6 + 20.0 * L / 2 + L * (10.0 + 2 * 30.0) / 6
+    Mw = sum(Hk / 2 * k * h for k, Hk in enumerate(H, start=1))
+    atteso = {"caso": "SLU1", "formule": {
+        "verticali": "come C31: travi appoggiate, colonne senza flessione per G, Q e T",
+        "vento": "ciascuna colonna porta metà delle forze di piano: Rx = −ΣH/2, M piede = Σ(H/2)·z, Ry = 0",
+        "combinazione": "1,3·G + 1,5·Q + 0,9·W + 0,9·T"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": gG * Rs + gQ * 15.0 * L / 2, "unita": "kN"},
+            {"grandezza": "Ry nodo 2", "valore": gG * Rd + gQ * 15.0 * L / 2, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": -gW * sum(H) / 2, "unita": "kN"},
+            {"grandezza": "Rx nodo 2", "valore": -gW * sum(H) / 2, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=0 (piede)", "valore": gW * Mw, "unita": "kNm"},
+            {"grandezza": "M asta 8 x=3 (mezzeria secondo piano)", "valore": gG * 20.0 * L ** 2 / 8, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -1152,7 +1189,8 @@ if __name__ == "__main__":
                     ("C28_portale_asimmetrico", c28),
                     ("C29_due_piani_trapezio_cedimento", c29),
                     ("C30_tre_piani_misti", c30),
-                    ("C31_tre_piani_termica", c31)):
+                    ("C31_tre_piani_termica", c31),
+                    ("C32_tre_piani_vento", c32)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

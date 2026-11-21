@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 20/11/2026
+# Rapporto di confronto del solutore — 21/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 19/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 20/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -41,8 +41,10 @@
 | C29 Telaio a due piani a travi incernierate, trapezio e cedimento | 7 superati, 0 non superati | 0 | 0 |
 | C30 Telaio a tre piani a travi incernierate, carichi misti combinati | 8 superati, 0 non superati | 0 | 0 |
 | C31 Telaio a tre piani a travi incernierate, carichi misti e ΔT | 5 superati, 0 non superati | 0 | 0 |
+| C32 Telaio a tre piani a travi incernierate, carichi misti, ΔT e vento | 6 superati, 0 non superati | 0 | 0 |
 
-**Novità del 20/11**
-- **C31**: C30 con ΔT a farfalla e trave divisa, combinazione di tre casi; soluzione esatta, uguale nei tre percorsi.
+**Novità del 21/11**
+- **Punto 79, vento sbloccato**: R = 10⁶ per le aste incernierate. Fortran e riferimento concordano di nuovo sul telaio a travi incernierate con vento, con differenza massima da 6·10⁻⁵ a 3·10⁻⁷ kN. Il riferimento di C24 è rigenerato, con variazioni sotto 10⁻⁵ kN.
+- **C32**: C31 con il vento, soluzione esatta, uguale nei tre percorsi.
 
-**Altre prove**: `test_app.py` 40 superate; `prove_modifica.mjs` 5; `prove_risultati.mjs` 4; `esegui_scenari.py` 16 script.
+**Altre prove**: `test_app.py` 40 superate (tolleranza di `test_combinazione_due_piani` motivata, punto 99); `esegui_scenari.py` 16 script.

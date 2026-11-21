@@ -105,6 +105,16 @@ Lettura:
 
 Possibile miglioramento, non fatto: un R più basso, intorno a 10⁷, per le aste con cerniere, oppure vincoli esatti di inestensibilità. Va valutato solo se servisse più precisione. Il confronto completo Fortran/riferimento (tolleranza 10⁻⁶ relativa) non è adatto a queste strutture, per questo C27 è stato preparato senza vento.
 
+**Aste incernierate, R ridotto (Elisa, Ottavia, Carla, 21/11)**: le aste con almeno una cerniera (`rz_i` o `rz_j`) e deformabilità assiale trascurata usano ora R = 10⁶ (`RAPPORTO_ASSIALE_CERNIERE`, nel convertitore e nel riferimento); le altre restano a 10⁸. Vento sul telaio a travi incernierate, scarto massimo sulle grandezze con soluzione esatta:
+
+| | prima (R = 10⁸ per tutte) | dopo (10⁶ per le incernierate) |
+|---|---|---|
+| C24, riferimento / Fortran | 1,3·10⁻⁵ / 4,8·10⁻⁷ kN | 6,3·10⁻⁶ / 6,3·10⁻⁶ kN |
+| travi divise (C27), riferimento / Fortran | 3,4·10⁻⁵ / 9,6·10⁻⁵ kN | 1,8·10⁻⁶ / 1,6·10⁻⁶ kN |
+| differenza tra i due solutori, C24 / travi divise | 1,3·10⁻⁵ / 6,2·10⁻⁵ kN | 8·10⁻⁹ / 2,9·10⁻⁷ kN |
+
+Il caso peggiore migliora di un ordine di grandezza e i due solutori tornano a concordare entro la tolleranza del confronto completo. Per questo C32 contiene il vento escluso da C27, C30 e C31. Banda contro piena su C1–C32: scarto massimo 1,2·10⁻¹⁰ m, prima 1,5·10⁻⁹. Lo studio `studio_area_fittizia.py` varia solo R delle aste senza cerniere. Il limite dichiarato diventa 10⁻⁸ relativo nei telai a nodi rigidi e circa 10⁻⁶ con aste incernierate.
+
 **Formato d'uscita (Ottavia, Paola, 13/11, D25)**: i numeri sono scritti con `es25.16e3`, cioè esponente sempre a tre cifre (`1.0000000000000000E+000`). Con `es24.16` gfortran ometteva la «E» per esponenti oltre 99, e il convertitore non leggeva il file. Banda contro piena su C1–C26 invariata (scarto massimo 1,5·10⁻⁹ m su C24).
 
 **Compilazione (Ottavia, 12/11)**: `build.sh` con GNU Fortran 13.3.0 in 2,9 s su una macchina appena avviata. Rimane un solo avviso, `-Wcompare-reals`, per un confronto di uguaglianza tra numeri reali. È voluto, ma va ricontrollato alla prossima revisione del solutore. C1–C25 superati con il binario appena compilato.

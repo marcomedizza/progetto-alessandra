@@ -110,10 +110,14 @@ def semibanda(modello, ordine=None):
 # (04-FORTRAN-SOLVER/README.md) mostra l'ottimo tra errore di modello e arrotondamento intorno a 10⁸; un
 # rapporto fisso per asta rende il condizionamento indipendente dalle dimensioni, a differenza di A × 10⁶.
 RAPPORTO_ASSIALE = 1e8
+# Aste con almeno una cerniera (punto 79): la loro rigidezza flessionale non entra (o entra ridotta) nella matrice,
+# quindi lo stesso R dà un rapporto effettivo molto più alto. None = stesso valore di RAPPORTO_ASSIALE.
+RAPPORTO_ASSIALE_CERNIERE = 1e6
 
 
-def area_di_calcolo(A, I, L, rigida):
-    return max(A, RAPPORTO_ASSIALE * 12 * I / L ** 2) if rigida else A
+def area_di_calcolo(A, I, L, rigida, cerniera=False):
+    R = RAPPORTO_ASSIALE_CERNIERE if cerniera and RAPPORTO_ASSIALE_CERNIERE else RAPPORTO_ASSIALE
+    return max(A, R * 12 * I / L ** 2) if rigida else A
 
 
 def scrivi_input(modello, caso_id):
@@ -127,7 +131,9 @@ def scrivi_input(modello, caso_id):
     righe.append(f"ASTE {len(modello['aste'])}")
     geo = _geometria(modello)
     for el in modello["aste"]:
-        A = area_di_calcolo(sez[el["sezione"]]["A"], sez[el["sezione"]]["I"], geo[el["id"]][0], rigida)
+        sv = el.get("svincoli", {})
+        A = area_di_calcolo(sez[el["sezione"]]["A"], sez[el["sezione"]]["I"], geo[el["id"]][0], rigida,
+                            bool(sv.get("rz_i") or sv.get("rz_j")))
         sv = el.get("svincoli", {})
         righe.append(f"{el['id']} {el['nodo_i']} {el['nodo_j']} {mat[el['materiale']]['E']!r} {A!r} "
                      f"{sez[el['sezione']]['I']!r} {int(bool(sv.get('rz_i')))} {int(bool(sv.get('rz_j')))}")

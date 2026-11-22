@@ -147,7 +147,7 @@ LETTURE = {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Ry nodo 3": R(3, "Ry"),
         "M asta 1 x=L (appoggio centrale)": S(1, "M", 6.0), "uy nodo 2": U(2, "uy")},
     "C27": {
-        "Ry nodo 1": R(1, "Ry"), "Rx nodo 1": R(1, "Rx"), "M asta 1 x=0 (piede)": S(1, "M", 0.0),
+        "Ry nodo 1": R(1, "Ry"), "Rx nodo 1": R(1, "Rx"), "|M| asta 1 x=0 (piede)": ABS(S(1, "M", 0.0)),
         "M asta 5 x=L/2 (mezzeria)": S(5, "M", 3.0), "uy nodo 7 (mezzeria primo piano)": U(7, "uy"),
         "uy nodo 8 (mezzeria secondo piano)": U(8, "uy")},
     "C28": {
@@ -159,7 +159,7 @@ LETTURE = {
         "M asta 5 x=3 (mezzeria)": S(5, "M", 3.0), "N asta 2 x=0": S(2, "N", 0.0),
         "uy nodo 6 (testa colonna destra)": U(6, "uy")},
     "C30": {
-        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "M asta 1 x=0 (piede)": S(1, "M", 0.0),
+        "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "|M| asta 1 x=0 (piede)": ABS(S(1, "M", 0.0)),
         "M asta 9 x=3 (mezzeria copertura)": S(9, "M", 3.0), "M asta 7 x=2 (sotto P)": S(7, "M", 2.0), "M asta 8 x=3 (mezzeria)": S(8, "M", 3.0),
         "uy nodo 8 (testa colonna destra)": U(8, "uy")},
     "C31": {
@@ -168,6 +168,10 @@ LETTURE = {
     "C32": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "Rx nodo 1": R(1, "Rx"), "Rx nodo 2": R(2, "Rx"),
         "|M| asta 1 x=0 (piede)": ABS(S(1, "M", 0.0)), "M asta 8 x=3 (mezzeria secondo piano)": S(8, "M", 3.0)},
+    "C33": {
+        "ux nodo 2": U(2, "ux"), "rz nodo 2": U(2, "rz"), "|M| asta 1 x=h (testa colonna sinistra)": ABS(S(1, "M", 4.0)),
+        "|M| asta 1 x=0 (piede sinistro)": ABS(S(1, "M", 0.0)), "|M| asta 2 x=0 (traverso, nodo rigido)": ABS(S(2, "M", 0.0)),
+        "|M| asta 3 x=0 (piede destro)": ABS(S(3, "M", 0.0)), "M asta 2 x=L (cerniera)": S(2, "M", 6.0)},
     "C7": {
         "Ry nodo 1": R(1, "Ry"), "Ry nodo 2": R(2, "Ry"), "M asta 1 x=2 (sotto il carico)": S(1, "M", 2.0),
         "rz nodo 1": U(1, "rz"), "rz nodo 2": U(2, "rz")},

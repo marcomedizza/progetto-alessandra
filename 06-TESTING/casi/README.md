@@ -26,6 +26,7 @@
 | C20 | Geometria di C6, trapezio da 10 a 20 kN/m tra 0,5 e 2,0 m del tratto appoggiato (v1.1) | statica | R3 = 15,0 kN; R1 = 7,5 kN; M incastro = −30,0 kNm; M a 1 m dalla cerniera = 6,11 kNm; cerniera −9,12 mm |
 | C21 | Geometria di C15, trapezio verticale da 10 a 20 kN/m tra 1 e 4 m lungo l'asta, cedimento del carrello di 10 mm (v1.1) | statica | R1 = 21 kN; R2 = 24 kN; Rx = 0; M(2,5) = 31,5 kNm; uy carrello = −10 mm |
 | C22 | C20 con molla ky = 2000 kN/m al posto dell'appoggio a 6 m (v1.1) | isostatica | R3 = 15,0 kN (molla); R1 = 7,5 kN; M incastro 30,0 kNm; molla −7,5 mm; cerniera −9,12 mm |
+| C33 | portale HE 200 A / IPE 300, h = 4 m, L = 6 m, traverso incastrato a sinistra e incernierato a destra, assiale rigida; H = 20 kN (v1.0) | iperstatica (metodo delle rotazioni) | Δ = 15,32 mm; rz = −2,695 mrad; M colonna sinistra 23,64 / 34,09 kNm; traverso 23,64 kNm; colonna destra al piede 22,27 kNm |
 | C32 | C31 con il vento: caso W 5, 10, 15 kN ai piani; combinazione 1,3·G + 1,5·Q + 0,9·W + 0,9·T (v1.2) | iperstatica (soluzione esatta) | Ry come C31; Rx = −13,5 kN per piede; M piede 110,25 kNm; M colonna al 1° piano 63,0 kNm |
 | C31 | C30 con la trave del 2° piano divisa in mezzeria (nodo 9) e caso T: ΔT a farfalla +20 °C su quella trave; combinazione 1,3·G + 1,5·Q + 0,9·T (v1.2) | iperstatica (soluzione esatta) | reazioni come C30; M 2° piano 117 kNm; freccia in mezzeria −34,74 mm |
 | C30 | telaio a tre piani, colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi, assiale rigida; G: 40 kN a 2 m (1° piano), 20 kN/m (2°), trapezio 10→30 kN/m (3°), cedimento 10 mm del piede destro; Q: 15 kN/m in copertura; combinazione 1,3·G + 1,5·Q (v1.1) | iperstatica (soluzione esatta) | Ry = 245,17 e 253,83 kN; colonne senza flessione; M travi 69,33, 117,0 e 218,25 kNm; testa colonna destra −13 mm |
@@ -326,6 +327,22 @@ Il vento non c'è per il limite del punto 79, come in C27 e C30.
 - Reazioni verticali e momenti delle travi come C31.
 
 **Coefficienti**: 0,9 = 1,5·ψ0 con ψ0 = 0,6 per vento e temperatura, con il carico in copertura come azione principale. I valori di ψ0 sono citati a memoria e vanno ricontrollati sulle NTC 2018, tab. 2.5.I.
+
+## C33 · portale con traverso incernierato da un solo lato (Valentina, 22/11, punto 98)
+
+Prova la regola R = 10⁶ su un'asta con una sola cerniera, che conserva rigidezza flessionale 3EI/L. Metodo delle rotazioni con il traverso assialmente rigido. Incognite: rotazione θ del nodo in alto a sinistra, positiva in senso orario, e spostamento Δ del traverso.
+- Nodo: (4EIc/h + 3EIb/L)·θ = 6EIc·Δ/h².
+- Traslazione: H = 12EIc·Δ/h³ − 6EIc·θ/h² (colonna sinistra) + 3EIc·Δ/h³ (colonna destra, a mensola con il traverso incernierato).
+- Con EIc = 2,1·10⁸·3692·10⁻⁸ = 7753 kNm², EIb = 17 548 kNm², h = 4 m, L = 6 m, H = 20 kN: Δ = 15,32 mm e θ = 2,695 mrad. Nello schema rz è antiorario, quindi rz = −2,695 mrad.
+- Momenti:
+  - colonna sinistra: EIc/h·(4θ − 6Δ/h) = −23,64 kNm in testa, EIc/h·(2θ − 6Δ/h) = −34,09 kNm al piede;
+  - traverso: 3EIb·θ/L = 23,64 kNm, uguale alla testa della colonna per l'equilibrio del nodo;
+  - colonna destra al piede: 3EIc·Δ/h² = 22,27 kNm.
+- Controllo: tagli (23,64 + 34,09)/4 + 22,27/4 = 14,43 + 5,57 = 20,00 kN = H.
+
+Errore del metodo dell'area fittizia su Δ: 1,0·10⁻⁷ relativo con R = 10⁶, contro 10⁻⁹–10⁻⁸ con R = 10⁸. È più grande ma trascurabile, e i due solutori concordano. La regola si applica anche alle aste con una sola cerniera ed è necessaria: le travi divise di C27 hanno una cerniera per asta.
+
+**Vento reinserito il 22/11** in C27 (1,3·G + 1,5·W + 0,9·T; Rx = −18,75 kN, M piede 105 kNm come C24) e in C30 (1,3·G + 1,5·Q + 0,9·W; Rx = −13,5 kN, M piede 110,25 kNm). C31 resta senza vento: lo ha C32.
 
 ## File
 

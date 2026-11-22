@@ -878,9 +878,8 @@ def c26():
 def c27():
     """Telaio di C24 con le travi divise in mezzeria: carichi verticali e ΔT a farfalla (Daniela e Valentina, 14/11).
 
-    Il vento di C24 è escluso: con le travi divise e la deformabilità assiale trascurata il caso W si scosta dai
-    valori esatti di circa 10⁻⁵ relativo in entrambi i solutori (punto 79 della revisione), oltre la tolleranza
-    del confronto completo.
+    Il vento di C24, escluso il 14/11 per il punto 79, è reinserito il 22/11: dal 21/11 le aste incernierate usano
+    R = 10⁶ e i due solutori concordano. Le colonne uguali portano ciascuna metà del vento, come in C24.
 
     Le travi sono incernierate agli estremi, quindi isostatiche: il ΔT a farfalla le incurva senza sollecitazioni
     né reazioni. Ogni trave è divisa in mezzeria per leggere la freccia, che si somma a quella dei carichi:
@@ -890,9 +889,9 @@ def c27():
     """
     m, _ = c24()
     L, h, q, dTg = 6.0, 3.5, 25.0, 20.0
-    gG, gT = 1.3, 0.9
-    m["progetto"].update({"id": "C27", "nome": "Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla",
-                          "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi e divise in mezzeria, deformabilità assiale trascurata). Caso G: q = 25 kN/m sulle travi; caso T: ΔT a farfalla +20 °C sulle travi; combinazione 1,3·G + 0,9·T (Daniela e Valentina).",
+    gG, gW, gT = 1.3, 1.5, 0.9
+    m["progetto"].update({"id": "C27", "nome": "Telaio a due piani a travi incernierate, combinazione di carichi verticali, vento e ΔT a farfalla",
+                          "descrizione": "Telaio di C24 (colonne HE 200 A incastrate, travi IPE 300 incernierate agli estremi e divise in mezzeria, deformabilità assiale trascurata). Caso G: q = 25 kN/m sulle travi; caso T: ΔT a farfalla +20 °C sulle travi; caso W: 10 e 15 kN ai piani; combinazione 1,3·G + 1,5·W + 0,9·T (Daniela e Valentina).",
                           "data": "2026-11-14"})
     m["schema_version"] = "1.2"
     m["materiali"] = [dict(ACC, alfa_t=ALFA)]
@@ -905,21 +904,22 @@ def c27():
         {"id": 8, "nodo_i": 8, "nodo_j": 6, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}}]
     m["casi_di_carico"][0]["carichi_aste"] = [
         {"asta": a, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q} for a in (5, 6, 7, 8)]
-    m["casi_di_carico"] = [x for x in m["casi_di_carico"] if x["id"] != "W"]
     m["casi_di_carico"].append({"id": "T", "nome": "ΔT a farfalla sulle travi", "categoria": "temperatura",
                                 "carichi_termici": [{"asta": a, "dT_g": dTg} for a in (5, 6, 7, 8)]})
-    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 0,9·T", "tipo": "SLU", "coefficienti": {"G": gG, "T": gT}}]
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 1,5·W + 0,9·T", "tipo": "SLU",
+                          "coefficienti": {"G": gG, "W": gW, "T": gT}}]
     EI = E_ACC * IPE300["I"]
     fG = -5 * q * L ** 4 / (384 * EI)
     fT = -ALFA * dTg / 0.300 * L ** 2 / 8
     atteso = {"caso": "SLU1", "formule": {
         "reazioni e momenti": "travi appoggiate: Ry = qL per piede, colonne senza flessione; il ΔT a farfalla su travi isostatiche non dà sollecitazioni",
         "freccia in mezzeria": "1,3·(−5qL⁴/384EI) + 0,9·(−α·ΔTg/h·L²/8)",
-        "combinazione": "1,3·G + 0,9·T"},
+        "vento": "come C24: Rx = −(H1 + H2)/2, M piede = H1/2·h + H2/2·2h",
+        "combinazione": "1,3·G + 1,5·W + 0,9·T"},
         "valori": [
             {"grandezza": "Ry nodo 1", "valore": gG * q * L, "unita": "kN"},
-            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
-            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "Rx nodo 1", "valore": -gW * 12.5, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=0 (piede)", "valore": gW * 70.0, "unita": "kNm"},
             {"grandezza": "M asta 5 x=L/2 (mezzeria)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
             {"grandezza": "uy nodo 7 (mezzeria primo piano)", "valore": gG * fG + gT * fT, "unita": "m"},
             {"grandezza": "uy nodo 8 (mezzeria secondo piano)", "valore": gG * fG + gT * fT, "unita": "m"}]}
@@ -1025,17 +1025,18 @@ def c30():
     trascurata, come C24 con un piano in più. Caso G: forza concentrata sulla trave del primo piano, carico
     uniforme sul secondo, trapezio sul terzo, cedimento del piede destro. Caso Q: carico uniforme in copertura.
     Soluzione esatta: travi appoggiate, colonne senza flessione, cedimento come moto rigido.
-    Il vento è escluso per il motivo del punto 79 (come C27): sul telaio a travi incernierate i due solutori
-    differiscono di 2·10⁻⁵ kN, oltre la tolleranza del confronto completo.
+    Il vento, escluso il 18/11 per il punto 79, è reinserito il 22/11 come azione di accompagnamento (0,9 = 1,5·ψ0).
     """
     L, h, P, aP, q, qi, qj, d = 6.0, 3.5, 40.0, 2.0, 20.0, 10.0, 30.0, 0.010
     q2 = 15.0
-    gG, gQ = 1.3, 1.5
-    m = base("C30", "Telaio a tre piani a travi incernierate, carichi misti combinati",
+    H = (5.0, 10.0, 15.0)
+    gG, gQ, gW = 1.3, 1.5, 0.9
+    m = base("C30", "Telaio a tre piani a travi incernierate, carichi misti combinati con il vento",
              "Una campata L = 6 m, tre piani h = 3,5 m; colonne HE 200 A continue e incastrate al piede, travi IPE 300 "
              "incernierate alle estremità; deformabilità assiale trascurata. Caso G: 40 kN a 2 m sulla trave del primo "
              "piano, 20 kN/m sul secondo, trapezio 10→30 kN/m sul terzo, cedimento di 10 mm del piede destro; caso Q: "
-             "15 kN/m sulla trave di copertura; combinazione 1,3·G + 1,5·Q (Daniela e Valentina).")
+             "15 kN/m sulla trave di copertura; caso W: 5, 10 e 15 kN ai piani; combinazione 1,3·G + 1,5·Q + 0,9·W "
+             "(Daniela e Valentina).")
     m["schema_version"] = "1.1"
     m["progetto"]["data"] = "2026-11-18"
     nodi = [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}]
@@ -1059,8 +1060,11 @@ def c30():
                                "a": 0.0, "b": L}],
              "cedimenti": [{"nodo": 2, "uy": -d}]},
             {"id": "Q", "nome": "Carico in copertura", "categoria": "Q",
-             "carichi_aste": [{"asta": 9, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q2}]}],
-        "combinazioni": [{"id": "SLU1", "nome": "1,3·G + 1,5·Q", "tipo": "SLU", "coefficienti": {"G": gG, "Q": gQ}}],
+             "carichi_aste": [{"asta": 9, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q2}]},
+            {"id": "W", "nome": "Vento", "categoria": "vento",
+             "carichi_nodali": [{"nodo": 2 * k + 1, "Fx": H[k - 1]} for k in (1, 2, 3)]}],
+        "combinazioni": [{"id": "SLU1", "nome": "1,3·G + 1,5·Q + 0,9·W", "tipo": "SLU",
+                          "coefficienti": {"G": gG, "Q": gQ, "W": gW}}],
         "analisi": {"tipo": "statica_lineare", "deformabilita_assiale": False, "punti_diagramma": 13},
     })
     Rs = P * (L - aP) / L + q * L / 2 + L * (2 * qi + qj) / 6       # reazioni sinistre delle tre travi
@@ -1070,12 +1074,13 @@ def c30():
         "caso Q": "trave di copertura appoggiata: q2·L/2 per colonna, M mezzeria q2·L²/8",
         "trapezio in x = 3 m": "M = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L) = 90 kNm",
         "cedimento": "moto rigido della colonna destra; con il coefficiente 1,3 il cedimento combinato vale 13 mm",
-        "combinazione": "1,3·G + 1,5·Q"},
+        "vento": "ciascuna colonna porta metà delle forze di piano: Rx = −ΣH/2, M piede = Σ(H/2)·z",
+        "combinazione": "1,3·G + 1,5·Q + 0,9·W"},
         "valori": [
             {"grandezza": "Ry nodo 1", "valore": gG * Rs + gQ * q2 * L / 2, "unita": "kN"},
             {"grandezza": "Ry nodo 2", "valore": gG * Rd + gQ * q2 * L / 2, "unita": "kN"},
-            {"grandezza": "Rx nodo 1", "valore": 0.0, "unita": "kN"},
-            {"grandezza": "M asta 1 x=0 (piede)", "valore": 0.0, "unita": "kNm"},
+            {"grandezza": "Rx nodo 1", "valore": -gW * sum(H) / 2, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=0 (piede)", "valore": gW * sum(Hk / 2 * k * h for k, Hk in enumerate(H, start=1)), "unita": "kNm"},
             {"grandezza": "M asta 9 x=3 (mezzeria copertura)", "valore": gG * 90.0 + gQ * q2 * L ** 2 / 8, "unita": "kNm"},
             {"grandezza": "M asta 7 x=2 (sotto P)", "valore": gG * P * (L - aP) / L * aP, "unita": "kNm"},
             {"grandezza": "M asta 8 x=3 (mezzeria)", "valore": gG * q * L ** 2 / 8, "unita": "kNm"},
@@ -1093,6 +1098,10 @@ def c31():
     - Q: nessuna (carico solo in copertura).
     """
     m, _ = c30()
+    # C30 ha il vento dal 22/11: C31 resta senza (il vento è in C32), con la descrizione di prima
+    m["casi_di_carico"] = [x for x in m["casi_di_carico"] if x["id"] != "W"]
+    m["progetto"]["descrizione"] = m["progetto"]["descrizione"].replace(
+        "; caso W: 5, 10 e 15 kN ai piani; combinazione 1,3·G + 1,5·Q + 0,9·W", "; combinazione 1,3·G + 1,5·Q")
     L, h, q, d, dTg = 6.0, 3.5, 20.0, 0.010, 20.0
     gG, gQ, gT = 1.3, 1.5, 0.9
     m["progetto"].update({"id": "C31", "nome": "Telaio a tre piani a travi incernierate, carichi misti e ΔT",
@@ -1170,6 +1179,57 @@ def c32():
     return m, atteso
 
 
+def c33():
+    """Portale con trave incernierata da un solo lato, deformabilità assiale trascurata (punto 98; Valentina, 22/11).
+
+    Colonne HE 200 A incastrate al piede (h = 4 m), traverso IPE 300 (L = 6 m) incastrato alla colonna sinistra e
+    incernierato su quella destra; forza orizzontale H in testa a sinistra. Metodo delle rotazioni, incognite la
+    rotazione θ del nodo sinistro in alto e lo spostamento orizzontale Δ del traverso (assialmente rigido):
+    - nodo: (4EIc/h + 3EIb/L)·θ = 6EIc·Δ/h²
+    - traslazione: H = (12EIc/h³)·Δ − (6EIc/h²)·θ + (3EIc/h³)·Δ
+    θ è positivo in senso orario (convenzione del metodo); nello schema rz è antiorario, quindi rz = −θ.
+    Momenti: colonna sinistra in alto Mt = EIc/h·(4θ − 6Δ/h), al piede Mp = EIc/h·(2θ − 6Δ/h); trave all'estremo
+    sinistro 3EIb/L·θ; colonna destra al piede 3EIc·Δ/h².
+    """
+    h, L, H = 4.0, 6.0, 20.0
+    EIc, EIb = E_ACC * HEA200["I"], E_ACC * IPE300["I"]
+    a11, a12 = 4 * EIc / h + 3 * EIb / L, -6 * EIc / h ** 2          # equazione del nodo: a11·θ + a12·Δ = 0
+    a21, a22 = -6 * EIc / h ** 2, 15 * EIc / h ** 3                 # traslazione:       a21·θ + a22·Δ = H
+    det = a11 * a22 - a12 * a21
+    th, D = (-a12 * H) / det, (a11 * H) / det
+    Mt = EIc / h * (4 * th - 6 * D / h)
+    Mp = EIc / h * (2 * th - 6 * D / h)
+    Mb = 3 * EIb / L * th
+    Md = 3 * EIc * D / h ** 2
+    m = trave("C33", "Portale con traverso incernierato da un solo lato, assiale rigida",
+              "Colonne HE 200 A incastrate al piede, h = 4 m; traverso IPE 300, L = 6 m, incastrato alla colonna sinistra e "
+              "incernierato su quella destra; deformabilità assiale trascurata; H = 20 kN in testa a sinistra "
+              "(Valentina, punto 98).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 0, "y": h}, {"id": 3, "x": L, "y": h}, {"id": 4, "x": L, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "HEA200"},
+               {"id": 2, "nodo_i": 2, "nodo_j": 3, "materiale": "S275", "sezione": "IPE300", "svincoli": {"rz_j": True}},
+               {"id": 3, "nodo_i": 4, "nodo_j": 3, "materiale": "S275", "sezione": "HEA200"}],
+              [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 4, "ux": True, "uy": True, "rz": True}],
+              {"id": "H", "nome": "Forza orizzontale", "categoria": "vento", "carichi_nodali": [{"nodo": 2, "Fx": H}]}, 11)
+    m["sezioni"] = [HEA200, IPE300]
+    m["analisi"]["deformabilita_assiale"] = False
+    m["progetto"]["data"] = "2026-11-22"
+    atteso = {"caso": "H", "formule": {
+        "nodo": "(4EIc/h + 3EIb/L)·θ = 6EIc·Δ/h² (θ orario; rz = −θ)",
+        "equilibrio": "tagli delle colonne (Mt + Mp)/h + Md/h = H",
+        "traslazione": "H = 15EIc·Δ/h³ − 6EIc·θ/h²",
+        "momenti": "Mt = EIc/h·(4θ − 6Δ/h); Mp = EIc/h·(2θ − 6Δ/h); trave 3EIb·θ/L; colonna destra al piede 3EIc·Δ/h²"},
+        "valori": [
+            {"grandezza": "ux nodo 2", "valore": D, "unita": "m"},
+            {"grandezza": "rz nodo 2", "valore": -th, "unita": "rad"},   # θ orario nel metodo, rz antiorario nello schema
+            {"grandezza": "|M| asta 1 x=h (testa colonna sinistra)", "valore": abs(Mt), "unita": "kNm"},
+            {"grandezza": "|M| asta 1 x=0 (piede sinistro)", "valore": abs(Mp), "unita": "kNm"},
+            {"grandezza": "|M| asta 2 x=0 (traverso, nodo rigido)", "valore": abs(Mb), "unita": "kNm"},
+            {"grandezza": "|M| asta 3 x=0 (piede destro)", "valore": abs(Md), "unita": "kNm"},
+            {"grandezza": "M asta 2 x=L (cerniera)", "valore": 0.0, "unita": "kNm"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -1190,7 +1250,8 @@ if __name__ == "__main__":
                     ("C29_due_piani_trapezio_cedimento", c29),
                     ("C30_tre_piani_misti", c30),
                     ("C31_tre_piani_termica", c31),
-                    ("C32_tre_piani_vento", c32)):
+                    ("C32_tre_piani_vento", c32),
+                    ("C33_portale_una_cerniera", c33)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

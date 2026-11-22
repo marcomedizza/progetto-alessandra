@@ -2,8 +2,8 @@
   "schema_version": "1.1",
   "progetto": {
     "id": "C30",
-    "nome": "Telaio a tre piani a travi incernierate, carichi misti combinati",
-    "descrizione": "Una campata L = 6 m, tre piani h = 3,5 m; colonne HE 200 A continue e incastrate al piede, travi IPE 300 incernierate alle estremità; deformabilità assiale trascurata. Caso G: 40 kN a 2 m sulla trave del primo piano, 20 kN/m sul secondo, trapezio 10→30 kN/m sul terzo, cedimento di 10 mm del piede destro; caso Q: 15 kN/m sulla trave di copertura; combinazione 1,3·G + 1,5·Q (Daniela e Valentina).",
+    "nome": "Telaio a tre piani a travi incernierate, carichi misti combinati con il vento",
+    "descrizione": "Una campata L = 6 m, tre piani h = 3,5 m; colonne HE 200 A continue e incastrate al piede, travi IPE 300 incernierate alle estremità; deformabilità assiale trascurata. Caso G: 40 kN a 2 m sulla trave del primo piano, 20 kN/m sul secondo, trapezio 10→30 kN/m sul terzo, cedimento di 10 mm del piede destro; caso Q: 15 kN/m sulla trave di copertura; caso W: 5, 10 e 15 kN ai piani; combinazione 1,3·G + 1,5·Q + 0,9·W (Daniela e Valentina).",
     "autore": "Valentina (casi di prova)",
     "data": "2026-11-18",
     "tipo_modello": "telaio_piano",
@@ -220,16 +220,36 @@
           "q": -15.0
         }
       ]
+    },
+    {
+      "id": "W",
+      "nome": "Vento",
+      "categoria": "vento",
+      "carichi_nodali": [
+        {
+          "nodo": 3,
+          "Fx": 5.0
+        },
+        {
+          "nodo": 5,
+          "Fx": 10.0
+        },
+        {
+          "nodo": 7,
+          "Fx": 15.0
+        }
+      ]
     }
   ],
   "combinazioni": [
     {
       "id": "SLU1",
-      "nome": "1,3·G + 1,5·Q",
+      "nome": "1,3·G + 1,5·Q + 0,9·W",
       "tipo": "SLU",
       "coefficienti": {
         "G": 1.3,
-        "Q": 1.5
+        "Q": 1.5,
+        "W": 0.9
       }
     }
   ],

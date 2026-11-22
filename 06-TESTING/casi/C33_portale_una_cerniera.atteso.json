@@ -1,0 +1,46 @@
+{
+  "caso": "H",
+  "formule": {
+    "nodo": "(4EIc/h + 3EIb/L)·θ = 6EIc·Δ/h² (θ orario; rz = −θ)",
+    "equilibrio": "tagli delle colonne (Mt + Mp)/h + Md/h = H",
+    "traslazione": "H = 15EIc·Δ/h³ − 6EIc·θ/h²",
+    "momenti": "Mt = EIc/h·(4θ − 6Δ/h); Mp = EIc/h·(2θ − 6Δ/h); trave 3EIb·θ/L; colonna destra al piede 3EIc·Δ/h²"
+  },
+  "valori": [
+    {
+      "grandezza": "ux nodo 2",
+      "valore": 0.015317758090444287,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 2",
+      "valore": -0.0026947186882109423,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "|M| asta 1 x=h (testa colonna sinistra)",
+      "valore": 23.642922826625163,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=0 (piede sinistro)",
+      "valore": 34.089269293343705,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 2 x=0 (traverso, nodo rigido)",
+      "valore": 23.642922826625167,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 3 x=0 (piede destro)",
+      "valore": 22.267807880031118,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 2 x=L (cerniera)",
+      "valore": 0.0,
+      "unita": "kNm"
+    }
+  ]
+}

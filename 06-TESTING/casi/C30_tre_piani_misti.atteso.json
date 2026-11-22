@@ -5,7 +5,8 @@
     "caso Q": "trave di copertura appoggiata: q2·L/2 per colonna, M mezzeria q2·L²/8",
     "trapezio in x = 3 m": "M = Rs·x − qi·x²/2 − (qj − qi)·x³/(6L) = 90 kNm",
     "cedimento": "moto rigido della colonna destra; con il coefficiente 1,3 il cedimento combinato vale 13 mm",
-    "combinazione": "1,3·G + 1,5·Q"
+    "vento": "ciascuna colonna porta metà delle forze di piano: Rx = −ΣH/2, M piede = Σ(H/2)·z",
+    "combinazione": "1,3·G + 1,5·Q + 0,9·W"
   },
   "valori": [
     {
@@ -20,12 +21,12 @@
     },
     {
       "grandezza": "Rx nodo 1",
-      "valore": 0.0,
+      "valore": -13.5,
       "unita": "kN"
     },
     {
-      "grandezza": "M asta 1 x=0 (piede)",
-      "valore": 0.0,
+      "grandezza": "|M| asta 1 x=0 (piede)",
+      "valore": 110.25,
       "unita": "kNm"
     },
     {

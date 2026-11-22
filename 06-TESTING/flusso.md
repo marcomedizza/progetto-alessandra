@@ -217,6 +217,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | 16 script | superati; S34 esteso a C32 |
 | Controllo a vista di C32 | Rx −13,50 kN, Mz 110,25 kNm ai piedi; colonne 63 e 23,6 kNm ai piani; deformata a mensola; sforzo nelle travi 2,25 / 4,5 / 6,75 kN |
 
+| Scenario | 22/11 (Renata, Vittoria; `esegui_scenari.py`) |
+|---|---|
+| 16 script | superati; viste estese a C33 |
+| Controllo a vista di C33 | traverso 23,6 kNm al nodo rigido e zero alla cerniera; colonna sinistra 23,6 e 34,1 kNm con cambio di segno; colonna destra a mensola 22,3 kNm |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

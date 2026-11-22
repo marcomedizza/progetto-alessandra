@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 21/11/2026
+# Rapporto di confronto del solutore — 22/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 20/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 21/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -36,15 +36,17 @@
 | C24 Telaio a due piani a travi incernierate, combinazione di carichi verticali e vento | 8 superati, 0 non superati | 0 | 0 |
 | C25 Portale a tre cerniere, trapezio parziale e cedimento | 8 superati, 0 non superati | 0 | 0 |
 | C26 Trave continua, combinazione di carico uniforme e cedimento | 5 superati, 0 non superati | 0 | 0 |
-| C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
+| C27 Telaio a due piani a travi incernierate, combinazione di carichi verticali, vento e ΔT a farfalla | 6 superati, 0 non superati | 0 | 0 |
 | C28 Portale asimmetrico a tre cerniere, carichi misti | 8 superati, 0 non superati | 0 | 0 |
 | C29 Telaio a due piani a travi incernierate, trapezio e cedimento | 7 superati, 0 non superati | 0 | 0 |
-| C30 Telaio a tre piani a travi incernierate, carichi misti combinati | 8 superati, 0 non superati | 0 | 0 |
+| C30 Telaio a tre piani a travi incernierate, carichi misti combinati con il vento | 8 superati, 0 non superati | 0 | 0 |
 | C31 Telaio a tre piani a travi incernierate, carichi misti e ΔT | 5 superati, 0 non superati | 0 | 0 |
 | C32 Telaio a tre piani a travi incernierate, carichi misti, ΔT e vento | 6 superati, 0 non superati | 0 | 0 |
+| C33 Portale con traverso incernierato da un solo lato, assiale rigida | 7 superati, 0 non superati | 0 | 0 |
 
-**Novità del 21/11**
-- **Punto 79, vento sbloccato**: R = 10⁶ per le aste incernierate. Fortran e riferimento concordano di nuovo sul telaio a travi incernierate con vento, con differenza massima da 6·10⁻⁵ a 3·10⁻⁷ kN. Il riferimento di C24 è rigenerato, con variazioni sotto 10⁻⁵ kN.
-- **C32**: C31 con il vento, soluzione esatta, uguale nei tre percorsi.
+**Novità del 22/11**
+- **Vento reinserito** in C27 e C30, superati nei tre percorsi.
+- **C33**, portale con traverso a una sola cerniera e assiale rigida, risolto con il metodo delle rotazioni (punto 98).
+- Correzione del rapporto del 21/11: lo scarto banda contro piena su tutti i casi è 1,5·10⁻⁸ m (C32), non 1,2·10⁻¹⁰.
 
-**Altre prove**: `test_app.py` 40 superate (tolleranza di `test_combinazione_due_piani` motivata, punto 99); `esegui_scenari.py` 16 script.
+**Altre prove**: `test_app.py` 40 superate; `esegui_scenari.py` 16 script.

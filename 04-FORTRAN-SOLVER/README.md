@@ -113,7 +113,7 @@ Possibile miglioramento, non fatto: un R più basso, intorno a 10⁷, per le ast
 | travi divise (C27), riferimento / Fortran | 3,4·10⁻⁵ / 9,6·10⁻⁵ kN | 1,8·10⁻⁶ / 1,6·10⁻⁶ kN |
 | differenza tra i due solutori, C24 / travi divise | 1,3·10⁻⁵ / 6,2·10⁻⁵ kN | 8·10⁻⁹ / 2,9·10⁻⁷ kN |
 
-Il caso peggiore migliora di un ordine di grandezza e i due solutori tornano a concordare entro la tolleranza del confronto completo. Per questo C32 contiene il vento escluso da C27, C30 e C31. Banda contro piena su C1–C32: scarto massimo 1,2·10⁻¹⁰ m, prima 1,5·10⁻⁹. Lo studio `studio_area_fittizia.py` varia solo R delle aste senza cerniere. Il limite dichiarato diventa 10⁻⁸ relativo nei telai a nodi rigidi e circa 10⁻⁶ con aste incernierate.
+Il caso peggiore migliora di un ordine di grandezza e i due solutori tornano a concordare entro la tolleranza del confronto completo. Per questo C32 contiene il vento escluso da C27, C30 e C31. Banda contro piena: il 21/11 era stato indicato uno scarto massimo di 1,2·10⁻¹⁰ m, ma la misura era stata fatta prima di aggiungere C32. Su C1–C33 lo scarto massimo è 1,5·10⁻⁸ m, nel caso W di C32, con spostamenti di 0,47 m: 3·10⁻⁸ relativo. Seguono C30 (1,8·10⁻⁹) e C27 (8,4·10⁻¹⁰). Per C24 1,2·10⁻¹⁰, prima 1,5·10⁻⁹. Lo studio `studio_area_fittizia.py` varia solo R delle aste senza cerniere. Il limite dichiarato diventa 10⁻⁸ relativo nei telai a nodi rigidi e circa 10⁻⁶ con aste incernierate.
 
 **Formato d'uscita (Ottavia, Paola, 13/11, D25)**: i numeri sono scritti con `es25.16e3`, cioè esponente sempre a tre cifre (`1.0000000000000000E+000`). Con `es24.16` gfortran ometteva la «E» per esponenti oltre 99, e il convertitore non leggeva il file. Banda contro piena su C1–C26 invariata (scarto massimo 1,5·10⁻⁹ m su C24).
 

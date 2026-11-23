@@ -1,0 +1,49 @@
+# Confronto schema v1.2 ↔ EnergyPlus epJSON (Benedetta, Gabriella; 23/11/2026)
+
+**Fonte**: dizionario dei dati di EnergyPlus (`idd/Energy+.idd.in`), letto il 23/11/2026 dal repository pubblico NREL/EnergyPlus su GitHub (ramo `develop`, quindi non una versione rilasciata). Licenza BSD a tre clausole. Il dizionario non è copiato nel repository: qui ci sono solo i nomi dei campi.
+
+L'epJSON è la forma JSON degli stessi oggetti dell'IDF. Nel testo i campi sono indicati con il nome del dizionario («Specific Heat»). Il nome nello schema epJSON dovrebbe essere lo stesso in minuscolo con i trattini bassi («specific_heat»). Questa corrispondenza non è stata verificata sullo schema epJSON generato (`Energy+.schema.epJSON`) e va confermata prima di scrivere un esportatore.
+
+**Perché la tabella è rimasta bloccata 26 giorni**: era legata alla Interface Developer's Guide in RIFERIMENTI, che gli agenti non leggono. Il dizionario dei dati è la fonte primaria degli oggetti ed è raggiungibile in rete. energyplus.net e bigladdersoftware.com restano invece bloccati dalla rete dell'ambiente.
+
+## Oggetti esaminati
+
+| Oggetto | Campi | Campi rilevanti per il confronto |
+|---|---|---|
+| `Building` | 9 | Name, North Axis [deg] |
+| `GlobalGeometryRules` | 5 | Starting Vertex Position, Vertex Entry Direction, Coordinate System |
+| `Site:Location` | 6 | Latitude, Longitude [deg], Time Zone [hr], Elevation [m] |
+| `Zone` | 13 | Name, X/Y/Z Origin [m], Ceiling Height [m], Volume [m3], Floor Area [m2] |
+| `Material` | 12 | Name, Thickness [m], Conductivity [W/m-K], Density [kg/m3], Specific Heat [J/kg-K], assorbimenti |
+| `Material:NoMass` | 9 | Name, Thermal Resistance [m2-K/W] |
+| `Construction` | 11 | Name, Outside Layer, Layer 2 … Layer 10 (nomi di materiali) |
+| `BuildingSurface:Detailed` | 371 | Name, Surface Type, Construction Name, Zone Name, Outside Boundary Condition, Number of Vertices, Vertex n X/Y/Z-coordinate [m] |
+
+## Corrispondenza con lo schema dati v1.2
+
+| Schema v1.2 | Unità | epJSON | Unità | Relazione |
+|---|---|---|---|---|
+| `progetto.nome` | — | `Building` Name | — | diretta |
+| `unita.lunghezza` = m | m | tutte le lunghezze | m | stessa unità |
+| `nodi[].x`, `nodi[].y` (telaio piano) | m | `BuildingSurface:Detailed` Vertex n X/Y/Z | m | **nessuna diretta**: i nodi sono punti di un telaio piano, i vertici delimitano superfici 3D; servirebbe la geometria dell'involucro, che lo schema non descrive |
+| `aste[]` | — | — | — | nessuna: EnergyPlus non descrive elementi strutturali |
+| `materiali[].nome` | — | `Material` Name | — | stessa identità, proprietà diverse |
+| `materiali[].peso_specifico` γ | kN/m³ | `Material` Density ρ | kg/m³ | ρ = γ·1000/g, con g = 9,81 m/s² (78,5 kN/m³ → 8002 kg/m³; la densità dell'acciaio usata di solito nei calcoli termici è circa 7850 kg/m³, perché 78,5 kN/m³ è un valore arrotondato per eccesso per i pesi propri) |
+| `materiali[].E`, `alfa_t` | kN/m², 1/°C | — | — | nessuna: EnergyPlus non usa proprietà meccaniche né dilatazione termica |
+| — | — | `Material` Conductivity, Specific Heat, Thickness | W/m-K, J/kg-K, m | mancano nello schema |
+| `sezioni[].h` | m | `Material` Thickness | m | **solo apparente**: h è l'altezza della sezione di un'asta, Thickness lo spessore di uno strato di parete |
+| `vincoli`, `casi_di_carico`, `combinazioni` | — | — | — | nessuna |
+| — | — | `Zone`, `Construction`, `Site:Location` | — | mancano nello schema |
+
+## Conclusione
+
+I due modelli hanno in comune soltanto il nome del progetto, l'unità di lunghezza e l'identità dei materiali con la densità. Lo schema descrive un telaio piano per il calcolo statico. epJSON descrive zone termiche, superfici d'involucro e stratigrafie. Nessuno dei due contiene le informazioni principali dell'altro.
+
+Proposta, da decidere con Marco:
+1. nessun convertitore diretto schema → epJSON;
+2. se la parte energetica partirà, un modello d'edificio separato, con zone, superfici e stratigrafie, collegato al modello strutturale per nome di progetto e di materiale;
+3. le proprietà termiche dei materiali (Conductivity, Specific Heat) vanno in un catalogo dei materiali comune, non nello schema del telaio.
+
+**Da verificare** prima di un esportatore:
+- i nomi dei campi nello schema epJSON generato;
+- la versione rilasciata di EnergyPlus da usare, invece del ramo `develop`.

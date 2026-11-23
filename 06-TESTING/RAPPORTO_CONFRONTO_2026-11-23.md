@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 22/11/2026
+# Rapporto di confronto del solutore — 23/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 21/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 22/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -44,9 +44,8 @@
 | C32 Telaio a tre piani a travi incernierate, carichi misti, ΔT e vento | 6 superati, 0 non superati | 0 | 0 |
 | C33 Portale con traverso incernierato da un solo lato, assiale rigida | 7 superati, 0 non superati | 0 | 0 |
 
-**Novità del 22/11**
-- **Vento reinserito** in C27 e C30, superati nei tre percorsi.
-- **C33**, portale con traverso a una sola cerniera e assiale rigida, risolto con il metodo delle rotazioni (punto 98).
-- Correzione del rapporto del 21/11: lo scarto banda contro piena su tutti i casi è 1,5·10⁻⁸ m (C32), non 1,2·10⁻¹⁰.
+**Novità del 23/11**
+- Nessun caso nuovo: C1–C33 superati nei tre percorsi.
+- Nuova prova del servizio `test_una_cerniera_e_vento_reinserito` su C33, C27 e C30.
 
-**Altre prove**: `test_app.py` 40 superate; `esegui_scenari.py` 16 script.
+**Altre prove**: `test_app.py` 41 superate; `esegui_scenari.py` 16 script.

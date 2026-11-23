@@ -453,6 +453,20 @@ def test_c31_carichi_misti_e_termica():
     assert any(abs(x - 2.0) < 1e-9 for x in s7["x"]) and abs(max(abs(v) for v in s7["M"]) - 1.3 * 40 * 2 * 4 / 6) < 1e-6
 
 
+def test_una_cerniera_e_vento_reinserito():
+    # Natalia, 23/11: C33 (traverso a una cerniera, assiale rigida) dal servizio, con l'equilibrio orizzontale dei
+    # tagli delle colonne; C27 e C30 con il vento reinserito il 22/11
+    r = client.post("/api/calcola", json=modello("C33_portale_una_cerniera")).json()["risultati"][0]
+    rz = {x["nodo"]: x for x in r["reazioni"]}
+    assert abs(rz[1]["Rx"] + rz[4]["Rx"] + 20.0) < 1e-6
+    assert abs({u["nodo"]: u for u in r["spostamenti"]}[2]["ux"] - 0.0153178) < 1e-6
+    s2 = next(s for s in r["sollecitazioni"] if s["asta"] == 2)
+    assert abs(s2["M"][-1]) < 1e-6                     # momento nullo alla cerniera
+    for nome, rx in (("C27_due_piani_termica", -18.75), ("C30_tre_piani_misti", -13.5)):
+        c = client.post("/api/calcola?combinazione=SLU1", json=modello(nome)).json()["risultati"][0]
+        assert abs({x["nodo"]: x for x in c["reazioni"]}[1]["Rx"] - rx) < 1e-4
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

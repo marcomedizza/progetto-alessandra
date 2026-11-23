@@ -420,3 +420,15 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `test_app.py`: 40 prove;
 - banda contro piena: 1,5·10⁻⁸ m al massimo;
 - `esegui_scenari.py`: 16 script.
+
+**Revisione del lavoro del 23/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 103 | `01-ARCHITETTURA/CONFRONTO_SCHEMA_EPJSON.md` | La conversione dei nomi dei campi IDF in nomi epJSON (minuscole e trattini bassi) è dichiarata come non verificata; la fonte è il ramo `develop`, non una versione rilasciata. Entrambe le cose sono scritte nel documento | — | nessun intervento |
+| 104 | `03-BACKEND/servizio/test_app.py` | La prova su C33 controlla l'equilibrio orizzontale e il momento nullo alla cerniera; C27 e C30 con il vento hanno ora una prova dal servizio | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C33: superati;
+- `test_app.py`: 41 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
+- `esegui_scenari.py`: 16 script.

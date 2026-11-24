@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 23/11/2026
+# Rapporto di confronto del solutore — 24/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 22/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 23/11
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -43,9 +43,13 @@
 | C31 Telaio a tre piani a travi incernierate, carichi misti e ΔT | 5 superati, 0 non superati | 0 | 0 |
 | C32 Telaio a tre piani a travi incernierate, carichi misti, ΔT e vento | 6 superati, 0 non superati | 0 | 0 |
 | C33 Portale con traverso incernierato da un solo lato, assiale rigida | 7 superati, 0 non superati | 0 | 0 |
+| C34 Mensola, peso proprio e momento nodale | 4 superati, 0 non superati | 0 | 0 |
+| C35 Trave doppiamente incastrata, cedimenti rz e ux | 5 superati, 0 non superati | 0 | 0 |
+| C36 Mensola su molle orizzontale e rotazionale | 6 superati, 0 non superati | 0 | 0 |
+| C37 Mensola inclinata, carichi locali e orizzontali | 4 superati, 0 non superati | 0 | 0 |
+| C38 Trave incastrata e a pattino, carico uniforme | 4 superati, 0 non superati | 0 | 0 |
 
-**Novità del 23/11**
-- Nessun caso nuovo: C1–C33 superati nei tre percorsi.
-- Nuova prova del servizio `test_una_cerniera_e_vento_reinserito` su C33, C27 e C30.
+**Novità del 24/11**
+- **Copertura**: `copertura.py` ha trovato 11 funzioni dello schema senza casi. C34–C38 le coprono tutte: 32 su 32, tutti a soluzione chiusa, uguali nei tre percorsi.
 
-**Altre prove**: `test_app.py` 41 superate; `esegui_scenari.py` 16 script.
+**Altre prove**: `test_app.py` 42 superate (nuova: `test_copertura_dei_casi`); `esegui_scenari.py` 16 script.

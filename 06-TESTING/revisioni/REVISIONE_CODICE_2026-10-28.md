@@ -432,3 +432,18 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C33: superati;
 - `test_app.py`: 41 prove; `prove_modifica.mjs`: 5; `prove_risultati.mjs`: 4;
 - `esegui_scenari.py`: 16 script.
+
+**Revisione del lavoro del 24/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 105 | `06-TESTING/casi/copertura.py` | L'elenco `ATTESE` è scritto a mano: una funzione aggiunta allo schema non vi entra da sola | bassa | aperto: ricavare l'elenco dallo schema (enumerazioni di `tipo` e `direzione`, campi di `vincoli` e `molle`) |
+| 106 | `06-TESTING/casi/genera_casi.py` | C37 combina quattro casi con coefficiente 1 e tipo `SLE_rara`; la prima stesura usava `SLE`, rifiutato dallo schema, e la verifica l'ha segnalato | — | corretto |
+| 107 | `01-ARCHITETTURA/PROPOSTA_TERMICHE.md` | La proposta non aggiunge campi allo schema, coerente con la decisione del 29/10. I valori di conducibilità non sono scritti a memoria | — | nessun intervento |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C38: superati;
+- `test_app.py`: 42 prove;
+- `copertura.py`: 32 funzioni su 32;
+- banda contro piena: 1,5·10⁻⁸ m al massimo;
+- `esegui_scenari.py`: 16 script.

@@ -467,6 +467,19 @@ def test_una_cerniera_e_vento_reinserito():
         assert abs({x["nodo"]: x for x in c["reazioni"]}[1]["Rx"] - rx) < 1e-4
 
 
+def test_copertura_dei_casi():
+    # Silvia, Valentina, 24/11: ogni funzione dello schema elencata in copertura.py ha almeno un caso di prova
+    import glob
+    sys.path.insert(0, os.path.join(servizio.RADICE, "06-TESTING", "casi"))
+    import copertura
+    usate = set()
+    for p in glob.glob(os.path.join(servizio.RADICE, "06-TESTING", "casi", "C*.json")):
+        if not p.endswith((".atteso.json", ".riferimento.json")):
+            with open(p, encoding="utf-8") as fh:
+                usate |= copertura.funzioni(json.load(fh))
+    assert [f for f in copertura.ATTESE if f not in usate] == []
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")

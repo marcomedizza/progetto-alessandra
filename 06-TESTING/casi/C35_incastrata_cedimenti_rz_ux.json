@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C35",
+    "nome": "Trave doppiamente incastrata, cedimenti rz e ux",
+    "descrizione": "IPE 300, L = 6 m, incastri in 1 e 2; cedimenti: rotazione 1 mrad del nodo 1, spostamento orizzontale di 2 mm del nodo 2 (Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-24",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 6.0,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    },
+    {
+      "nodo": 2,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "D",
+      "nome": "Cedimenti",
+      "categoria": "altro",
+      "cedimenti": [
+        {
+          "nodo": 1,
+          "rz": 0.001
+        },
+        {
+          "nodo": 2,
+          "ux": 0.002
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 13
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C36",
+    "nome": "Mensola su molle orizzontale e rotazionale",
+    "descrizione": "Mensola IPE 300, L = 3 m; nodo 1 con uy impedito, molla orizzontale kx = 10 000 kN/m e rotazionale kr = 5000 kNm/rad; in punta P = 10 kN verso il basso e H = 20 kN verso destra (Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-24",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 3.0,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "uy": true,
+      "molle": {
+        "kx": 10000.0,
+        "kr": 5000.0
+      }
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "Q",
+      "nome": "Forze in punta",
+      "categoria": "Q",
+      "carichi_nodali": [
+        {
+          "nodo": 2,
+          "Fx": 20.0,
+          "Fy": -10.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  }
+}

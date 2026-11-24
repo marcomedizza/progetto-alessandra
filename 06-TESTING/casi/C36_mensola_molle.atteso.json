@@ -1,0 +1,40 @@
+{
+  "caso": "Q",
+  "formule": {
+    "molla orizzontale": "ux1 = H/kx; Rx = −H",
+    "molla rotazionale": "rz1 = −PL/kr (orario)",
+    "punta": "uy2 = −PL³/3EI + rz1·L; ux2 = H/kx + HL/EA"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 10.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -20.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "ux nodo 1",
+      "valore": 0.002,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 1",
+      "valore": -0.006,
+      "unita": "rad"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.02312890651713055,
+      "unita": "m"
+    },
+    {
+      "grandezza": "ux nodo 2",
+      "valore": 0.0020530968752488915,
+      "unita": "m"
+    }
+  ]
+}

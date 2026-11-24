@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "progetto": {
+    "id": "C34",
+    "nome": "Mensola, peso proprio e momento nodale",
+    "descrizione": "Mensola IPE 300, L = 4 m, incastrata in 1; caso G: peso proprio (γ = 78,5 kN/m³); caso M: momento antiorario di 10 kNm in punta; combinazione 1,3·G + 1,5·M (Valentina).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-24",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 4.0,
+      "y": 0
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "G",
+      "nome": "Peso proprio",
+      "categoria": "G1",
+      "peso_proprio": true
+    },
+    {
+      "id": "M",
+      "nome": "Momento in punta",
+      "categoria": "Q",
+      "carichi_nodali": [
+        {
+          "nodo": 2,
+          "Mz": 10.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  },
+  "combinazioni": [
+    {
+      "id": "SLU1",
+      "nome": "1,3·G + 1,5·M",
+      "tipo": "SLU",
+      "coefficienti": {
+        "G": 1.3,
+        "M": 1.5
+      }
+    }
+  ]
+}

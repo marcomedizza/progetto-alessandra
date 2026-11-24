@@ -344,6 +344,65 @@ Errore del metodo dell'area fittizia su Δ: 1,0·10⁻⁷ relativo con R = 10⁶
 
 **Vento reinserito il 22/11** in C27 (1,3·G + 1,5·W + 0,9·T; Rx = −18,75 kN, M piede 105 kNm come C24) e in C30 (1,3·G + 1,5·Q + 0,9·W; Rx = −13,5 kN, M piede 110,25 kNm). C31 resta senza vento: lo ha C32.
 
+## Copertura e casi C34–C38 (Valentina, Daniela, 24/11)
+
+`copertura.py` elenca, per ogni funzione dello schema, i casi che la usano. Il 24/11 su 33 casi risultavano scoperte 11 funzioni su 32. I casi C34–C38, tutti con soluzione chiusa, le coprono:
+- **C34**, mensola IPE 300 di 4 m: peso proprio, q = γA = 78,5·53,81·10⁻⁴ = 0,4224 kN/m; momento nodale di 10 kNm in punta.
+  - Combinazione 1,3·G + 1,5·M: M(0) = 1,3·(−qL²/2) + 1,5·10 = 10,61 kNm.
+  - uy in punta = 1,3·(−qL⁴/8EI) + 1,5·ML²/2EI = +5,84 mm.
+- **C35**, trave doppiamente incastrata di 6 m.
+  - Rotazione impressa θ = 1 mrad: momenti 4EIθ/L = 11,70 e 2EIθ/L = 5,85 kNm; taglio 6EIθ/L² = 2,92 kN.
+  - Allungamento impresso di 2 mm: N = EA·δ/L = 376,7 kN.
+- **C36**, mensola di 3 m con il piede su molle kx = 10 000 kN/m e kr = 5000 kNm/rad.
+  - ux1 = H/kx = 2,0 mm; rz1 = −PL/kr = −6 mrad.
+  - Punta: uy2 = −PL³/3EI + rz1·L = −23,13 mm.
+- **C37**, mensola inclinata 3-4-5 incastrata al piede, quattro casi:
+  - A: uniforme normale all'asta;
+  - B: forza normale all'asta;
+  - C: forza orizzontale concentrata;
+  - D: trapezio orizzontale.
+  - Reazioni dalla somma delle risultanti: Rx = −34 kN, Ry = 24 kN, Mz = 99 kNm.
+- **C38**, trave di 6 m incastrata e a pattino. È metà di una trave doppiamente incastrata di luce 2L: M(0) = −qL²/3 = −120 kNm; M(L) = qL²/6 = 60 kNm; freccia qL⁴/24EI = 30,77 mm.
+
+Con C34–C38: 38 casi, 32 funzioni coperte su 32. La prova del servizio `test_copertura_dei_casi` segnala una funzione rimasta senza caso.
+
+| Funzione | Casi |
+|---|---|
+| vincolo: incastro | C2, C3, C4, C5, C6, C13, C14, C16, C19, C20, C22, C23, C24, C27, C29, C30, C31, C32, C33, C34, C35, C37, C38 |
+| vincolo: cerniera | C1, C7, C8, C9, C10, C11, C12, C15, C17, C18, C21, C25, C26, C28 |
+| vincolo: carrello verticale | C1, C6, C7, C8, C10, C11, C12, C15, C16, C17, C18, C19, C20, C21, C26, C36 |
+| vincolo: carrello orizzontale | C9 |
+| vincolo: rotazione impedita senza incastro (pattino) | C38 |
+| molla kx | C36 |
+| molla ky | C8, C9, C22 |
+| molla kr | C36 |
+| asta incernierata a un estremo | C6, C9, C16, C19, C20, C22, C25, C27, C28, C31, C32, C33 |
+| asta incernierata ai due estremi | C24, C29, C30, C31, C32 |
+| asta inclinata | C15, C17, C21, C37 |
+| deformabilità assiale trascurata | C3, C4, C24, C27, C29, C30, C31, C32, C33 |
+| peso proprio | C34 |
+| carico nodale Fx | C3, C5, C9, C24, C27, C28, C30, C32, C33, C36 |
+| carico nodale Fy | C2, C36 |
+| carico nodale Mz | C34 |
+| carico d'asta uniforme globale_x | C28 |
+| carico d'asta uniforme globale_y | C1, C4, C5, C6, C8, C10, C24, C26, C27, C30, C31, C32, C38 |
+| carico d'asta uniforme locale_y | C37 |
+| carico d'asta concentrato globale_x | C37 |
+| carico d'asta concentrato globale_y | C7, C10, C28, C30, C31, C32 |
+| carico d'asta concentrato locale_y | C37 |
+| carico d'asta trapezio globale_x | C37 |
+| carico d'asta trapezio globale_y | C12, C13, C15, C20, C21, C22, C23, C25, C29, C30, C31, C32 |
+| carico d'asta trapezio locale_y | C17 |
+| trapezio parziale | C12, C15, C17, C20, C21, C22 |
+| cedimento ux | C35 |
+| cedimento uy | C11, C16, C21, C25, C26, C29, C30, C31, C32 |
+| cedimento rz | C35 |
+| ΔT uniforme | C14, C23 |
+| ΔT a farfalla | C14, C18, C19, C23, C27, C31, C32 |
+| combinazione di casi | C10, C23, C24, C26, C27, C30, C31, C32, C34, C37 |
+
+38 casi; 32 funzioni coperte su 32.
+
 ## File
 
 - `C*.json`: modelli di input

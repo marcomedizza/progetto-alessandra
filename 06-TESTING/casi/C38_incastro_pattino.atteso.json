@@ -1,0 +1,29 @@
+{
+  "caso": "Q",
+  "formule": {
+    "simmetria": "metà di una trave doppiamente incastrata di luce 2L",
+    "valori": "Ry1 = qL; M(0) = −q(2L)²/12 = −qL²/3; M(L) = q(2L)²/24 = qL²/6; uy2 = −q(2L)⁴/384EI = −qL⁴/24EI"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 60.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": -120.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "M asta 1 x=L",
+      "valore": 60.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": -0.030773439102783285,
+      "unita": "m"
+    }
+  ]
+}

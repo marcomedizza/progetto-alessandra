@@ -1,0 +1,30 @@
+{
+  "caso": "TOT",
+  "formule": {
+    "risultanti": "A: qL normale all'asta; B: P normale; C: H orizzontale; D: qx·L/2 orizzontale a 2L/3",
+    "momenti attorno al piede": "qL²/2 + P·a − H·a·s − (qx·L/2)·(2L/3)·s",
+    "reazioni": "opposte alla somma delle risultanti e dei loro momenti"
+  },
+  "valori": [
+    {
+      "grandezza": "Rx nodo 1",
+      "valore": -34.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 24.0,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "Mz nodo 1 (reazione)",
+      "valore": 99.0,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=0",
+      "valore": 99.0,
+      "unita": "kNm"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "caso": "D",
+  "formule": {
+    "rotazione impressa": "momenti d'estremità 4EIθ/L e 2EIθ/L, di segno opposto nella convenzione della trave; taglio 6EIθ/L²",
+    "allungamento impresso": "N = EA·δ/L, trazione"
+  },
+  "valori": [
+    {
+      "grandezza": "N asta 1 x=3",
+      "valore": 376.67,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "|M| asta 1 x=0",
+      "valore": 11.698400000000001,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|M| asta 1 x=L",
+      "valore": 5.849200000000001,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "|V| asta 1 x=3",
+      "valore": 2.9246,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "rz nodo 1",
+      "valore": 0.001,
+      "unita": "rad"
+    }
+  ]
+}

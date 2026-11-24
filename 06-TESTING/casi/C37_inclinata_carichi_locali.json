@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.1",
+  "progetto": {
+    "id": "C37",
+    "nome": "Mensola inclinata, carichi locali e orizzontali",
+    "descrizione": "Mensola IPE 300 da (0; 0) a (4; 3), L = 5 m, incastrata al piede; casi: A uniforme normale all'asta −4 kN/m (locale_y); B forza normale all'asta −10 kN a 2 m; C forza orizzontale 6 kN a 2,5 m; D trapezio orizzontale da 0 a 4 kN/m su tutta l'asta; combinazione A + B + C + D (Daniela).",
+    "autore": "Valentina (casi di prova)",
+    "data": "2026-11-24",
+    "tipo_modello": "telaio_piano",
+    "unita": {
+      "lunghezza": "m",
+      "forza": "kN"
+    }
+  },
+  "materiali": [
+    {
+      "id": "S275",
+      "nome": "Acciaio S275",
+      "tipo": "acciaio",
+      "E": 210000000.0,
+      "peso_specifico": 78.5
+    }
+  ],
+  "nodi": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 2,
+      "x": 4,
+      "y": 3
+    }
+  ],
+  "sezioni": [
+    {
+      "id": "IPE300",
+      "nome": "IPE 300",
+      "A": 0.005381,
+      "I": 8.356e-05,
+      "W": 0.0005571,
+      "fonte": "sagomario profili IPE, asse forte"
+    }
+  ],
+  "aste": [
+    {
+      "id": 1,
+      "nodo_i": 1,
+      "nodo_j": 2,
+      "materiale": "S275",
+      "sezione": "IPE300"
+    }
+  ],
+  "vincoli": [
+    {
+      "nodo": 1,
+      "ux": true,
+      "uy": true,
+      "rz": true
+    }
+  ],
+  "casi_di_carico": [
+    {
+      "id": "A",
+      "nome": "Uniforme normale all'asta",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_uniforme",
+          "direzione": "locale_y",
+          "q": -4.0
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "nome": "Forza normale all'asta",
+      "categoria": "Q",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "concentrato",
+          "direzione": "locale_y",
+          "P": -10.0,
+          "a": 2.0
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "nome": "Forza orizzontale",
+      "categoria": "vento",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "concentrato",
+          "direzione": "globale_x",
+          "P": 6.0,
+          "a": 2.5
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "nome": "Trapezio orizzontale",
+      "categoria": "vento",
+      "carichi_aste": [
+        {
+          "asta": 1,
+          "tipo": "distribuito_trapezio",
+          "direzione": "globale_x",
+          "q_i": 0.0,
+          "q_j": 4.0,
+          "a": 0.0,
+          "b": 5.0
+        }
+      ]
+    }
+  ],
+  "analisi": {
+    "tipo": "statica_lineare",
+    "deformabilita_assiale": true,
+    "punti_diagramma": 11
+  },
+  "combinazioni": [
+    {
+      "id": "TOT",
+      "nome": "A + B + C + D",
+      "tipo": "SLE_rara",
+      "coefficienti": {
+        "A": 1,
+        "B": 1,
+        "C": 1,
+        "D": 1
+      }
+    }
+  ]
+}

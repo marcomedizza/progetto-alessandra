@@ -1230,6 +1230,158 @@ def c33():
     return m, atteso
 
 
+# Casi C34–C38 (Valentina, Daniela, 24/11): coprono le funzioni dello schema senza casi trovate da copertura.py
+
+
+def c34():
+    """Mensola IPE 300, L = 4 m: peso proprio (G) e momento nodale in punta (M); 1,3·G + 1,5·M."""
+    L, Mz = 4.0, 10.0
+    q = ACC["peso_specifico"] * IPE300["A"]                     # kN/m
+    EI = E_ACC * IPE300["I"]
+    m = trave("C34", "Mensola, peso proprio e momento nodale",
+              "Mensola IPE 300, L = 4 m, incastrata in 1; caso G: peso proprio (γ = 78,5 kN/m³); caso M: momento "
+              "antiorario di 10 kNm in punta; combinazione 1,3·G + 1,5·M (Valentina).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True, "rz": True}],
+              {"id": "G", "nome": "Peso proprio", "categoria": "G1", "peso_proprio": True}, 11)
+    m["casi_di_carico"].append({"id": "M", "nome": "Momento in punta", "categoria": "Q",
+                                "carichi_nodali": [{"nodo": 2, "Mz": Mz}]})
+    m["combinazioni"] = [{"id": "SLU1", "nome": "1,3·G + 1,5·M", "tipo": "SLU", "coefficienti": {"G": 1.3, "M": 1.5}}]
+    m["progetto"]["data"] = "2026-11-24"
+    atteso = {"caso": "SLU1", "formule": {
+        "G": "q = γA; Ry = qL; M(0) = −qL²/2; uy punta = −qL⁴/8EI",
+        "M": "momento antiorario in punta: M = +Mz costante (fibre inferiori tese); uy punta = +MzL²/2EI; rz = MzL/EI"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": 1.3 * q * L, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0", "valore": 1.3 * (-q * L ** 2 / 2) + 1.5 * Mz, "unita": "kNm"},
+            {"grandezza": "uy nodo 2", "valore": 1.3 * (-q * L ** 4 / (8 * EI)) + 1.5 * Mz * L ** 2 / (2 * EI), "unita": "m"},
+            {"grandezza": "rz nodo 2", "valore": 1.3 * (-q * L ** 3 / (6 * EI)) + 1.5 * Mz * L / EI, "unita": "rad"}]}
+    return m, atteso
+
+
+def c35():
+    """Trave IPE 300 doppiamente incastrata, L = 6 m: rotazione impressa in 1 e spostamento assiale impresso in 2."""
+    L, th, dx = 6.0, 0.001, 0.002
+    EI, EA = E_ACC * IPE300["I"], E_ACC * IPE300["A"]
+    m = v11(trave("C35", "Trave doppiamente incastrata, cedimenti rz e ux",
+                  "IPE 300, L = 6 m, incastri in 1 e 2; cedimenti: rotazione 1 mrad del nodo 1, spostamento orizzontale "
+                  "di 2 mm del nodo 2 (Valentina).",
+                  [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}],
+                  [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+                  [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "uy": True, "rz": True}],
+                  {"id": "D", "nome": "Cedimenti", "categoria": "altro",
+                   "cedimenti": [{"nodo": 1, "rz": th}, {"nodo": 2, "ux": dx}]}, 13))
+    m["progetto"]["data"] = "2026-11-24"
+    atteso = {"caso": "D", "formule": {
+        "rotazione impressa": "momenti d'estremità 4EIθ/L e 2EIθ/L, di segno opposto nella convenzione della trave; taglio 6EIθ/L²",
+        "allungamento impresso": "N = EA·δ/L, trazione"},
+        "valori": [
+            {"grandezza": "N asta 1 x=3", "valore": EA * dx / L, "unita": "kN"},
+            {"grandezza": "|M| asta 1 x=0", "valore": 4 * EI * th / L, "unita": "kNm"},
+            {"grandezza": "|M| asta 1 x=L", "valore": 2 * EI * th / L, "unita": "kNm"},
+            {"grandezza": "|V| asta 1 x=3", "valore": 6 * EI * th / L ** 2, "unita": "kN"},
+            {"grandezza": "rz nodo 1", "valore": th, "unita": "rad"}]}
+    return m, atteso
+
+
+def c36():
+    """Mensola IPE 300, L = 3 m, con il piede su molla orizzontale kx e rotazionale kr (uy impedito)."""
+    L, kx, kr, P, H = 3.0, 1.0e4, 5000.0, 10.0, 20.0
+    EI, EA = E_ACC * IPE300["I"], E_ACC * IPE300["A"]
+    m = trave("C36", "Mensola su molle orizzontale e rotazionale",
+              "Mensola IPE 300, L = 3 m; nodo 1 con uy impedito, molla orizzontale kx = 10 000 kN/m e rotazionale "
+              "kr = 5000 kNm/rad; in punta P = 10 kN verso il basso e H = 20 kN verso destra (Valentina).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "uy": True, "molle": {"kx": kx, "kr": kr}}],
+              {"id": "Q", "nome": "Forze in punta", "categoria": "Q", "carichi_nodali": [{"nodo": 2, "Fx": H, "Fy": -P}]}, 11)
+    m["progetto"]["data"] = "2026-11-24"
+    rz1 = -P * L / kr
+    atteso = {"caso": "Q", "formule": {
+        "molla orizzontale": "ux1 = H/kx; Rx = −H",
+        "molla rotazionale": "rz1 = −PL/kr (orario)",
+        "punta": "uy2 = −PL³/3EI + rz1·L; ux2 = H/kx + HL/EA"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": P, "unita": "kN"},
+            {"grandezza": "Rx nodo 1", "valore": -H, "unita": "kN"},
+            {"grandezza": "ux nodo 1", "valore": H / kx, "unita": "m"},
+            {"grandezza": "rz nodo 1", "valore": rz1, "unita": "rad"},
+            {"grandezza": "uy nodo 2", "valore": -P * L ** 3 / (3 * EI) + rz1 * L, "unita": "m"},
+            {"grandezza": "ux nodo 2", "valore": H / kx + H * L / EA, "unita": "m"}]}
+    return m, atteso
+
+
+def c37():
+    """Mensola inclinata 3-4-5 (L = 5 m) incastrata al piede, carichi in direzione locale e globale X.
+
+    Asse da (0; 0) a (4; 3): c = 0,8, s = 0,6; y locale = (−0,6; 0,8). Valori per unità di lunghezza dell'asta.
+    Isostatica: reazioni dalla somma delle risultanti e dei loro momenti attorno al piede.
+    """
+    c, s_, L = 0.8, 0.6, 5.0
+    q, P, aP, H, aH, qx = -4.0, -10.0, 2.0, 6.0, 2.5, 4.0
+    m = trave("C37", "Mensola inclinata, carichi locali e orizzontali",
+              "Mensola IPE 300 da (0; 0) a (4; 3), L = 5 m, incastrata al piede; casi: A uniforme normale all'asta "
+              "−4 kN/m (locale_y); B forza normale all'asta −10 kN a 2 m; C forza orizzontale 6 kN a 2,5 m; "
+              "D trapezio orizzontale da 0 a 4 kN/m su tutta l'asta; combinazione A + B + C + D (Daniela).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": 4, "y": 3}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True, "rz": True}],
+              {"id": "A", "nome": "Uniforme normale all'asta", "categoria": "Q",
+               "carichi_aste": [{"asta": 1, "tipo": "distribuito_uniforme", "direzione": "locale_y", "q": q}]}, 11)
+    m["schema_version"] = "1.1"
+    m["casi_di_carico"] += [
+        {"id": "B", "nome": "Forza normale all'asta", "categoria": "Q",
+         "carichi_aste": [{"asta": 1, "tipo": "concentrato", "direzione": "locale_y", "P": P, "a": aP}]},
+        {"id": "C", "nome": "Forza orizzontale", "categoria": "vento",
+         "carichi_aste": [{"asta": 1, "tipo": "concentrato", "direzione": "globale_x", "P": H, "a": aH}]},
+        {"id": "D", "nome": "Trapezio orizzontale", "categoria": "vento",
+         "carichi_aste": [{"asta": 1, "tipo": "distribuito_trapezio", "direzione": "globale_x", "q_i": 0.0, "q_j": qx,
+                           "a": 0.0, "b": L}]}]
+    m["combinazioni"] = [{"id": "TOT", "nome": "A + B + C + D", "tipo": "SLE_rara", "coefficienti": {"A": 1, "B": 1, "C": 1, "D": 1}}]
+    m["progetto"]["data"] = "2026-11-24"
+    yl = (-s_, c)
+    F = [(q * L * yl[0], q * L * yl[1]), (P * yl[0], P * yl[1]), (H, 0.0), (qx * L / 2, 0.0)]
+    # momenti antiorari attorno al piede: forza normale all'asta a distanza r → valore·r; forze orizzontali → −y·Fx
+    Mo = [q * L ** 2 / 2, P * aP, -(aH * s_) * H, -(2 / 3 * L * s_) * (qx * L / 2)]
+    atteso = {"caso": "TOT", "formule": {
+        "risultanti": "A: qL normale all'asta; B: P normale; C: H orizzontale; D: qx·L/2 orizzontale a 2L/3",
+        "momenti attorno al piede": "qL²/2 + P·a − H·a·s − (qx·L/2)·(2L/3)·s",
+        "reazioni": "opposte alla somma delle risultanti e dei loro momenti"},
+        "valori": [
+            {"grandezza": "Rx nodo 1", "valore": -sum(f[0] for f in F), "unita": "kN"},
+            {"grandezza": "Ry nodo 1", "valore": -sum(f[1] for f in F), "unita": "kN"},
+            {"grandezza": "Mz nodo 1 (reazione)", "valore": -sum(Mo), "unita": "kNm"},
+            {"grandezza": "|M| asta 1 x=0", "valore": abs(sum(Mo)), "unita": "kNm"}]}
+    return m, atteso
+
+
+def c38():
+    """Trave IPE 300, L = 6 m, incastrata in 1 e a pattino in 2 (ux e rz impediti, uy libero), carico uniforme.
+
+    È metà di una trave doppiamente incastrata di luce 2L: M(0) = −qL²/3, M(L) = +qL²/6, freccia qL⁴/24EI.
+    """
+    L, q = 6.0, 10.0
+    EI = E_ACC * IPE300["I"]
+    m = trave("C38", "Trave incastrata e a pattino, carico uniforme",
+              "IPE 300, L = 6 m, incastrata in 1, nodo 2 a pattino (ux e rz impediti, uy libero); q = 10 kN/m (Valentina).",
+              [{"id": 1, "x": 0, "y": 0}, {"id": 2, "x": L, "y": 0}],
+              [{"id": 1, "nodo_i": 1, "nodo_j": 2, "materiale": "S275", "sezione": "IPE300"}],
+              [{"nodo": 1, "ux": True, "uy": True, "rz": True}, {"nodo": 2, "ux": True, "rz": True}],
+              {"id": "Q", "nome": "Uniforme", "categoria": "Q",
+               "carichi_aste": [{"asta": 1, "tipo": "distribuito_uniforme", "direzione": "globale_y", "q": -q}]}, 13)
+    m["progetto"]["data"] = "2026-11-24"
+    atteso = {"caso": "Q", "formule": {
+        "simmetria": "metà di una trave doppiamente incastrata di luce 2L",
+        "valori": "Ry1 = qL; M(0) = −q(2L)²/12 = −qL²/3; M(L) = q(2L)²/24 = qL²/6; uy2 = −q(2L)⁴/384EI = −qL⁴/24EI"},
+        "valori": [
+            {"grandezza": "Ry nodo 1", "valore": q * L, "unita": "kN"},
+            {"grandezza": "M asta 1 x=0", "valore": -q * L ** 2 / 3, "unita": "kNm"},
+            {"grandezza": "M asta 1 x=L", "valore": q * L ** 2 / 6, "unita": "kNm"},
+            {"grandezza": "uy nodo 2", "valore": -q * L ** 4 / (24 * EI), "unita": "m"}]}
+    return m, atteso
+
+
 if __name__ == "__main__":
     for nome, f in (("C1_trave_appoggiata", c1), ("C2_mensola", c2), ("C3_portale_forza_orizzontale", c3),
                     ("C4_portale_carico_uniforme", c4), ("C5_telaio_due_piani", c5),
@@ -1251,7 +1403,10 @@ if __name__ == "__main__":
                     ("C30_tre_piani_misti", c30),
                     ("C31_tre_piani_termica", c31),
                     ("C32_tre_piani_vento", c32),
-                    ("C33_portale_una_cerniera", c33)):
+                    ("C33_portale_una_cerniera", c33),
+                    ("C34_mensola_peso_momento", c34), ("C35_incastrata_cedimenti_rz_ux", c35),
+                    ("C36_mensola_molle", c36), ("C37_inclinata_carichi_locali", c37),
+                    ("C38_incastro_pattino", c38)):
         m, a = f()
         scrivi(nome + ".json", m)
         scrivi(nome + ".atteso.json", a)

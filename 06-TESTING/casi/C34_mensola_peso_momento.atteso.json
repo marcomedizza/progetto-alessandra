@@ -1,0 +1,29 @@
+{
+  "caso": "SLU1",
+  "formule": {
+    "G": "q = γA; Ry = qL; M(0) = −qL²/2; uy punta = −qL⁴/8EI",
+    "M": "momento antiorario in punta: M = +Mz costante (fibre inferiori tese); uy punta = +MzL²/2EI; rz = MzL/EI"
+  },
+  "valori": [
+    {
+      "grandezza": "Ry nodo 1",
+      "valore": 2.1965242000000003,
+      "unita": "kN"
+    },
+    {
+      "grandezza": "M asta 1 x=0",
+      "valore": 10.606951599999999,
+      "unita": "kNm"
+    },
+    {
+      "grandezza": "uy nodo 2",
+      "valore": 0.005837140486448289,
+      "unita": "m"
+    },
+    {
+      "grandezza": "rz nodo 2",
+      "valore": 0.003085470499289551,
+      "unita": "rad"
+    }
+  ]
+}

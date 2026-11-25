@@ -437,7 +437,7 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 
 | # | File | Osservazione | Gravità | Esito |
 |---|---|---|---|---|
-| 105 | `06-TESTING/casi/copertura.py` | L'elenco `ATTESE` è scritto a mano: una funzione aggiunta allo schema non vi entra da sola | bassa | aperto: ricavare l'elenco dallo schema (enumerazioni di `tipo` e `direzione`, campi di `vincoli` e `molle`) |
+| 105 | `06-TESTING/casi/copertura.py` | L'elenco `ATTESE` è scritto a mano: una funzione aggiunta allo schema non vi entra da sola | bassa | **chiuso 25/11**: `attese_dallo_schema()` ricava 21 voci dallo schema (carichi d'asta, nodali, cedimenti, termici, molle, peso proprio); la prova del servizio verifica che siano tutte in `ATTESE`. La prova negativa, togliendo «molla kr», la segnala |
 | 106 | `06-TESTING/casi/genera_casi.py` | C37 combina quattro casi con coefficiente 1 e tipo `SLE_rara`; la prima stesura usava `SLE`, rifiutato dallo schema, e la verifica l'ha segnalato | — | corretto |
 | 107 | `01-ARCHITETTURA/PROPOSTA_TERMICHE.md` | La proposta non aggiunge campi allo schema, coerente con la decisione del 29/10. I valori di conducibilità non sono scritti a memoria | — | nessun intervento |
 
@@ -447,3 +447,16 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `copertura.py`: 32 funzioni su 32;
 - banda contro piena: 1,5·10⁻⁸ m al massimo;
 - `esegui_scenari.py`: 16 script.
+
+**Revisione del codice nuovo del 25/11** (Marisa)
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 108 | `02-FRONTEND-3D/vista.js` | Le frecce dei carichi ignorano la profondità: in vista assonometrica una freccia dietro un'asta appare davanti. Per un telaio piano l'effetto è trascurabile | bassa | accettato |
+| 109 | `02-FRONTEND-3D/vista.js` | Il pattino è riconosciuto da rz più una sola traslazione; un vincolo con solo rz (traslazioni libere) cade nel ramo senza simbolo, ma da solo renderebbe labile la struttura | — | nessun intervento |
+| 110 | `02-FRONTEND-3D/index.html` | Le larghezze massime dei menu sono in em: con un carattere più grande la barra può tornare su tre righe | bassa | accettato |
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C38: superati;
+- `test_app.py`: 42 prove; `prove_modifica.mjs` e `prove_risultati.mjs`: 9;
+- `esegui_scenari.py`: 16 script; controllo a vista di C31, C32, C36, C38.

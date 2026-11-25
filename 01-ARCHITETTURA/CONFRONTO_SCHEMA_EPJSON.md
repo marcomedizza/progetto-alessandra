@@ -19,6 +19,18 @@ L'epJSON è la forma JSON degli stessi oggetti dell'IDF. Nel testo i campi sono 
 | `Construction` | 11 | Name, Outside Layer, Layer 2 … Layer 10 (nomi di materiali) |
 | `BuildingSurface:Detailed` | 371 | Name, Surface Type, Construction Name, Zone Name, Outside Boundary Condition, Number of Vertices, Vertex n X/Y/Z-coordinate [m] |
 
+## Aggiunta del 25/11: `HeatBalanceAlgorithm` (Benedetta)
+
+Oggetto con 4 campi, letti dallo stesso dizionario:
+- `Algorithm`, a scelta tra ConductionTransferFunction (predefinito), MoisturePenetrationDepthConductionTransferFunction, ConductionFiniteDifference e CombinedHeatAndMoistureFiniteElement;
+- `Surface Temperature Upper Limit` [C], predefinito 200;
+- `Minimum Surface Convection Heat Transfer Coefficient Value` [W/m2-K], predefinito 0,1;
+- `Maximum Surface Convection Heat Transfer Coefficient Value` [W/m2-K], predefinito 1000.
+
+È un'impostazione del metodo di calcolo termico, l'equivalente di `analisi` nel nostro schema, che vale `statica_lineare`. Non ha campi in comune con lo schema strutturale. In un modello energetico separato basterebbe il valore predefinito, salvo esigenze di umidità, che richiederebbero i metodi a differenze o elementi finiti.
+
+`Building` e `Zone`, citati nell'assegnazione del 25/11, erano già nella tabella del 23/11.
+
 ## Corrispondenza con lo schema dati v1.2
 
 | Schema v1.2 | Unità | epJSON | Unità | Relazione |

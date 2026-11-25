@@ -478,6 +478,8 @@ def test_copertura_dei_casi():
             with open(p, encoding="utf-8") as fh:
                 usate |= copertura.funzioni(json.load(fh))
     assert [f for f in copertura.ATTESE if f not in usate] == []
+    # punto 105 (25/11): ogni voce ricavata dallo schema è anche nell'elenco delle funzioni attese
+    assert [f for f in copertura.attese_dallo_schema() if f not in copertura.ATTESE] == []
 
 
 def test_limite_nodi_accettato():

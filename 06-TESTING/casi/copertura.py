@@ -83,6 +83,26 @@ ATTESE = ["vincolo: incastro", "vincolo: cerniera", "vincolo: carrello verticale
           "combinazione di casi"]
 
 
+def attese_dallo_schema():
+    """Funzioni ricavate dallo schema (punto 105, 25/11): tipi e direzioni dei carichi d'asta, componenti dei
+    carichi nodali, dei cedimenti, delle distorsioni termiche e delle molle. Ogni voce deve stare in ATTESE."""
+    with open(os.path.join(QUI, "..", "..", "01-ARCHITETTURA", "DATA_SCHEMA.json"), encoding="utf-8") as fh:
+        sc = json.load(fh)
+    caso = sc["properties"]["casi_di_carico"]["items"]["properties"]
+    nomi = {"distribuito_uniforme": "uniforme", "concentrato": "concentrato", "distribuito_trapezio": "trapezio"}
+    out = []
+    for o in caso["carichi_aste"]["items"]["oneOf"]:
+        for d in o["properties"]["direzione"]["enum"]:
+            out.append(f"carico d'asta {nomi[o['properties']['tipo']['const']]} {d}")
+    out += [f"carico nodale {k}" for k in caso["carichi_nodali"]["items"]["properties"] if k != "nodo"]
+    out += [f"cedimento {k}" for k in caso["cedimenti"]["items"]["properties"] if k != "nodo"]
+    out += [{"dT_u": "ΔT uniforme", "dT_g": "ΔT a farfalla"}[k] for k in caso["carichi_termici"]["items"]["properties"] if k != "asta"]
+    out += [f"molla {k}" for k in sc["properties"]["vincoli"]["items"]["properties"]["molle"]["properties"]]
+    if "peso_proprio" in caso:
+        out.append("peso proprio")
+    return out
+
+
 def main():
     casi = {}
     for p in sorted(glob.glob(os.path.join(QUI, "C*.json")), key=lambda p: int(os.path.basename(p)[1:].split("_")[0])):
@@ -94,6 +114,9 @@ def main():
     print("| Funzione | Casi |\n|---|---|")
     for f in ATTESE:
         print(f"| {f} | {', '.join(c for c, s in casi.items() if f in s) or '**nessuno**'} |")
+    fuori = [f for f in attese_dallo_schema() if f not in ATTESE]
+    if fuori:
+        print("Funzioni dello schema non elencate in ATTESE:", "; ".join(fuori))
     mancanti = [f for f in ATTESE if not any(f in s for s in casi.values())]
     print(f"\n{len(casi)} casi; {len(ATTESE) - len(mancanti)} funzioni coperte su {len(ATTESE)}.")
     if mancanti:

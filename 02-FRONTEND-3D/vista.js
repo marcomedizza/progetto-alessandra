@@ -178,6 +178,19 @@ export class Vista {
       const r = new THREE.Mesh(new THREE.PlaneGeometry(d * 2.4, d * 0.5), mat);
       r.position.set(n.x, n.y - d * 0.25, 0);
       g.add(r);
+    } else if (v.rz && (v.ux || v.uy)) {            // D32 (Irene, 25/11): pattino, rotazione e una traslazione impedite
+      // piastra accanto al nodo e due guide parallele alla direzione libera
+      const libero = v.ux ? 'y' : 'x';             // ux impedito → scorre in verticale; uy impedito → in orizzontale
+      const piastra = new THREE.Mesh(new THREE.PlaneGeometry(d * 0.5, d * 2), mat);
+      const guida = () => new THREE.Mesh(new THREE.PlaneGeometry(d * 0.12, d * 2.6), mat);
+      const g1 = guida(), g2 = guida();
+      if (libero === 'y') {
+        piastra.position.set(n.x + d * 0.35, n.y, 0); g1.position.set(n.x + d * 0.85, n.y, 0); g2.position.set(n.x + d * 1.25, n.y, 0);
+      } else {
+        for (const o of [piastra, g1, g2]) o.rotation.z = Math.PI / 2;
+        piastra.position.set(n.x, n.y - d * 0.35, 0); g1.position.set(n.x, n.y - d * 0.85, 0); g2.position.set(n.x, n.y - d * 1.25, 0);
+      }
+      g.add(piastra, g1, g2);
     } else if (v.uy || v.ux) {                     // cerniera o carrello
       const sh = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(-d, -d * 1.4), new THREE.Vector2(d, -d * 1.4)]);
       const t = new THREE.Mesh(new THREE.ShapeGeometry(sh), mat);
@@ -219,7 +232,11 @@ export class Vista {
   }
 
   freccia(da, dir, lung) {
-    return new THREE.ArrowHelper(dir.clone().normalize(), da, lung, COL.carico, lung * 0.3, lung * 0.18);
+    const f = new THREE.ArrowHelper(dir.clone().normalize(), da, lung, COL.carico, lung * 0.3, lung * 0.18);
+    // D31 (Irene, 25/11): una forza parallela a un'asta (Fx in punta a una trave orizzontale) restava nascosta
+    // dentro il cilindro dell'asta; le frecce si disegnano sopra le aste
+    f.line.material.depthTest = false; f.cone.material.depthTest = false; f.renderOrder = 10;
+    return f;
   }
 
   disegnaCarichi(modello, caso, nodi) {

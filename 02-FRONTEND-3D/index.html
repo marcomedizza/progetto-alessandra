@@ -22,6 +22,9 @@
   select, button, input[type=number] { font: inherit; padding: 4px 8px; border: 1px solid var(--line);
            border-radius: 6px; background: #fff; color: var(--ink); }
   button { cursor: pointer; }
+  /* D29 (Irene, 25/11): i menu con nomi lunghi non mandano a capo la barra dei comandi */
+  #sel-caso { max-width: 17em; }
+  #sel-carico { max-width: 13em; }
   button.primario { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
   button.attivo { background: #dfe7f4; border-color: var(--accent); }
   button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }

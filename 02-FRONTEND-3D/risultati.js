@@ -214,9 +214,12 @@ const fmt = (v, d = 2) => (Math.abs(v) < 5e-13 ? 0 : v).toLocaleString('it-IT', 
 export function tabellaRisultati(modello, ris, caso) {
   if (!ris) return '<p class="vuoto">Premi «Calcola».</p>';
   let h = '<table><thead><tr><th>Nodo</th><th class="num">Rx [kN]</th><th class="num">Ry [kN]</th><th class="num">Mz [kNm]</th></tr></thead><tbody>';
-  for (const r of ris.reazioni) h += `<tr><td>${r.nodo}</td><td class="num">${fmt(r.Rx)}</td><td class="num">${fmt(r.Ry)}</td><td class="num">${fmt(r.Mz)}</td></tr>`;
+  // D30 (Lucia, 25/11): righe in ordine di numero di nodo e d'asta, non nell'ordine del file
+  const perNodo = [...ris.reazioni].sort((a, b) => a.nodo - b.nodo);
+  const perAsta = [...ris.sollecitazioni].sort((a, b) => a.asta - b.asta);
+  for (const r of perNodo) h += `<tr><td>${r.nodo}</td><td class="num">${fmt(r.Rx)}</td><td class="num">${fmt(r.Ry)}</td><td class="num">${fmt(r.Mz)}</td></tr>`;
   h += '</tbody></table><p></p><table><thead><tr><th>Asta</th><th class="num">|M| max</th><th class="num">|V| max</th><th class="num">|N| max</th></tr></thead><tbody>';
-  for (const s of ris.sollecitazioni) {
+  for (const s of perAsta) {
     const mx = (k) => Math.max(...s[k].map(Math.abs));
     h += `<tr><td>${s.asta}</td><td class="num">${fmt(mx('M'))}</td><td class="num">${fmt(mx('V'))}</td><td class="num">${fmt(mx('N'))}</td></tr>`;
   }

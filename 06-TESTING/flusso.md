@@ -227,6 +227,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | 16 script | superati; viste estese a C36, C37, C38 |
 | Controllo a vista | C37: frecce normali all'asta, M al piede 50 kNm (caso A); C36: molle a zig-zag e a spirale, M 30 kNm; C38: 120 e 60 kNm, tangente orizzontale al pattino. Due difetti minori di simboli (D31, D32) |
 
+| Scenario | 25/11 (Renata, Vittoria; `esegui_scenari.py`) |
+|---|---|
+| 16 script | superati |
+| Controllo a vista | C38: pattino con piastra e guide; C36: freccia orizzontale in punta visibile; C31 e C32: tabella in ordine d'asta; barra su due righe |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |
@@ -258,8 +263,8 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | D26 | 14/11 | S35 | Aprendo un modello da file, il menu dei casi continua a mostrare il caso scelto prima | bassa | **chiuso 15/11**: il modello da file o «Nuovo» compare in testa al menu come voce propria («File: …», «Modello nuovo»); scegliendo poi un caso dall'elenco si torna al caso | Irene |
 | D27 | 14/11 | S35 | Con valori di 10⁹ le etichette dei diagrammi si sovrappongono e la tabella dei risultati esce dal pannello | bassa | aperto: legato al punto 70 | Irene, Lucia |
 | D28 | 18/11 | C30 | Sulle aste con forze concentrate l'etichetta del massimo interno, calcolata dal 17/11 con l'interpolazione di Hermite, sovrastimava il momento (70,9 kNm invece di 69,33), perché il taglio salta sotto la forza | media | **chiuso 18/11**: su queste aste l'etichetta torna al valore campionato; corretto su C30, invariato C28 (13,9) | Irene, Mariana |
-| D29 | 20/11 | S34 | Con un nome di combinazione lungo («1,3·G + 1,5·Q + 0,9·T») la barra dei comandi va su due righe e la vista si accorcia | bassa | aperto | Irene |
-| D30 | 20/11 | S34 | La tabella dei risultati elenca le aste nell'ordine del file (7, 9, 8, 10 in C31), non per numero | bassa | aperto | Lucia |
-| D31 | 24/11 | C36 | Un vincolo con solo uy impedito (ux affidato a una molla) è disegnato come una cerniera; manca anche la freccia visibile della forza orizzontale in punta, coperta dal nodo | bassa | aperto | Irene |
-| D32 | 24/11 | C38 | Il pattino (ux e rz impediti, uy libero) non ha un simbolo proprio: appare come un carrello orizzontale con una barra | bassa | aperto | Irene |
+| D29 | 20/11 | S34 | Con un nome di combinazione lungo («1,3·G + 1,5·Q + 0,9·T») la barra dei comandi va su due righe e la vista si accorcia | bassa | **chiuso 25/11**: menu dei modelli e dei casi con larghezza massima (17 e 13 em); a 1300 px la barra torna su due righe come con i nomi brevi (prima tre) e il nome intero resta leggibile nel menu aperto | Irene |
+| D30 | 20/11 | S34 | La tabella dei risultati elenca le aste nell'ordine del file (7, 9, 8, 10 in C31), non per numero | bassa | **chiuso 25/11**: righe ordinate per numero di nodo e d'asta | Lucia |
+| D31 | 24/11 | C36 | Un vincolo con solo uy impedito (ux affidato a una molla) è disegnato come una cerniera; manca anche la freccia visibile della forza orizzontale in punta, coperta dal nodo | bassa | **chiuso 25/11**. La prima parte non era un difetto: il simbolo è un carrello, triangolo con linea di base, corretto per il solo uy impedito. La freccia restava nascosta nel cilindro dell'asta collineare; ora le frecce si disegnano sopra le aste | Irene |
+| D32 | 24/11 | C38 | Il pattino (ux e rz impediti, uy libero) non ha un simbolo proprio: appare come un carrello orizzontale con una barra | bassa | **chiuso 25/11**: piastra con due guide parallele alla direzione libera | Irene |
 | D13 | 30/10 | S17 | Nel disegno non si possono annullare l'ultimo nodo o l'ultima asta (solo «Elimina» dal pannello) | bassa | **chiuso 02/11**: pulsante «Annulla» e Ctrl+Z per ogni modifica (fino a 50) | Lucia |

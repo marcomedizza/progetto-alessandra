@@ -472,7 +472,12 @@ Il lavoro del 26/11 era pronto ma non è stato inviato al remoto prima della sos
 | 113 | `04-FORTRAN-SOLVER/README.md` | La nota del 12/11 parlava di un solo avviso `-Wcompare-reals`; gli avvisi sono due, entrambi presenti dal 31/10 e voluti (riga 165, cedimento nullo letto dal file; riga 504, salto dei coefficienti nulli). Il README è stato corretto | bassa | **chiuso 28/11** |
 | 114 | — | Il lavoro non inviato al remoto si perde quando il contenitore viene sostituito; è successo il 26/11 | media | **regola dal 28/11**: commit e invio subito dopo ogni prodotto, non a fine giornata |
 
-**Punti aperti ricontrollati**: 6–11 invariati (dipendono da scelte di Marco o dal pannello delle proprietà); 108 e 110 accettati; 109 senza intervento. Nessuno è peggiorato con il codice nuovo.
+**Punti 6–11 ricontrollati**: 6, 10 e 11 sono già chiusi. Restano aperti:
+- 7, ordine d'uscita dei nodi, documentato e gestito leggendo per identificativo;
+- 8, area fittizia per la deformabilità assiale trascurata, misurata con `studio_area_fittizia.py`;
+- 9, una sola configurazione di compilazione con il controllo dei limiti (la compilazione dura 1 s, il solutore 0,23 s su 1989 gdl: il costo non è ancora rilevante).
+
+108 e 110 sono accettati, 109 senza intervento. Il codice nuovo non ne peggiora nessuno.
 
 **Verifiche eseguite**:
 - `verifica_casi.py` nei tre percorsi su C1–C38: superati, 217 valori, 0 scostamenti;

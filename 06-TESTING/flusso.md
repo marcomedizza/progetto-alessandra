@@ -232,6 +232,11 @@ Nessun errore nella console. Firefox non provato (non disponibile nell'ambiente 
 | 16 script | superati |
 | Controllo a vista | C38: pattino con piastra e guide; C36: freccia orizzontale in punta visibile; C31 e C32: tabella in ordine d'asta; barra su due righe |
 
+| Scenario | 28/11 (Renata, Vittoria; `esegui_scenari.py`, contenitore nuovo) |
+|---|---|
+| 16 script | superati; viste estese a C34 e C35, ora tutti i casi C33–C38 |
+| Controllo a vista | C35: momenti d'incastro 11,7 e 5,8 kNm (rapporto 2:1 da rotazione impressa a un estremo), deformata con lo spostamento assiale impresso a destra; C34 (caso G, solo peso proprio): 3,4 kNm all'incastro, pari a qL²/2 con qL = 1,69 kN e L = 4 m; l'atteso di 10,6 kNm riguarda la combinazione SLU1. Nessun difetto nuovo |
+
 ## Difetti
 
 | N. | Data | Scenario | Descrizione | Gravità | Stato | Assegnata a |

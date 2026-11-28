@@ -460,3 +460,21 @@ Il 05/11 l'esecuzione si è interrotta per un riavvio della macchina di lavoro d
 - `verifica_casi.py` nei tre percorsi su C1–C38: superati;
 - `test_app.py`: 42 prove; `prove_modifica.mjs` e `prove_risultati.mjs`: 9;
 - `esegui_scenari.py`: 16 script; controllo a vista di C31, C32, C36, C38.
+
+**Revisione del codice nuovo del 28/11** (Marisa)
+
+Il lavoro del 26/11 era pronto ma non è stato inviato al remoto prima della sostituzione del contenitore ed è andato perso. Il 27/11 non ci sono commit. Oggi è stato rifatto e inviato dopo ogni passo.
+
+| # | File | Osservazione | Gravità | Esito |
+|---|---|---|---|---|
+| 111 | `03-BACKEND/servizio/test_app.py` | La prova `test_casi_c34_c38_dal_servizio` riusa `LETTURE` e le tolleranze di `verifica_casi.py`: nessuna seconda copia dei valori attesi. Il numero di valori controllati è fissato a 23, così un atteso svuotato per errore fa fallire la prova invece di passare a vuoto | — | nessun intervento |
+| 112 | `03-BACKEND/servizio/test_app.py` | L'importazione di `verifica_casi` legge `sys.argv`: lanciando `test_app.py` con `--api` si creerebbe un secondo client. Oggi nessuno lo fa | bassa | accettato |
+| 113 | `04-FORTRAN-SOLVER/README.md` | La nota del 12/11 parlava di un solo avviso `-Wcompare-reals`; gli avvisi sono due, entrambi presenti dal 31/10 e voluti (riga 165, cedimento nullo letto dal file; riga 504, salto dei coefficienti nulli). Il README è stato corretto | bassa | **chiuso 28/11** |
+| 114 | — | Il lavoro non inviato al remoto si perde quando il contenitore viene sostituito; è successo il 26/11 | media | **regola dal 28/11**: commit e invio subito dopo ogni prodotto, non a fine giornata |
+
+**Punti aperti ricontrollati**: 6–11 invariati (dipendono da scelte di Marco o dal pannello delle proprietà); 108 e 110 accettati; 109 senza intervento. Nessuno è peggiorato con il codice nuovo.
+
+**Verifiche eseguite**:
+- `verifica_casi.py` nei tre percorsi su C1–C38: superati, 217 valori, 0 scostamenti;
+- `test_app.py`: 43 prove;
+- banda contro piena: 1,5·10⁻⁸ m al massimo (C32).

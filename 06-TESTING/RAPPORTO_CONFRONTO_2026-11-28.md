@@ -1,6 +1,6 @@
-# Rapporto di confronto del solutore — 25/11/2026
+# Rapporto di confronto del solutore — 28/11/2026
 
-**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 24/11
+**Autrice**: Silvia (laboratorio di regressione) · sostituisce il rapporto del 25/11 (il 26 e il 27/11 non sono stati inviati rapporti)
 
 **Calcolo**: telaio2d v0.4 con il convertitore v0.5; schema v1.2.
 
@@ -49,8 +49,9 @@
 | C37 Mensola inclinata, carichi locali e orizzontali | 4 superati, 0 non superati | 0 | 0 |
 | C38 Trave incastrata e a pattino, carico uniforme | 4 superati, 0 non superati | 0 | 0 |
 
-**Novità del 25/11**
-- Nessun caso nuovo: C1–C38 superati nei tre percorsi, copertura 32 su 32.
-- Il controllo di copertura confronta anche l'elenco delle funzioni con lo schema (punto 105).
+**Novità del 28/11**
+- Nessun caso nuovo: C1–C38 superati nei tre percorsi (217 valori attesi), copertura 32 su 32. La tabella ricavata dalle esecuzioni di oggi coincide con quella del 25/11: nessuna regressione.
+- Nuova prova del servizio su C34–C38: i 23 valori a mano sono letti dalla risposta di `/api/calcola`.
+- Solutore ricompilato su un contenitore nuovo (gfortran 13.3.0 installato da capo): risultati invariati.
 
-**Altre prove**: `test_app.py` 42 superate; `esegui_scenari.py` 16 script.
+**Altre prove**: `test_app.py` 43 superate; `prove_modifica.mjs` 5 e `prove_risultati.mjs` 4; `esegui_scenari.py` 16 script su 16.

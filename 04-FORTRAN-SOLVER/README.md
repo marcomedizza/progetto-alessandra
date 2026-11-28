@@ -119,6 +119,12 @@ Il caso peggiore migliora di un ordine di grandezza e i due solutori tornano a c
 
 **Compilazione (Ottavia, 12/11)**: `build.sh` con GNU Fortran 13.3.0 in 2,9 s su una macchina appena avviata. Rimane un solo avviso, `-Wcompare-reals`, per un confronto di uguaglianza tra numeri reali. È voluto, ma va ricontrollato alla prossima revisione del solutore. C1–C25 superati con il binario appena compilato.
 
+**Compilazione (Ottavia, 28/11)**: su un contenitore nuovo gfortran va installato (`apt-get install gfortran`, GNU Fortran 13.3.0). `build.sh` richiede 1,0 s; il 26/11 era stato misurato 3,8 s a freddo. Gli avvisi `-Wcompare-reals` sono **due**, non uno come scritto il 12/11, ed esistono entrambi dal 31/10:
+- riga 165, `ced(a,k) /= 0`: un cedimento nullo nel file significa «componente non imposta». Il confronto esatto con zero è corretto, perché il valore è letto dal file e non calcolato;
+- riga 504, `fct /= 0` (eliminazione di Gauss del percorso a matrice piena): salta le righe con coefficiente già nullo. È solo un risparmio di operazioni, e un valore piccolo ma non nullo dà comunque il risultato corretto.
+
+Nessuno dei due è un difetto. Con il binario appena compilato C1–C38 sono superati nei tre percorsi; D25 (esponente a tre cifre) è verificato da `test_esponente_a_tre_cifre`. Scarto banda/piena su C1–C38 (misura del 26/11): massimo 1,5·10⁻⁸ m su C32 (vento), poi C30 (1,8·10⁻⁹) e C27 (8,4·10⁻¹⁰); negli altri casi resta sotto 10⁻¹⁰.
+
 **Prossimi passi** vincolari (C11), P-Delta. Le combinazioni sono calcolate dal servizio per sovrapposizione.
 
 ## Prestazioni (Ottavia, 29/10/2026)

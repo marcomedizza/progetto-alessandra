@@ -31,6 +31,23 @@ Oggetto con 4 campi, letti dallo stesso dizionario:
 
 `Building` e `Zone`, citati nell'assegnazione del 25/11, erano già nella tabella del 23/11.
 
+## Aggiunta del 28/11: `SimulationControl`, `Timestep`, `RunPeriod` (Benedetta)
+
+Campi letti il 28/11 dallo stesso dizionario (ramo `develop`). Sono oggetti di controllo della simulazione nel tempo:
+
+| Oggetto | Campi | Contenuto | Predefiniti |
+|---|---|---|---|
+| `SimulationControl` | 7 | Sì/No per il dimensionamento di zone, sistemi e impianti; Sì/No per la simulazione sui periodi di dimensionamento e sui periodi del file climatico; Sì/No e numero massimo di passate (≥ 1) per la simulazione di dimensionamento HVAC | No, No, No, Yes, Yes, No, 1 |
+| `Timestep` | 1 | Number of Timesteps per Hour, da 1 a 60 | 6 (passo di 10 min) |
+| `RunPeriod` | 13 | Name, mese e giorno di inizio e di fine (obbligatori), anno di inizio e di fine, giorno della settimana iniziale, uso di festività, ora legale, pioggia e neve del file climatico, regola del fine settimana, «Treat Weather as Actual», interpolazione della prima ora (Hour1/Hour24) | festività, ora legale, pioggia e neve: Yes; regola del fine settimana e Treat Weather as Actual: No; Hour24 |
+
+Nessuno dei tre ha un corrispondente nello schema. Lo schema descrive un'analisi statica lineare senza tempo (`analisi.tipo` = `statica_lineare`), mentre questi oggetti definiscono il periodo e il passo di una simulazione dinamica oraria o suboraria. In un modello energetico separato (punto 2 della proposta) servirebbero tutti e tre:
+- `RunPeriod` dal 1/1 al 31/12 per il fabbisogno annuo;
+- `Timestep` predefinito a 6;
+- `SimulationControl` con il dimensionamento disattivato, se non si progettano impianti.
+
+**Nota**: il «Building» e la «Zone» richiesti nell'assegnazione del 27 e del 28/11 erano già nella tabella del 23/11 (righe `Building` e `Zone` qui sotto), come annotato il 25/11. Non c'è altro da aggiungere senza un modello d'involucro da confrontare.
+
 ## Corrispondenza con lo schema dati v1.2
 
 | Schema v1.2 | Unità | epJSON | Unità | Relazione |

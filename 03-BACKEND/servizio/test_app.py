@@ -482,6 +482,32 @@ def test_copertura_dei_casi():
     assert [f for f in copertura.attese_dallo_schema() if f not in copertura.ATTESE] == []
 
 
+def test_casi_c34_c38_dal_servizio():
+    # Natalia, 28/11: i valori a mano di C34-C38 (peso proprio e Mz, cedimenti rz e ux, molle, carichi locali
+    # su asta inclinata, pattino) letti dalla risposta di /api/calcola, con le letture e le tolleranze di
+    # verifica_casi.py
+    sys.path.insert(0, os.path.join(servizio.RADICE, "06-TESTING", "casi"))
+    import verifica_casi as vc
+    import glob
+    controllati = 0
+    for n in range(34, 39):
+        (p,) = [q for q in glob.glob(os.path.join(servizio.RADICE, "06-TESTING", "casi", f"C{n}_*.json"))
+                if not q.endswith((".atteso.json", ".riferimento.json"))]
+        with open(p, encoding="utf-8") as fh:
+            m = json.load(fh)
+        with open(p.replace(".json", ".atteso.json"), encoding="utf-8") as fh:
+            atteso = json.load(fh)
+        tipo = "combinazione" if vc.e_combinazione(m, atteso["caso"]) else "caso"
+        r = client.post(f"/api/calcola?{tipo}={atteso['caso']}", json=m)
+        assert r.status_code == 200, (n, r.text[:200])
+        ris = r.json()["risultati"][0]
+        for v in atteso["valori"]:
+            calc = vc.LETTURE[f"C{n}"][v["grandezza"]](ris)
+            assert abs(calc - v["valore"]) <= max(vc.TOLL_ASS, vc.TOLL_REL * abs(v["valore"])), (n, v, calc)
+            controllati += 1
+    assert controllati == 23  # 4 + 5 + 6 + 4 + 4 valori a mano
+
+
 def test_limite_nodi_accettato():
     # Natalia (08/11): esattamente MAX_NODI nodi è ancora ammesso, uno in più no (geometria di C20 ripetuta)
     m = modello("C20_gerber_trapezio")
